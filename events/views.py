@@ -1,11 +1,11 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from events.models import Event
 from events.serializers import EventSerializer
 
 
-class EventCreateView(generics.CreateAPIView):
-    queryset = Event.objects.all()
+class EventListCreateView(generics.ListCreateAPIView):
+    queryset = Event.objects.order_by("-created_at")
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
