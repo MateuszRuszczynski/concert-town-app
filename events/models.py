@@ -1,7 +1,5 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
 
 
 class Event(models.Model):
@@ -14,10 +12,12 @@ class Event(models.Model):
     total_seats = models.PositiveIntegerField()
     available_seats = models.PositiveIntegerField()
 
+    image = models.ImageField(upload_to="events/", blank=True, null=True)
+
     organizer = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="events"
+        related_name="events",
     )
 
     is_active = models.BooleanField(default=True)
@@ -30,4 +30,4 @@ class Event(models.Model):
     class Meta:
         verbose_name = "Event"
         verbose_name_plural = "Events"
-        ordering = ['date']
+        ordering = ["date"]

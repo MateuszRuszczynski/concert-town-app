@@ -15,6 +15,9 @@ class EventSerializer(serializers.ModelSerializer):
             "price",
             "total_seats",
             "available_seats",
+            "image",
+            "organizer",
+            "is_active",
             "created_at",
             "updated_at",
         ]
