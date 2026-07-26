@@ -9,5 +9,3 @@ class EventCreateView(generics.CreateAPIView):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
 
-
-# Create your views here.
