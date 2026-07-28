@@ -11,7 +11,6 @@ User = get_user_model()
 class EventListTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="organizer",
             email="organizer@example.com",
             password="Password123!",
         )
