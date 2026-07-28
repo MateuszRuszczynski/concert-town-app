@@ -2,7 +2,18 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import RegisterSerializer
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
+
+
+class LoginRateThrottle(AnonRateThrottle):
+    rate = "5/minute"
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+    throttle_classes = [LoginRateThrottle]
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -23,4 +34,6 @@ class ProfileView(APIView):
         return Response({
             "email": request.user.email,
             "role": request.user.role,
+            "first_name": request.user.first_name,
+            "last_name": request.user.last_name,
         })
