@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.db import IntegrityError
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -11,10 +13,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         email_val = attrs.get("email") or attrs.get(self.username_field)
-        if email_val:
-            email_val = email_val.lower().strip()
-            attrs["email"] = email_val
-            attrs[self.username_field] = email_val
+        if not email_val:
+            raise serializers.ValidationError({"email": ["This field is required."]})
+        try:
+            validate_email(email_val)
+        except DjangoValidationError:
+            raise serializers.ValidationError({"email": ["Enter a valid email address."]})
+        email_val = email_val.lower().strip()
+
+        attrs["email"] = email_val
+        attrs[self.username_field] = email_val
 
         return super().validate(attrs)
 
