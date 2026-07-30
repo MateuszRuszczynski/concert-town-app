@@ -1,0 +1,65 @@
+.authLayout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 40px 16px;
+  min-height: 100vh;
+  background-color: var(--background-color);
+}
+
+.themeSwitcherWrapper {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: 32px;
+}
+
+.logoWrapper {
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4em;
+  letter-spacing: -0.025em;
+  color: var(--primary-color);
+
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.43em;
+  letter-spacing: 0;
+
+  color: var(--secondary-color);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.authSwitch {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--secondary-color);
+
+  & > a {
+    font-weight: 500;
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+}

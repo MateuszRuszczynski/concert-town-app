@@ -1,0 +1,28 @@
+:root {
+  --primary-color: #0a0a0a;
+  --secondary-color: #737373;
+
+  --background-color: #fff;
+  --error-color: #eb0005;
+  --error-bgc: #e7000b1a;
+  --border-color: #e5e5e5;
+  --form-color: #fff;
+  --form-field-color: #fff;
+
+  --requirement-bgc: #f5f5f599;
+
+}
+
+html.dark {
+  --primary-color: #fafafa;
+  --secondary-color: #a1a1a1;
+
+  --background-color: #0a0a0a;
+  --error-color: #ff6466;
+  --error-bgc: #ff64671a;
+  --border-color: #ffffff1a;
+  --form-color: #171717;
+  --form-filed-color: #0a0a0a;
+
+  --requirement-bgc: #26262699;
+}

@@ -1,0 +1,10 @@
+.errorMessage {
+  padding: 8px 12px;
+  border-radius: 10px;
+
+  font-size: 14px;
+  line-height: 1.43em;
+  color: var(--error-color);
+
+  background-color: var(--error-bgc);
+}
