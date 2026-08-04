@@ -1,6 +1,14 @@
-import { useMemo, useState, type SubmitEventHandler } from 'react';
+//#region imports
+import { useState, type SubmitEventHandler } from 'react';
 import { usePasswordValidation } from './usePasswordValidation';
 import { useNavigate } from 'react-router';
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+  validatePasswordMatch
+} from '../../../utils/validation';
+//#endregion
 
 export function useSignUpForm () {
   //#region input controls
@@ -26,50 +34,30 @@ export function useSignUpForm () {
 
   //#region validation
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
-  const isEmailValid = useMemo(
-    () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
-    [email]
-  );
   const { requirements: passwordRequirements, isValid: isPasswordValid } =
     usePasswordValidation(password);
   const passwordsMatch =
     password.length > 0 &&
     confirmPassword.length > 0 &&
     confirmPassword === password;
-
-  const isFormValid =
-    firstName.trim().length > 0 &&
-    lastName.trim().length > 0 &&
-    isEmailValid &&
-    isPasswordValid &&
-    passwordsMatch;
+  const passwordMismatchError =
+    confirmPassword.length > 0 && !passwordsMatch
+      ? "Passwords don't match"
+      : undefined;
 
   const rawFieldErrors = {
-    firstName:
-      firstName.trim().length === 0 ? 'First name is required' : undefined,
-    lastName:
-      lastName.trim().length === 0 ? 'Last name is required' : undefined,
-    email:
-      email.trim().length === 0
-        ? 'Email is required'
-        : !isEmailValid
-        ? 'Enter a valid email address'
-        : undefined,
-    password:
-      password.length === 0
-        ? 'Password is required'
-        : !isPasswordValid
-        ? 'Password does not meet all requirements'
-        : undefined,
-    confirmPassword:
-      confirmPassword.length === 0
-        ? 'Please repeat your password'
-        : !passwordsMatch
-        ? "Passwords don't match"
-        : undefined
+    firstName: validateName(firstName),
+    lastName: validateName(lastName),
+    email: validateEmail(email),
+    password: validatePassword(password, isPasswordValid),
+    confirmPassword: validatePasswordMatch(password, confirmPassword)
   };
 
-  const fieldErrors = hasAttemptedSubmit
+  const isFormValid = Object.values(rawFieldErrors).every(
+    error => error === undefined
+  );
+
+  const visibleFieldErrors = hasAttemptedSubmit
     ? rawFieldErrors
     : {
         firstName: undefined,
@@ -79,8 +67,12 @@ export function useSignUpForm () {
         confirmPassword: undefined
       };
 
+  const fieldErrors = {
+    ...visibleFieldErrors,
+    confirmPassword: passwordMismatchError ?? visibleFieldErrors.confirmPassword
+  };
+
   const validation = {
-    isEmailValid,
     passwordRequirements,
     isPasswordValid,
     passwordsMatch,
@@ -108,16 +100,13 @@ export function useSignUpForm () {
 
     setTimeout(() => {
       setIsSubmitting(false);
-      navigate('/sign-in');
+      navigate('/sign-in', { state: { justSignedUp: true } });
     }, 500);
-
-    // navigate('/sign-in');
   };
 
   const submission = {
     isSubmitting,
     submitError,
-    hasAttemptedSubmit,
     handleSubmit
   };
   //#endregion
