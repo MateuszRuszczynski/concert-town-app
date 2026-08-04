@@ -1,4 +1,5 @@
-import { useMemo, useState, type SubmitEventHandler } from 'react';
+import { useState, type SubmitEventHandler } from 'react';
+import { validateEmail, validatePasswordCharacters } from '../../../utils/validation';
 
 export function useSignInForm () {
   //#region input controls
@@ -14,31 +15,20 @@ export function useSignInForm () {
   //#endregion
 
   //#region validation
-  const isEmailValid = useMemo(
-    () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
-    [email]
-  );
-  const isPasswordFilled = password.length > 0;
-  const isFormValid = isEmailValid && isPasswordFilled;
-
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
   const rawFieldErrors = {
-    email:
-      email.trim().length === 0
-        ? 'Email is required'
-        : !isEmailValid
-        ? 'Enter a valid email address'
-        : undefined,
-    password: password.length === 0 ? 'Password is required' : undefined
+    email: validateEmail(email),
+    password: password.length === 0 ? 'Password is required' : validatePasswordCharacters(password),
   };
+
+  const isFormValid = Object.values(rawFieldErrors).every((error) => error === undefined);
 
   const fieldErrors = hasAttemptedSubmit
     ? rawFieldErrors
     : { email: undefined, password: undefined };
 
   const validation = {
-    isEmailValid,
     fieldErrors,
     isFormValid
   };
@@ -70,11 +60,11 @@ export function useSignInForm () {
     submitError,
     handleSubmit
   };
+  //#endregion
 
   return {
     inputControls,
     validation,
     submission
   };
-  //#endregion
 }

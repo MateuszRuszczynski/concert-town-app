@@ -1,7 +1,9 @@
+//#region imports
 import type { FC, ReactNode } from 'react';
 import { Logo } from '../Logo';
-import { ThemeSwitcher } from '../../hooks/ThemeSwitcher';
+import { ThemeSwitcher } from '../ThemeSwitcher';
 import styles from './AuthLayout.module.scss';
+//#endregion
 
 interface Props {
   title: string;

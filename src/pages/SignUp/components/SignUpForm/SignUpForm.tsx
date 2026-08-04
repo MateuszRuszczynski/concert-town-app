@@ -5,6 +5,8 @@ import { Button } from '../../../../components/Button';
 import { Form } from '../../../../components/Form';
 import { useSignUpForm } from '../../hooks/useSignUpForm';
 import { FormError } from '../../../../components/FormError';
+import { useState } from 'react';
+import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
 //#endregion
 
 export const SignUpForm = () => {
@@ -21,11 +23,11 @@ export const SignUpForm = () => {
     confirmPassword,
     setConfirmPassword
   } = inputControls;
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
   const { passwordRequirements, passwordsMatch, isPasswordValid, fieldErrors } =
     validation;
-  const { handleSubmit, submitError, isSubmitting } =
-    submission;
+  const { handleSubmit, submitError, isSubmitting } = submission;
 
   return (
     <Form onSubmit={handleSubmit} noValidate>
@@ -76,11 +78,18 @@ export const SignUpForm = () => {
       <FormField
         label='Repeat password'
         id='repeat-password'
+        type={isConfirmVisible ? 'text' : 'password'}
         value={confirmPassword}
         onChange={e => setConfirmPassword(e.target.value)}
         successMessage={passwordsMatch ? 'Passwords match' : undefined}
         errorMessage={fieldErrors.confirmPassword}
         placeholder='• • • • • • • •'
+        endAdornment={
+          <PasswordVisibilityToggle
+            isVisible={isConfirmVisible}
+            onToggle={() => setIsConfirmVisible(prev => !prev)}
+          />
+        }
         required
       />
 

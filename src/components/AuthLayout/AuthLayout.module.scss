@@ -1,4 +1,6 @@
 .authLayout {
+  @include fade-in-animation;
+
   display: flex;
   flex-direction: column;
   justify-content: center;

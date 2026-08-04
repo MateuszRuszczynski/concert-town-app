@@ -1,8 +1,9 @@
 //#region imports
 import cn from 'classnames';
-import type { FC } from 'react';
+import { useState, type FC } from 'react';
 import { FormField } from '../../../../components/FormField';
 import { Check } from 'lucide-react';
+import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
 import styles from './PasswordField.module.scss';
 //#endregion
 
@@ -26,16 +27,22 @@ export const PasswordField: FC<Props> = ({
   successMessage,
   errorMessage
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
   return (
     <div className={styles.passwordField}>
       <FormField
         label='Password'
         id='password'
+        type={isVisible ? 'text' : 'password'}
         placeholder='• • • • • • • •'
         value={value}
         onChange={e => onChange(e.target.value)}
         successMessage={successMessage}
         errorMessage={errorMessage}
+        endAdornment={
+          <PasswordVisibilityToggle isVisible={isVisible} onToggle={() => setIsVisible((prev) => !prev)} />
+        }
         required
       />
 

@@ -12,7 +12,12 @@
   line-height: 20px;
 }
 
+.inputWrapper {
+  position: relative;
+}
+
 .fieldInput {
+  width: 100%;
   padding: 10px 12px;
   border-radius: 10px;
   border: 0.8px solid var(--border-color);
@@ -30,6 +35,19 @@
     border-color: #0068e0;
     outline: 3px solid #2564e080;
   }
+
+  &::-ms-reveal,
+  &::-ms-clear {
+    display: none;
+  }
+}
+
+.endAdornment {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: flex;
 }
 
 .errorMessage {

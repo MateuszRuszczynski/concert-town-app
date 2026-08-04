@@ -1,3 +1,4 @@
+//#region imports
 import {
   useCallback,
   useEffect,
@@ -7,6 +8,7 @@ import {
 } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { ThemeContext } from './ThemeContext';
+//#endregion
 
 type Props = {
   children: ReactNode;

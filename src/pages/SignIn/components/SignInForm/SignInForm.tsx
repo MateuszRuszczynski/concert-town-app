@@ -1,13 +1,16 @@
 //#region imports
+import { useState } from 'react';
 import { Button } from '../../../../components/Button';
 import { Form } from '../../../../components/Form';
 import { FormField } from '../../../../components/FormField';
 import { useSignInForm } from '../../hooks/useSignInForm';
+import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
 //#endregion
 
 export const SingInForm = () => {
   const { inputControls, validation, submission } = useSignInForm();
   const { email, setEmail, password, setPassword } = inputControls;
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const { fieldErrors } = validation;
   const { handleSubmit, isSubmitting } = submission;
 
@@ -27,11 +30,17 @@ export const SingInForm = () => {
       <FormField
         label='Password'
         id='password'
-        type='password'
+        type={isPasswordVisible ? 'text' : 'password'}
         value={password}
         onChange={e => setPassword(e.target.value)}
         errorMessage={fieldErrors.password}
         placeholder='• • • • • • • •'
+        endAdornment={
+          <PasswordVisibilityToggle
+            isVisible={isPasswordVisible}
+            onToggle={() => setIsPasswordVisible(prev => !prev)}
+          />
+        }
         required
       />
 

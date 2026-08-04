@@ -11,10 +11,7 @@ export const SignUp = () => {
       subtitle='Sign up to start managing your events.'
       authSwitch={
         <>
-          Already have an account?{' '}
-          <Link to='/sign-in'>
-            Sign in
-          </Link>
+          Already have an account? <Link to='/sign-in'>Sign in</Link>
         </>
       }
     >
