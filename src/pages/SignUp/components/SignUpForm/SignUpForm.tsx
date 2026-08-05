@@ -7,6 +7,7 @@ import { useSignUpForm } from '../../hooks/useSignUpForm';
 import { FormError } from '../../../../components/FormError';
 import { useState } from 'react';
 import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
+import { ConsentField } from '../ConsentField';
 //#endregion
 
 export const SignUpForm = () => {
@@ -21,7 +22,9 @@ export const SignUpForm = () => {
     password,
     setPassword,
     confirmPassword,
-    setConfirmPassword
+    setConfirmPassword,
+    agreedToTerms,
+    setAgreedToTerms
   } = inputControls;
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
@@ -91,6 +94,12 @@ export const SignUpForm = () => {
           />
         }
         required
+      />
+
+      <ConsentField
+        checked={agreedToTerms}
+        onChange={setAgreedToTerms}
+        errorMessage={fieldErrors.agreedToTerms}
       />
 
       {submitError && <FormError errorMessage={submitError} />}

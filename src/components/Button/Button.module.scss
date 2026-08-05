@@ -11,6 +11,8 @@
   border: 0.8px solid rgba(0, 0, 0, 0);
 
   background-color: $accent-color;
+
+  @include hover(background-color, $accent-hvr-color);
 }
 
 .loading {

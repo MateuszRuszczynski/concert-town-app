@@ -4,11 +4,14 @@ import { AuthLayout } from '../../components/AuthLayout';
 import { SingInForm } from './components/SignInForm';
 import { useState } from 'react';
 import { Toast } from '../../components/Toast';
+import { usePageTitle } from '../../hooks/usePageTitle';
 //#endregion
 
 export const SignIn = () => {
   const location = useLocation();
   const [showToast, setShowToast] = useState(Boolean(location.state?.justSignedUp));
+
+  usePageTitle('Sign In');
 
   return (
     <>

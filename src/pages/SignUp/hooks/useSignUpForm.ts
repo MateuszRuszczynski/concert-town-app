@@ -17,6 +17,7 @@ export function useSignUpForm () {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const inputControls = {
     firstName,
@@ -28,7 +29,9 @@ export function useSignUpForm () {
     password,
     setPassword,
     confirmPassword,
-    setConfirmPassword
+    setConfirmPassword,
+    agreedToTerms,
+    setAgreedToTerms
   };
   //#endregion
 
@@ -50,7 +53,8 @@ export function useSignUpForm () {
     lastName: validateName(lastName),
     email: validateEmail(email),
     password: validatePassword(password, isPasswordValid),
-    confirmPassword: validatePasswordMatch(password, confirmPassword)
+    confirmPassword: validatePasswordMatch(password, confirmPassword),
+    agreedToTerms: !agreedToTerms ? 'You must agree to the Terms and Conditions' : undefined,
   };
 
   const isFormValid = Object.values(rawFieldErrors).every(
@@ -64,7 +68,8 @@ export function useSignUpForm () {
         lastName: undefined,
         email: undefined,
         password: undefined,
-        confirmPassword: undefined
+        confirmPassword: undefined,
+        agreedToTerms: undefined,
       };
 
   const fieldErrors = {

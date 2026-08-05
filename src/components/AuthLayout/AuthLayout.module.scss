@@ -63,5 +63,7 @@
     font-weight: 500;
     color: var(--primary-color);
     text-decoration: underline;
+
+    @include hover(color, $accent-hvr-color);
   }
 }

@@ -5,7 +5,7 @@ import styles from './FormField.module.scss';
 //#endregion
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label: ReactNode;
   id: string;
   errorMessage?: string;
   successMessage?: string;
