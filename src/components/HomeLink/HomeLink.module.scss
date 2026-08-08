@@ -1,0 +1,7 @@
+.homeLink {
+  @include flex-row;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary-color);
+}

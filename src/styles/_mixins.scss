@@ -6,6 +6,12 @@
   }
 }
 
+@mixin on-desktop {
+  @media(min-width: 768px) {
+    @content;
+  }
+}
+
 @mixin dark-theme {
   :global(html.dark) & {
     @content;
@@ -26,3 +32,29 @@
     }
   }
 };
+
+@mixin page-container {
+  padding: 32px 16px;
+
+  @include on-desktop {
+    padding-inline: 32px;
+  }
+}
+
+@mixin surface-block($borderRadius: 10px) {
+  background-color: var(--surface-color);
+  border: 0.8px solid var(--border-color);
+  border-radius: $borderRadius;
+}
+
+@mixin flex-row($gap: 8px) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+}
+
+@mixin text-medium {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}

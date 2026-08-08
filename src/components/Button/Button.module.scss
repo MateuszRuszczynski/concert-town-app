@@ -1,10 +1,12 @@
 .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   height: 34px;
   padding-inline: 10px;
 
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
+  @include text-medium;
   
   color: $button-color;
   border-radius: 10px;

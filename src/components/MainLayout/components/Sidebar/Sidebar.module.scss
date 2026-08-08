@@ -1,0 +1,93 @@
+.overlay {
+  --overlay-bg: #0a0a0a66;
+
+  @include dark-theme {
+    --overlay-bg: #fafafa66;
+  }
+
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  z-index: 999;
+
+  opacity: 0;
+  animation: fadeIn 0.25s ease forwards;
+
+  @include on-desktop {
+    display: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sidebar {
+  --sidebar-bg: #fafafa;
+
+  @include dark-theme {
+    --sidebar-bg: #171717;
+  }
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--sidebar-bg);
+  border-right: 0.8px solid var(--border-color);
+  padding: 20px 16px;
+
+  @include on-desktop {
+    position: static;
+    width: 240px;
+    height: 100%;
+    transform: none;
+    transition: none;
+  }
+}
+
+.open {
+  transform: translateX(0);
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.closeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 30.4px;
+  height: 30.4px;
+
+  border-radius: 10px;
+
+  color: var(--primary-color);
+
+  @include hover(background-color, var(--button-hover));
+
+  @include on-desktop {
+    display: none;
+  }
+}
+
+.nav {
+  flex-grow: 1;
+}

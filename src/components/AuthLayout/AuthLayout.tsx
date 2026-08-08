@@ -25,7 +25,7 @@ export const AuthLayout: FC<Props> = ({
 
     <header className={styles.header}>
       <div className={styles.logoWrapper}>
-        <Logo />
+        <Logo variant='medium' />
       </div>
 
       <h1 id='auth-title' className={styles.title}>{title}</h1>

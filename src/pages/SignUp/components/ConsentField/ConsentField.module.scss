@@ -8,9 +8,7 @@
 }
 
 .consentControl {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  @include flex-row;
 }
 
 .checkbox {
@@ -19,9 +17,7 @@
 }
 
 .label {
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
+  @include text-medium;
   color: var(--secondary-color);
 }
 

@@ -9,12 +9,13 @@
   display: flex;
   align-items: center;
   gap: 10px;
+
   padding: 12px 14px;
   min-width: 280px;
   border-radius: 10px;
   border-left: 3px solid #34d399;
 
-  background: var(--form-color);
+  background: var(--surface-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   color: #34d399;
 

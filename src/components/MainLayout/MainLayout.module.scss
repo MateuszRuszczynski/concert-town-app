@@ -1,0 +1,34 @@
+.layout {
+  min-height: 100vh;
+  background-color: var(--background-color);
+
+  @include on-desktop {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'sidebar header'
+      'sidebar content';
+  }
+}
+
+.sidebarArea {
+  @include on-desktop {
+    grid-area: sidebar;
+    height: 100vh;
+  }
+}
+
+.headerArea {
+  @include on-desktop {
+    grid-area: header;
+  }
+}
+
+.content {
+  @include on-desktop {
+    grid-area: content;
+    overflow-y: auto;
+    min-height: 0;
+  }
+}
