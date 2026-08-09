@@ -1,5 +1,6 @@
 from django.db import IntegrityError, models
 from rest_framework import serializers
+from django.db import transaction
 
 from events.models import Event
 from .models import EventRegistration
@@ -55,9 +56,8 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "You are already registered for this event."
             )
-
-        event.available_seats = models.F("available_seats") - 1
-        event.save(update_fields=["available_seats"])
-        event.refresh_from_db(fields=["available_seats"])
+        with transaction.atomic():
+            event.available_seats = models.F("available_seats") - 1
+            event.save()
 
         return registration
