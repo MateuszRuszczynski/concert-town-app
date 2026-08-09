@@ -1,4 +1,7 @@
+from django.db import transaction
+from django.db.models import F
 from rest_framework import generics, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -42,3 +45,26 @@ class EventParticipantListView(generics.ListAPIView):
         return EventRegistration.objects.filter(
             event_id=self.kwargs["event_id"]
         ).select_related("event", "user")
+
+
+class EventCancelRegistration(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return EventRegistration.objects.filter(
+            user=self.request.user
+        ).select_related("event", "user")
+
+    def perform_destroy(self, instance):
+        event = instance.event
+        with transaction.atomic():
+            event.available_seats = F("available_seats") + 1
+            event.save()
+            instance.delete()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(
+            {"message": "Registration canceled."}, status=status.HTTP_200_OK
+        )
