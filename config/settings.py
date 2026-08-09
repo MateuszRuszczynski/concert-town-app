@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "core",
     "events",
     "bookings",
+    "django_filters",
 ]
 
 MIDDLEWARE = [

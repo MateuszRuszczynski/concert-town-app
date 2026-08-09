@@ -1,9 +1,25 @@
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Event
+from .models import Category, Event
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name", "slug"]
 
 
 class EventSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)
+
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        source="category",
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
+
     class Meta:
         model = Event
         fields = [
@@ -12,6 +28,8 @@ class EventSerializer(serializers.ModelSerializer):
             "description",
             "date",
             "location",
+            "category",
+            "category_id",
             "price",
             "total_seats",
             "available_seats",
