@@ -73,3 +73,47 @@ class EventRegistrationTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Event is fully booked", str(response.data))
+
+    def test_cancel_registration_success(self):
+        self.client.force_authenticate(user=self.user)
+        register_response = self.client.post(self.url, {"event_id": self.event.id})
+        registration_id = register_response.data["registration"]["id"]
+
+        cancel_url = reverse("registration-cancel", kwargs={"pk": registration_id})
+        response = self.client.delete(cancel_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "Registration canceled.")
+        self.assertEqual(EventRegistration.objects.count(), 0)
+        self.event.refresh_from_db()
+        self.assertEqual(self.event.available_seats, 2)
+
+    def test_cancel_registration_removes_participant(self):
+        self.client.force_authenticate(user=self.user)
+        register_response = self.client.post(self.url, {"event_id": self.event.id})
+        registration_id = register_response.data["registration"]["id"]
+
+        cancel_url = reverse("registration-cancel", kwargs={"pk": registration_id})
+        self.client.delete(cancel_url)
+
+        response = self.client.get(self.participant_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 0)
+
+    def test_cannot_cancel_other_users_registration(self):
+        other_user = User.objects.create_user(
+            email="other@example.com",
+            password="Password123!",
+        )
+        self.client.force_authenticate(user=self.user)
+        register_response = self.client.post(self.url, {"event_id": self.event.id})
+        registration_id = register_response.data["registration"]["id"]
+
+        cancel_url = reverse("registration-cancel", kwargs={"pk": registration_id})
+        self.client.force_authenticate(user=other_user)
+        response = self.client.delete(cancel_url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(EventRegistration.objects.count(), 1)
+        self.event.refresh_from_db()
+        self.assertEqual(self.event.available_seats, 1)
