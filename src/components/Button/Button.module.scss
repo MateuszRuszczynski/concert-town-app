@@ -20,3 +20,17 @@
 .loading {
   opacity: 0.5;
 }
+
+.fitContent {
+  width: fit-content;
+}
+
+.secondary {
+  border-color: var(--border-color);
+  background-color: var(--button-bg);
+
+  color: var(--primary-color);
+
+  @include hover(background-color, var(--button-hover));
+}
+
