@@ -6,7 +6,7 @@ import type { FC } from "react";
 //#endregion
 
 interface Props {
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const HomeLink:FC<Props> = ({ onClick }) => (
