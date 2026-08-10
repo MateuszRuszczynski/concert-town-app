@@ -1,9 +1,12 @@
+import {
+  HTML_TAG_REGEX,
+  LEADING_TRAILING_SPACE_REGEX,
+  MULTIPLE_SPACES_REGEX
+} from './sanitization';
+
 //#region consts
 const NAME_REGEX = /^[\p{L}\s'-]+$/u;
-const MULTIPLE_SPACES_REGEX = /\s{2,}/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const HTML_TAG_REGEX = /[<>]/;
-const LEADING_TRAILING_SPACE_REGEX = /^\s|\s$/;
 
 const MAX_NAME_LENGTH = 50;
 const MAX_EMAIL_LENGTH = 100;
@@ -28,7 +31,8 @@ export function validateEmail (value: string): string | undefined {
   if (trimmedEmail.length === 0) return 'Email is required';
   if (trimmedEmail.length > MAX_EMAIL_LENGTH)
     return `Must be under ${MAX_EMAIL_LENGTH} characters`;
-  if (HTML_TAG_REGEX.test(trimmedEmail)) return 'Email contains invalid characters';
+  if (HTML_TAG_REGEX.test(trimmedEmail))
+    return 'Email contains invalid characters';
   if (!EMAIL_REGEX.test(trimmedEmail)) return 'Enter a valid email address';
 
   return undefined;

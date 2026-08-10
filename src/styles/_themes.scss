@@ -1,19 +1,20 @@
 :root {
-  --primary-color: #0a0a0a; //lab(2.75381 0 0)
-  --secondary-color: #737373; //lab(48.496 0 0)
+  --primary-color: #0a0a0a;
+  --secondary-color: #737373;
 
   --background-color: #fff;
   --surface-color: #fff;
-  --accent-surface: #e9f2ff; //lab(95.283 -0.740796 -7.47542)
-  --on-accent: #004396; //lab(28.7235 12.9039 -52.607)
+  --accent-surface: #e9f2ff;
+  --on-accent: #004396;
 
   --error-color: #eb0005;
   --error-bgc: #e7000b1a;
-  --border-color: #e5e5e5; //lab(90.952 0 -0.0000119209)
+  --border-color: #e5e5e5;
+  --button-bg: transparent;
   --button-hover: #f5f5f5;
 
   --form-field-color: #fff;
-  --background-hover: #f5f5f5; //lab(96.52 -0.0000298023 0.0000119209);
+  --background-hover: #f5f5f5;
 
   --light-gray-color: #ccced2;
 
@@ -21,17 +22,19 @@
 }
 
 html.dark {
-  --primary-color: #fafafa; //lab(98.26 0 0)
-  --secondary-color: #a1a1a1; //lab(66.128 -0.0000298023 0.0000119209)
+  --primary-color: #fafafa;
+  --secondary-color: #a1a1a1;
 
   --background-color: #0a0a0a;
+  --color: #ffffff0b;
   --surface-color: #171717;
-  --accent-surface: #132e4c; //lab(18.3675 1.31626 -21.3688)
-  --on-accent: #ccdff9; //lab(88.2297 -1.19156 -14.8108)
+  --accent-surface: #132e4c;
+  --on-accent: #ccdff9;
 
   --error-color: #ff6466;
   --error-bgc: #ff64671a;
-  --border-color: #ffffff1a; //lab(100 0 0 / 0.1)
+  --border-color: #ffffff1a;
+  --button-bg: #ffffff0b;
   --button-hover: #26262680;
   --form-filed-color: #0a0a0a;
   --background-hover: #ffffff13;

@@ -1,0 +1,30 @@
+.newEvent {
+  @include fade-in-animation;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  max-width: 670px;
+  margin: auto;
+
+  @include page-container;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  @include text-medium;
+
+  color: var(--secondary-color);
+
+  @include hover(color, var(--primary-color))
+}

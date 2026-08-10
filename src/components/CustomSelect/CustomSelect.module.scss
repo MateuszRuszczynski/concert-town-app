@@ -1,0 +1,57 @@
+.wrapper {
+  @include form-field;
+}
+
+.label {
+  @include text-medium;
+}
+
+.trigger {
+  @include form-control;
+
+  position: relative;
+  text-align: left;
+  text-transform: capitalize;
+}
+
+.triggerIcon {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+
+  transition: transform 0.2s ease;
+
+  [data-state='open'] & {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+.content {
+  background: var(--surface-color);
+  border: 0.8px solid var(--border-color);
+  // border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 50;
+  width: var(--radix-select-trigger-width);
+}
+
+.item {
+  --highlight-color: $accent-color;
+
+  @include text-medium;
+  text-transform: capitalize;
+  color: var(--primary-color);
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    color: var(--surface-color);
+    background-color: $accent-color;
+    outline: none;
+    border: none;
+  }
+}

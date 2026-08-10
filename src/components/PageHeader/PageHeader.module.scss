@@ -1,0 +1,21 @@
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  line-height: 32px;
+
+  color: var(--primary-color);
+}
+
+.subtitle {
+  font-size: 14px;
+  line-height: 20px;
+
+  color: var(--secondary-color);
+}

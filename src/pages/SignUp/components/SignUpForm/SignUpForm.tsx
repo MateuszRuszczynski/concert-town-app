@@ -7,7 +7,9 @@ import { useSignUpForm } from '../../hooks/useSignUpForm';
 import { FormError } from '../../../../components/FormError';
 import { useState } from 'react';
 import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
-import { ConsentField } from '../ConsentField';
+import { Link } from 'react-router';
+import { Checkbox } from '../../../../components/Checkbox';
+import styles from './SignUpForm.module.scss';
 //#endregion
 
 export const SignUpForm = () => {
@@ -96,10 +98,24 @@ export const SignUpForm = () => {
         required
       />
 
-      <ConsentField
+      <Checkbox
+        id='terms-consent'
         checked={agreedToTerms}
         onChange={setAgreedToTerms}
         errorMessage={fieldErrors.agreedToTerms}
+        label={
+          <span className={styles.termsConsent}>
+            I agree to the{' '}
+            <Link
+              to='/terms'
+              target='_blank'
+              rel='noopener noreferrer'
+              className={styles.link}
+            >
+              Terms and Conditions
+            </Link>
+          </span>
+        }
       />
 
       {submitError && <FormError errorMessage={submitError} />}

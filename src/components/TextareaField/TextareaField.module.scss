@@ -1,0 +1,15 @@
+.field {
+  @include form-field;
+}
+
+.label {
+  @include text-medium;
+}
+
+.textarea {
+  @include form-control;
+}
+
+.errorMessage {
+  @include error-message;
+}

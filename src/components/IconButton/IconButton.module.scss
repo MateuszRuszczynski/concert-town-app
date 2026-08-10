@@ -1,10 +1,4 @@
 .iconButton {
-  --button-bg: transparent;
-
-  @include dark-theme {
-    --button-bg: #ffffff0b;
-  }
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,5 +13,5 @@
 
   background-color: var(--button-bg);
 
-  @include hover(button-bg, var(--background-hover));
+  @include hover(background-color, var(--background-hover));
 }

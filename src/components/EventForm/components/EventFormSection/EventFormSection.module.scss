@@ -1,0 +1,35 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include surface-block(14px);
+  padding: 20px;
+
+  @include on-desktop {
+    padding: 24px;
+  }
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+
+  color: var(--primary-color);
+
+  padding: 0;
+  float: left;
+  width: 100%;
+}
+
+.sectionFields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include on-desktop {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
