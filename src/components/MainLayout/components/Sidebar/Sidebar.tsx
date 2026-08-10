@@ -6,6 +6,7 @@ import { Button } from '../../../Button';
 import styles from './Sidebar.module.scss';
 import cn from 'classnames';
 import { NavList } from '../NavList';
+import { useNavigate } from 'react-router';
 //#endregion
 
 interface Props {
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+
   return (
     <>
       {isOpen && (
@@ -26,7 +29,7 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
         })}
       >
         <div className={styles.topBar}>
-          <HomeLink />
+          <HomeLink onClick={onClose} />
 
           <button
             className={styles.closeButton}
@@ -41,7 +44,10 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
           <NavList onNavigate={onClose} />
         </nav>
 
-        <Button>
+        <Button onClick={() => {
+          navigate('/events/new')
+          onClose();
+        }}>
           <Plus size={16} />
           Add event
         </Button>

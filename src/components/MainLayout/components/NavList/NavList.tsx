@@ -7,7 +7,7 @@ import styles from './NavList.module.scss';
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/', label: 'Events', icon: Ticket },
+  { to: '/events', label: 'Events', icon: Ticket },
   { to: '/calendar', label: 'Calendar', icon: CalendarDays }
 ];
 

@@ -16,10 +16,22 @@
   @include on-desktop {
     grid-area: sidebar;
     height: 100vh;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    align-self: start;
   }
 }
 
 .headerArea {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  backdrop-filter: blur(8px);
+
   @include on-desktop {
     grid-area: header;
   }
@@ -28,7 +40,5 @@
 .content {
   @include on-desktop {
     grid-area: content;
-    overflow-y: auto;
-    min-height: 0;
   }
 }
