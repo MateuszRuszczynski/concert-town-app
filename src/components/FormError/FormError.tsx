@@ -1,12 +1,12 @@
-import type { FC } from "react";
-import styles from "./FormError.module.scss";
+import type { FC } from 'react';
+import styles from './FormError.module.scss';
 
 interface Props {
   errorMessage: string;
 }
 
-export const FormError:FC<Props> = ({ errorMessage }) => (
-  <p className={styles.errorMessage}>
+export const FormError: FC<Props> = ({ errorMessage }) => (
+  <p className={styles.errorMessage} aria-live='polite'>
     {errorMessage}
   </p>
 );
