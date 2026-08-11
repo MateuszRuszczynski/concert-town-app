@@ -47,14 +47,50 @@ class EventRegistrationTests(APITestCase):
         self.assertEqual(response.data["registration"]["event"], self.event.id)
         self.assertEqual(response.data["message"], "Registration successful.")
 
-    def test_user_appears_in_participant_list(self):
+    def test_organizer_can_view_participant_list(self):
         self.client.force_authenticate(user=self.user)
         self.client.post(self.url, {"event_id": self.event.id})
 
+        self.client.force_authenticate(user=self.organizer)
         response = self.client.get(self.participant_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["user"]["email"], self.user.email)
+
+    def test_participant_list_updates_after_registration(self):
+        second_user = User.objects.create_user(
+            email="attendee2@example.com",
+            password="Password123!",
+        )
+
+        self.client.force_authenticate(user=self.user)
+        self.client.post(self.url, {"event_id": self.event.id})
+        self.client.force_authenticate(user=second_user)
+        self.client.post(self.url, {"event_id": self.event.id})
+
+        self.client.force_authenticate(user=self.organizer)
+        response = self.client.get(self.participant_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 2)
+        emails = {item["user"]["email"] for item in response.data["results"]}
+        self.assertEqual(emails, {self.user.email, second_user.email})
+
+    def test_non_organizer_cannot_view_participant_list(self):
+        self.client.force_authenticate(user=self.user)
+        self.client.post(self.url, {"event_id": self.event.id})
+
+        other_user = User.objects.create_user(
+            email="other@example.com",
+            password="Password123!",
+        )
+        self.client.force_authenticate(user=other_user)
+
+        response = self.client.get(self.participant_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn(
+            "not authorized to view participants",
+            str(response.data).lower(),
+        )
 
     def test_cannot_register_duplicate(self):
         self.client.force_authenticate(user=self.user)
@@ -96,6 +132,7 @@ class EventRegistrationTests(APITestCase):
         cancel_url = reverse("registration-cancel", kwargs={"pk": registration_id})
         self.client.delete(cancel_url)
 
+        self.client.force_authenticate(user=self.organizer)
         response = self.client.get(self.participant_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 0)

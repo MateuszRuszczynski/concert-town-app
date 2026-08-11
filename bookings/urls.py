@@ -17,11 +17,6 @@ urlpatterns = [
         name="registration-list",
     ),
     path(
-        "event/<int:event_id>/participants/",
-        EventParticipantListView.as_view(),
-        name="registration-participants",
-    ),
-    path(
         "cancel/<int:pk>/",
         EventCancelRegistration.as_view(),
         name="registration-cancel",

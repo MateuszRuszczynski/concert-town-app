@@ -1,10 +1,12 @@
 from django.db import transaction
 from django.db.models import F
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from events.models import Event
 from .models import EventRegistration
 from .serializers import EventRegistrationSerializer
 
@@ -42,9 +44,14 @@ class EventParticipantListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return EventRegistration.objects.filter(
-            event_id=self.kwargs["event_id"]
-        ).select_related("event", "user")
+        event = get_object_or_404(Event, pk=self.kwargs["event_id"])
+        if event.organizer != self.request.user:
+            raise PermissionDenied(
+                "You are not authorized to view participants for this event."
+            )
+        return EventRegistration.objects.filter(event=event).select_related(
+            "event", "user"
+        )
 
 
 class EventCancelRegistration(generics.DestroyAPIView):
