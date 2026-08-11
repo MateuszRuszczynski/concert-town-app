@@ -39,7 +39,7 @@
 }
 
 .item {
-  --highlight-color: $accent-color;
+  --highlight-color: var(--accent-color);;
 
   @include text-medium;
   text-transform: capitalize;
@@ -50,7 +50,7 @@
 
   &:hover {
     color: var(--surface-color);
-    background-color: $accent-color;
+    background-color: var(--accent-color);;
     outline: none;
     border: none;
   }

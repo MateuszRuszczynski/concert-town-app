@@ -12,7 +12,7 @@
   border-radius: 10px;
   border: 0.8px solid rgba(0, 0, 0, 0);
 
-  background-color: $accent-color;
+  background-color: var(--accent-color);
 
   @include hover(background-color, $accent-hvr-color);
 }

@@ -16,7 +16,7 @@
       transform: scale(1.05);
     }
 
-    border-color: $accent-color;
+    border-color: var(--accent-color);;
   }
 }
 

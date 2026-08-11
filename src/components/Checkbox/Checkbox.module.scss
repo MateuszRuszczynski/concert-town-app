@@ -19,8 +19,8 @@
   background: #00000000;
 
   &:checked {
-    background-color: $accent-color;
-    border-color: $accent-color;
+    background-color: var(--accent-color);;
+    border-color: var(--accent-color);;
 
     position: relative;
 
