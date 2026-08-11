@@ -151,6 +151,12 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ),
+    "SEARCH_PARAM": "search",
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%SZ",
     "DATETIME_INPUT_FORMATS": [
         "%Y-%m-%dT%H:%M:%SZ",

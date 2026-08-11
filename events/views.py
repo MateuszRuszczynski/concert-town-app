@@ -1,11 +1,21 @@
 import django_filters
-from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework import filters, generics
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 
-from events.models import Event, Category
+from events.models import Category, Event
 from events.permissions import IsOrganizerOrAdminOrReadOnly
-from events.serializers import EventSerializer, CategorySerializer
+from events.serializers import CategorySerializer, EventSerializer
+
+
+class FlexibleSearchFilter(filters.SearchFilter):
+    def get_search_terms(self, request):
+        params = request.query_params.get(
+            self.search_param
+        ) or request.query_params.get("q")
+        if params:
+            return params.replace(",", " ").split()
+        return []
 
 
 class EventFilter(django_filters.FilterSet):
@@ -38,16 +48,14 @@ class EventListCreateView(generics.ListCreateAPIView):
 
     filter_backends = [
         DjangoFilterBackend,
-        filters.SearchFilter,
+        FlexibleSearchFilter,
         filters.OrderingFilter,
     ]
 
     filterset_class = EventFilter
-
     search_fields = ["title", "description"]
-
     ordering_fields = ["date", "title", "created_at", "price"]
-    ordering = ["date"]
+    ordering = ["-created_at"]
 
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)
@@ -60,6 +68,6 @@ class MyEventsListView(generics.ListAPIView):
     def get_queryset(self):
         return (
             Event.objects.filter(organizer=self.request.user)
-            .select_related("category")
+            .select_related("organizer", "category")
             .order_by("-created_at")
         )
