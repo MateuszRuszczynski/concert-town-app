@@ -1,7 +1,7 @@
 //#region imports
 import { Moon, Sun } from 'lucide-react';
-import { useTheme } from '../../contexts/useTheme';
 import { IconButton } from '../IconButton';
+import { useTheme } from '../../contexts/ThemeContext';
 //#endregion
 
 export const ThemeSwitcher = () => {

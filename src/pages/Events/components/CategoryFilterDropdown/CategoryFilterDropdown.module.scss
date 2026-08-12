@@ -1,0 +1,64 @@
+.trigger {
+  @include form-control;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  cursor: pointer;
+
+  width: fit-content;
+  min-width: 160px;
+}
+
+.icon {
+  transition: transform 0.3s ease;
+
+  [data-state='open'] & {
+    transform: rotate(180deg);
+  }
+}
+
+.content {
+  width: var(--radix-popper-anchor-width);
+  background: var(--surface-color);
+  border: 0.8px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 4px;
+  z-index: 50;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--primary-color);
+  text-transform: capitalize;
+  cursor: pointer;
+  outline: none;
+
+  &:hover,
+  &[data-highlighted] {
+    background: var(--accent-color);
+
+    .checkbox {
+      background-color: var(--accent-surface);
+      border-color: var(--accent-surface);
+      color: var(--primary-color);
+    }
+  }
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 0.8px solid var(--border-color);
+  border-radius: 4px;
+  flex-shrink: 0;
+}

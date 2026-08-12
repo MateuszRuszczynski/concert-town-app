@@ -20,6 +20,22 @@
   }
 }
 
+.hasStartAdornment {
+  padding-left: 34px;
+}
+
+.hasEndAdornment {
+  padding-right: 40px;
+}
+
+.startAdornment {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  display: flex;
+}
+
 .endAdornment {
   position: absolute;
   top: 50%;

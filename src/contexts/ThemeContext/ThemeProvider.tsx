@@ -6,7 +6,7 @@ import {
   type FC,
   type ReactNode
 } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ThemeContext } from './ThemeContext';
 //#endregion
 

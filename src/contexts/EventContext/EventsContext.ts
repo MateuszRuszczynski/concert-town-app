@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { EventDetails, EventFormData } from '../types/events';
+import type { EventDetails, EventFormData } from '../../types/events';
 
 export interface EventsContextType {
   events: EventDetails[];

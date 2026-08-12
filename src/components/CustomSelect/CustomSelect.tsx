@@ -1,7 +1,10 @@
+//#region imports
 import { Label, Select } from 'radix-ui';
 import { ChevronDown } from 'lucide-react';
-
+import type { ReactNode } from 'react';
 import styles from './CustomSelect.module.scss';
+//#endregion
+
 export interface SelectOption<T extends string> {
   value: T;
   label: string;
@@ -9,7 +12,7 @@ export interface SelectOption<T extends string> {
 
 interface CustomSelectProps<T extends string> {
   id: string;
-  label?: string;
+  label?: ReactNode;
   placeholder?: string;
   value: T | '';
   onValueChange: (value: T) => void;

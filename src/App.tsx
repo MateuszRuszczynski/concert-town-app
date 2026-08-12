@@ -1,7 +1,6 @@
 //#region imports
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SignUp } from './pages/SignUp';
-import { ThemeProvider } from './contexts/ThemeProvider';
 import { SignIn } from './pages/SignIn';
 import { Terms } from './pages/Terms';
 import { MainLayout } from './components/MainLayout';
@@ -9,7 +8,8 @@ import { Dashboard } from './pages/Dashboard';
 import { Events } from './pages/Events';
 import { Calendar } from './pages/Calendar';
 import { NewEvent } from './pages/NewEvent';
-import { EventsProvider } from './contexts/EventsProvider';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { EventsProvider } from './contexts/EventContext';
 //#endregion
 
 function App () {

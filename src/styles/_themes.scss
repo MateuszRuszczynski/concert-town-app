@@ -1,10 +1,12 @@
+@use './variables' as *;
+
 :root {
   --primary-color: #0a0a0a;
   --secondary-color: #737373;
 
   --background-color: #fff;
   --surface-color: #fff;
-  --accent-color: $accent-color;
+  --accent-color: #{$accent-color};
   --accent-surface: #e9f2ff;
   --on-accent: #004396;
 
@@ -29,7 +31,7 @@ html.dark {
   --background-color: #0a0a0a;
   --color: #ffffff0b;
   --surface-color: #171717;
-  --accent-color: $accent-dark-color;
+  --accent-color: #{$accent-dark-color};
   --accent-surface: #132e4c;
   --on-accent: #ccdff9;
 

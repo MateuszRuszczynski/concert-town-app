@@ -6,7 +6,7 @@ import {
   validateEventHost,
   validateEventTitle
 } from '../utils/eventValidation';
-import { useEvents } from '../contexts/useEvents';
+import { useEvents } from '../contexts/EventContext/useEvents';
 import type { EventCategory, EventLocation } from '../types/events';
 
 export function useEventForm () {

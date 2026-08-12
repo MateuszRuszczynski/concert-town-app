@@ -2,13 +2,15 @@
 import type { FC, InputHTMLAttributes, ReactNode } from 'react';
 import { Check } from 'lucide-react';
 import styles from './FormField.module.scss';
+import cn from 'classnames';
 //#endregion
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
-  label: ReactNode;
   id: string;
+  label?: ReactNode;
   errorMessage?: string;
   successMessage?: string;
+  startAdornment?: ReactNode;
   endAdornment?: ReactNode;
 }
 
@@ -17,16 +19,31 @@ export const FormField: FC<Props> = ({
   id,
   errorMessage,
   successMessage,
+  startAdornment,
   endAdornment,
   ...inputProps
 }) => (
   <div className={styles.formfield}>
-    <label htmlFor={id} className={styles.label}>
-      {label}
-    </label>
+    {label && (
+      <label htmlFor={id} className={styles.label}>
+        {label}
+      </label>
+    )}
 
     <div className={styles.inputWrapper}>
-      <input id={id} className={styles.fieldInput} {...inputProps} />
+      {startAdornment && (
+        <div className={styles.startAdornment}>{startAdornment}</div>
+      )}
+
+      <input
+        id={id}
+        className={cn(styles.fieldInput, {
+          [styles.hasStartAdornment]: !!startAdornment,
+          [styles.hasEndAdornment]: !!endAdornment
+        })}
+        {...inputProps}
+      />
+
       {endAdornment && (
         <div className={styles.endAdornment}>{endAdornment}</div>
       )}

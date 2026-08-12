@@ -1,8 +1,8 @@
 import { useState, useCallback, type FC, type ReactNode } from 'react';
 import { EventsContext } from './EventsContext';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { DEFAULT_EVENTS } from '../pages/Events/defaultEvents';
-import type { EventDetails, EventFormData } from '../types/events';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { DEFAULT_EVENTS } from '../../pages/Events/defaultEvents';
+import type { EventDetails, EventFormData } from '../../types/events';
 
 export const EventsProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [events, setEvents] = useLocalStorage<EventDetails[]>(DEFAULT_EVENTS, 'events');
