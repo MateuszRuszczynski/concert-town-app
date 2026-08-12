@@ -2,6 +2,7 @@ import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 
 from events.models import Category, Event
 from events.permissions import IsOrganizerOrAdminOrReadOnly
@@ -15,7 +16,7 @@ class FlexibleSearchFilter(filters.SearchFilter):
         ) or request.query_params.get("q")
         if params:
             return params.replace(",", " ").split()
-        return []
+        return super().get_search_terms(request)
 
 
 class EventFilter(django_filters.FilterSet):
@@ -37,10 +38,8 @@ class CategoryListCreateView(generics.ListCreateAPIView):
 
 
 class EventListCreateView(generics.ListCreateAPIView):
-    queryset = (
-        Event.objects.filter(is_active=True)
-        .select_related("organizer", "category")
-        .order_by("-created_at")
+    queryset = Event.objects.filter(is_active=True).select_related(
+        "organizer", "category"
     )
     serializer_class = EventSerializer
     permission_classes = [IsOrganizerOrAdminOrReadOnly]
@@ -55,6 +54,7 @@ class EventListCreateView(generics.ListCreateAPIView):
     filterset_class = EventFilter
     search_fields = ["title", "description"]
     ordering_fields = ["date", "title", "created_at", "price"]
+
     ordering = ["-created_at"]
 
     def perform_create(self, serializer):
@@ -63,9 +63,11 @@ class EventListCreateView(generics.ListCreateAPIView):
 
 class MyEventsListView(generics.ListAPIView):
     serializer_class = EventSerializer
-    permission_classes = [IsOrganizerOrAdminOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Event.objects.none()
         return (
             Event.objects.filter(organizer=self.request.user)
             .select_related("organizer", "category")
