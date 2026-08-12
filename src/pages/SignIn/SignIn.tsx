@@ -1,10 +1,10 @@
 //#region imports
 import { Link, useLocation } from 'react-router';
 import { AuthLayout } from '../../components/AuthLayout';
-import { SingInForm } from './components/SignInForm';
 import { useState } from 'react';
 import { Toast } from '../../components/Toast';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { SingInForm } from './components/SignInForm';
 //#endregion
 
 export const SignIn = () => {

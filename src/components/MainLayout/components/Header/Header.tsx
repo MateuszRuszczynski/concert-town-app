@@ -3,9 +3,9 @@ import type { FC } from 'react';
 import { ThemeSwitcher } from '../../../ThemeSwitcher';
 import { IconButton } from '../../../IconButton';
 import { Menu } from 'lucide-react';
-import styles from './Header.module.scss';
 import { UserMenu } from '../UserMenu';
 import { HomeLink } from '../../../HomeLink';
+import styles from './Header.module.scss';
 //#endregion
 
 interface Props {
