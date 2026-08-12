@@ -1,9 +1,26 @@
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Event
+
+from .models import Category, Event
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name", "slug"]
 
 
 class EventSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)
+
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        source="category",
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
+
     class Meta:
         model = Event
         fields = [
@@ -12,6 +29,8 @@ class EventSerializer(serializers.ModelSerializer):
             "description",
             "date",
             "location",
+            "category",
+            "category_id",
             "price",
             "total_seats",
             "available_seats",
@@ -40,7 +59,12 @@ class EventSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         total_seats = attrs.get("total_seats")
+        if total_seats is None and self.instance:
+            total_seats = self.instance.total_seats
+
         available_seats = attrs.get("available_seats")
+        if available_seats is None and self.instance:
+            available_seats = self.instance.available_seats
 
         if available_seats is not None and total_seats is not None:
             if available_seats > total_seats:
@@ -53,8 +77,3 @@ class EventSerializer(serializers.ModelSerializer):
                 )
 
         return attrs
-
-    def create(self, validated_data):
-        if "request" in self.context and hasattr(self.context["request"], "user"):
-            validated_data["organizer"] = self.context["request"].user
-        return super().create(validated_data)
