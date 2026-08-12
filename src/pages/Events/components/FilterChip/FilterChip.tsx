@@ -1,7 +1,7 @@
 //#region imports
-import type { FC } from 'react';
-import { X } from 'lucide-react';
-import styles from './FilterChip.module.scss';
+import type { FC } from "react";
+import { X } from "lucide-react";
+import styles from "./FilterChip.module.scss";
 //#endregion
 
 interface Props {

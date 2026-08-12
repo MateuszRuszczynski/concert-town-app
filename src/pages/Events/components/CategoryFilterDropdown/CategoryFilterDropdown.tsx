@@ -1,10 +1,11 @@
 //#region imports
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ChevronDown, Check } from 'lucide-react';
-import type { FC } from 'react';
-import type { EventCategory } from '../../../../types/events';
-import { CATEGORIES_OPTIONS } from '../../../../components/EventForm/components/EventDetailsSection/categories';
+
 import styles from './CategoryFilterDropdown.module.scss';
+import type { EventCategory } from '../../../../types/events';
+import type { FC } from 'react';
+import { Check, ChevronDown } from 'lucide-react';
+import { CATEGORIES_OPTIONS } from '../../../../components/EventForm/components/EventDetailsSection/categories';
 //#endregion
 
 interface Props {

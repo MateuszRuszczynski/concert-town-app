@@ -1,16 +1,13 @@
 //#region imports
-import type { FC } from 'react';
-import { CategoryFilterDropdown } from '../CategoryFilterDropdown/CategoryFilterDropdown';
-import { FilterChip } from '../FilterChip/FilterChip';
-import {
-  LOCATION_FILTER_OPTIONS,
-  PRICE_FILTER_OPTIONS
-} from '../../utils/sortOptions';
-import styles from './EventsFilterBar.module.scss';
-import type { EventCategory } from '../../../../types/events';
-import { CustomSelect } from '../../../../components/CustomSelect';
-import type { LocationFilter, PriceFilter } from '../../types/eventFilters';
-import { Filter } from 'lucide-react';
+import type { FC } from "react";
+import type { EventCategory } from "../../../../types/events";
+import type { LocationFilter, PriceFilter } from "../../types/eventFilters";
+import { Filter } from "lucide-react";
+import { CategoryFilterDropdown } from "../CategoryFilterDropdown";
+import { CustomSelect } from "../../../../components/CustomSelect";
+import { LOCATION_FILTER_OPTIONS, PRICE_FILTER_OPTIONS } from "../../utils/sortOptions";
+import { FilterChip } from "../FilterChip";
+import styles from "./EventsFilterBar.module.scss";
 //#endregion
 
 interface Props {
