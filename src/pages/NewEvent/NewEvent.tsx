@@ -4,9 +4,12 @@ import { EventForm } from '../../components/EventForm';
 import { PageHeader } from '../../components/PageHeader';
 import { Link } from 'react-router';
 import styles from './NewEvent.module.scss';
+import { usePageTitle } from '../../hooks/usePageTitle';
 //#endregion
 
 export const NewEvent = () => {
+  usePageTitle('New Event');
+
   return (
     <section className={styles.newEvent}>
       <div className={styles.topBar}>
