@@ -1,15 +1,15 @@
 //#region imports
-import { ArrowUpDown, Search } from 'lucide-react';
-import { EventItem } from '../../components/EventItem';
-import { FormField } from '../../components/FormField';
-import { PageHeader } from '../../components/PageHeader';
-import { useEvents } from '../../contexts/EventContext/useEvents';
-import { useEventFilters } from './hooks/useEventFilters';
-import { CustomSelect } from '../../components/CustomSelect';
-import { SORT_OPTIONS } from './utils/sortOptions';
-import { EventsFilterBar } from './components/EventsFilterBar';
-import { usePageTitle } from '../../hooks/usePageTitle';
-import styles from './Events.module.scss';
+import { PageHeader } from "../../components/PageHeader";
+import { useEvents } from "../../contexts/EventContext";
+import { usePageTitle } from "../../hooks/usePageTitle";
+import { useEventFilters } from "./hooks/useEventFilters";
+import { ArrowUpDown, Search } from "lucide-react";
+import { CustomSelect } from "../../components/CustomSelect";
+import { SORT_OPTIONS } from "./utils/sortOptions";
+import { EventsFilterBar } from "./components/EventsFilterBar";
+import { EventItem } from "../../components/EventItem";
+import styles from "./Events.module.scss";
+import { FormField } from "../../components/FormField";
 //#endregion
 
 export const Events = () => {

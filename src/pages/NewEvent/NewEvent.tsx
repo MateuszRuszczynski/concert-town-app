@@ -1,10 +1,10 @@
 //#region imports
-import { ArrowLeft } from 'lucide-react';
-import { EventForm } from '../../components/EventForm';
-import { PageHeader } from '../../components/PageHeader';
-import { Link } from 'react-router';
-import styles from './NewEvent.module.scss';
-import { usePageTitle } from '../../hooks/usePageTitle';
+import { Link } from "react-router";
+import { usePageTitle } from "../../hooks/usePageTitle";
+import { ArrowLeft } from "lucide-react";
+import { PageHeader } from "../../components/PageHeader";
+import { EventForm } from "../../components/EventForm";
+import styles from "./NewEvent.module.scss";
 //#endregion
 
 export const NewEvent = () => {

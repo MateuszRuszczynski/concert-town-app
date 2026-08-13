@@ -1,9 +1,9 @@
 //#region imports
-import { LogOut, User2Icon } from 'lucide-react';
-import { useNavigate } from 'react-router';
-import { useState, type FC } from 'react';
-import { useOutsideClick } from '../../../../hooks/useOutsideClick';
-import styles from './UserMenu.module.scss';
+import { useState, type FC } from "react";
+import { LogOut, User2Icon } from "lucide-react";
+import { useNavigate } from "react-router";
+import { useOutsideClick } from "../../../../hooks/useOutsideClick";
+import styles from "./UserMenu.module.scss";
 //#endregion
 
 interface Props {

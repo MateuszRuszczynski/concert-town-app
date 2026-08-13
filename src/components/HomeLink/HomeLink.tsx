@@ -1,8 +1,8 @@
 //#region imports
-import { Link } from "react-router";
-import { Logo } from "../Logo";
-import styles from "./HomeLink.module.scss";
 import type { FC } from "react";
+import { Link } from "react-router";
+import { Logo } from "../Logo"
+import styles from "./HomeLink.module.scss";
 //#endregion
 
 interface Props {

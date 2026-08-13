@@ -1,9 +1,9 @@
 //#region imports
-import type { FC } from 'react';
-import { EventFormSection } from '../EventFormSection';
-import { FormField } from '../../../FormField';
-import { Checkbox } from '../../../Checkbox';
-import styles from './DateLocationSection.module.scss';
+import type { FC } from "react";
+import { EventFormSection } from "../EventFormSection";
+import { FormField } from "../../../FormField";
+import { Checkbox } from "../../../Checkbox";
+import styles from "./DateLocationSection.module.scss";
 //#endregion
 
 interface Values {

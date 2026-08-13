@@ -1,5 +1,5 @@
-import type { FC } from 'react';
-import styles from './FormError.module.scss';
+import type { FC } from "react";
+import styles from "./FormError.module.scss";
 
 interface Props {
   errorMessage: string;

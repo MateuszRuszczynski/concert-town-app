@@ -1,4 +1,4 @@
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from "lucide-react";
 import styles from "./PasswordVisibilityToggle.module.scss";
 
 interface Props {

@@ -1,7 +1,7 @@
 //#region imports
-import cn from 'classnames';
-import { NavLink } from 'react-router';
-import { LayoutDashboard, Ticket, CalendarDays } from 'lucide-react';
+import cn from "classNames";
+import { CalendarDays, LayoutDashboard, Ticket } from "lucide-react";
+import { NavLink } from "react-router";
 import styles from './NavList.module.scss';
 //#endregion
 

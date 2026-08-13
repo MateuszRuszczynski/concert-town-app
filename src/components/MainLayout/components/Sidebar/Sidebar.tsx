@@ -1,12 +1,12 @@
 //#region imports
-import { Plus, X } from 'lucide-react';
-import type { FC } from 'react';
-import { HomeLink } from '../../../HomeLink';
-import { Button } from '../../../Button';
-import styles from './Sidebar.module.scss';
-import cn from 'classnames';
-import { NavList } from '../NavList';
-import { useNavigate } from 'react-router';
+import cn from "classNames";
+import type { FC } from "react";
+import { Plus, X } from "lucide-react";
+import { useNavigate } from "react-router";
+import { HomeLink } from "../../../HomeLink";
+import { NavList } from "../NavList";
+import { Button } from "../../../Button";
+import styles from "./Sidebar.module.scss";
 //#endregion
 
 interface Props {

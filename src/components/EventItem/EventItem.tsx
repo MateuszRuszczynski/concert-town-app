@@ -1,9 +1,9 @@
 //#region imports
-import type { FC } from 'react';
-import type { EventDetails } from '../../types/events';
-import { CalendarDays, MapPin, Users } from 'lucide-react';
-import { CATEGORY_IMAGES } from './categoriesImages';
-import styles from './EventItem.module.scss';
+import type { FC } from "react";
+import { CalendarDays, MapPin, Users } from "lucide-react";
+import type { EventDetails } from "../../types/events";
+import { CATEGORY_IMAGES } from "./categoriesImages";
+import styles from "./EventItem.module.scss";
 //#endregion
 
 interface Props {

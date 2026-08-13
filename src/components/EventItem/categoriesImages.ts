@@ -1,4 +1,4 @@
-import type { EventCategory } from '../../types/events';
+import type { EventCategory } from "../../types/events";
 
 export const CATEGORY_IMAGES: Record<EventCategory, string> = {
   conference: './conference.png',

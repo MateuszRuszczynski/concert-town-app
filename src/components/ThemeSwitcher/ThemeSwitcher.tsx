@@ -1,8 +1,9 @@
 //#region imports
-import { Moon, Sun } from 'lucide-react';
-import { IconButton } from '../IconButton';
-import { useTheme } from '../../contexts/ThemeContext';
+import { Moon, Sun } from "lucide-react";
+import { IconButton } from "../IconButton";
+import { useTheme } from "../../contexts/ThemeContext";
 //#endregion
+
 
 export const ThemeSwitcher = () => {
   const { isDark, toggleTheme } = useTheme();

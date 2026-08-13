@@ -1,9 +1,9 @@
 //#region imports
-import { useState } from 'react';
-import { Outlet } from 'react-router';
-import { Sidebar } from './components/Sidebar';
-import styles from './MainLayout.module.scss';
-import { Header } from './components/Header';
+import { useState } from "react";
+import { Sidebar } from "./components/Sidebar";
+import { Header } from "./components/Header";
+import { Outlet } from "react-router";
+import styles from "./MainLayout.module.scss";
 //#endregion
 
 export const MainLayout = () => {

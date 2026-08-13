@@ -1,7 +1,7 @@
 //#region imports
-import { useEffect, type FC } from 'react';
-import { CheckCircle, X } from 'lucide-react';
-import styles from './Toast.module.scss';
+import { CheckCircle, X } from "lucide-react";
+import { useEffect, type FC } from "react";
+import styles from "./Toast.module.scss";
 //#endregion
 
 interface Props {

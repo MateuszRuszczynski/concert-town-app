@@ -1,12 +1,12 @@
 //#region imports
-import { type FC } from 'react';
-import type { EventCategory } from '../../../../types/events';
-import { CustomSelect } from '../../../CustomSelect';
-import { FormField } from '../../../FormField';
-import { TextareaField } from '../../../TextareaField';
-import { EventFormSection } from '../EventFormSection';
-import { CATEGORIES_OPTIONS } from './categories';
-import styles from './EventDetailsSection.module.scss';
+import type { FC } from "react";
+import type { EventCategory } from "../../../../types/events";
+import { EventFormSection } from "../EventFormSection";
+import { FormField } from "../../../FormField";
+import { TextareaField } from "../../../TextareaField";
+import { CustomSelect } from "../../../CustomSelect";
+import { CATEGORIES_OPTIONS } from "./categories";
+import styles from "./EventDetailsSection.module.scss";
 //#endregion
 
 interface EventDetailsValues {

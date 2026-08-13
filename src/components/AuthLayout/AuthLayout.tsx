@@ -1,7 +1,7 @@
 //#region imports
-import type { FC, ReactNode } from 'react';
-import { Logo } from '../Logo';
+import type { ReactNode, FC } from 'react';
 import { ThemeSwitcher } from '../ThemeSwitcher';
+import { Logo } from '../Logo';
 import styles from './AuthLayout.module.scss';
 //#endregion
 
@@ -28,7 +28,9 @@ export const AuthLayout: FC<Props> = ({
         <Logo variant='medium' />
       </div>
 
-      <h1 id='auth-title' className={styles.title}>{title}</h1>
+      <h1 id='auth-title' className={styles.title}>
+        {title}
+      </h1>
 
       <p className={styles.subtitle}>{subtitle}</p>
     </header>

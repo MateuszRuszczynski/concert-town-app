@@ -1,6 +1,6 @@
 //#region imports
-import type { FC } from "react";
 import { X } from "lucide-react";
+import type { FC } from "react";
 import styles from "./FilterChip.module.scss";
 //#endregion
 

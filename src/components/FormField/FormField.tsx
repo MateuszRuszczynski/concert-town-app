@@ -1,8 +1,8 @@
 //#region imports
-import type { FC, InputHTMLAttributes, ReactNode } from 'react';
-import { Check } from 'lucide-react';
-import styles from './FormField.module.scss';
-import cn from 'classnames';
+import type { InputHTMLAttributes, ReactNode, FC } from "react";
+import cn from "classNames";
+import { Check } from "lucide-react";
+import styles from "./FormField.module.scss";
 //#endregion
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {

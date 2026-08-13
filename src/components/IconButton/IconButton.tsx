@@ -1,5 +1,5 @@
-import type { ButtonHTMLAttributes, FC, ReactNode } from 'react';
-import styles from './IconButton.module.scss';
+import type { ButtonHTMLAttributes, ReactNode, FC } from "react";
+import styles from "./IconButton.module.scss";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;

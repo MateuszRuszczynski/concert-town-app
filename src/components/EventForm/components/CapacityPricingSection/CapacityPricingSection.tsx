@@ -1,7 +1,7 @@
 //#region imports
-import type { FC } from 'react';
-import { EventFormSection } from '../EventFormSection';
-import { FormField } from '../../../FormField';
+import type { FC } from "react";
+import { EventFormSection } from "../EventFormSection";
+import { FormField } from "../../../FormField";
 //#endregion
 
 interface Values {

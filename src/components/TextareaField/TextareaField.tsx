@@ -1,7 +1,7 @@
 //#region imports
-import type { FC, TextareaHTMLAttributes } from 'react';
-import styles from './TextareaField.module.scss';
-import cn from 'classnames';
+import cn from "classNames";
+import type { FC, TextareaHTMLAttributes } from "react";
+import styles from "./TextareaField.module.scss";
 //#endregion
 
 interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {

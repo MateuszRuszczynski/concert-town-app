@@ -1,11 +1,11 @@
 //#region imports
-import type { FC } from 'react';
-import { ThemeSwitcher } from '../../../ThemeSwitcher';
-import { IconButton } from '../../../IconButton';
-import { Menu } from 'lucide-react';
-import { UserMenu } from '../UserMenu';
-import { HomeLink } from '../../../HomeLink';
-import styles from './Header.module.scss';
+import type { FC } from "react";
+import { IconButton } from "../../../IconButton";
+import { Menu } from "lucide-react";
+import { HomeLink } from "../../../HomeLink";
+import { ThemeSwitcher } from "../../../ThemeSwitcher";
+import { UserMenu } from "../UserMenu";
+import styles from "./Header.module.scss";
 //#endregion
 
 interface Props {

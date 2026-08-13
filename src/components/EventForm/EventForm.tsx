@@ -1,11 +1,11 @@
 //#region imports
-import { useEventForm } from '../../hooks/useEventForm';
-import { Button } from '../Button';
-import { FormError } from '../FormError';
-import { CapacityPricingSection } from './components/CapacityPricingSection';
-import { DateLocationSection } from './components/DateLocationSection';
-import { EventDetailsSection } from './components/EventDetailsSection';
-import styles from './EventForm.module.scss';
+import { FormError } from "../FormError";
+import { Button } from "../Button";
+import { EventDetailsSection } from "./components/EventDetailsSection";
+import { DateLocationSection } from "./components/DateLocationSection";
+import { CapacityPricingSection } from "./components/CapacityPricingSection";
+import { useEventForm } from "../../hooks/useEventForm";
+import styles from "./EventForm.module.scss";
 //#endregion
 
 export const EventForm = () => {

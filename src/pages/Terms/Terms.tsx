@@ -1,7 +1,7 @@
 //#region imports
-import { TERMS_CLAUSES } from './termsContent';
-import { usePageTitle } from '../../hooks/usePageTitle';
-import styles from './Terms.module.scss';
+import { usePageTitle } from "../../hooks/usePageTitle";
+import { TERMS_CLAUSES } from "./termsContent";
+import styles from "./Terms.module.scss";
 //#endregion
 
 export const Terms = () => {

@@ -1,4 +1,4 @@
-import type { FC, FormHTMLAttributes, ReactNode } from "react";
+import type { FormHTMLAttributes, ReactNode, FC } from "react";
 import styles from "./Form.module.scss";
 
 interface Props extends FormHTMLAttributes<HTMLFormElement> {

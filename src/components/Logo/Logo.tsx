@@ -1,7 +1,9 @@
-import { CalendarDays } from 'lucide-react';
-import styles from './Logo.module.scss';
-import type { FC } from 'react';
-import cn from 'classnames';
+//#region imports
+import type { FC } from "react";
+import cn from "classNames";
+import { CalendarDays } from "lucide-react";
+import styles from "./Logo.module.scss";
+//#endregion
 
 interface Props {
   variant?: 'small' | 'medium';

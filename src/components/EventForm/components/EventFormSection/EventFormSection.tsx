@@ -1,5 +1,5 @@
-import type { FC, ReactNode } from 'react';
-import styles from './EventFormSection.module.scss';
+import type { FC, ReactNode } from "react";
+import styles from "./EventFormSection.module.scss";
 
 interface Props {
   title: string;

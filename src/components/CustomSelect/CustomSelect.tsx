@@ -1,7 +1,7 @@
 //#region imports
+import type { ReactNode } from 'react';
 import { Label, Select } from 'radix-ui';
 import { ChevronDown } from 'lucide-react';
-import type { ReactNode } from 'react';
 import styles from './CustomSelect.module.scss';
 //#endregion
 
