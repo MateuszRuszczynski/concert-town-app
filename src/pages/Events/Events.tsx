@@ -8,8 +8,8 @@ import { CustomSelect } from "../../components/CustomSelect";
 import { SORT_OPTIONS } from "./utils/sortOptions";
 import { EventsFilterBar } from "./components/EventsFilterBar";
 import { EventItem } from "../../components/EventItem";
-import styles from "./Events.module.scss";
 import { FormField } from "../../components/FormField";
+import styles from "./Events.module.scss";
 //#endregion
 
 export const Events = () => {

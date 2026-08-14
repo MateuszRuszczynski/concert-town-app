@@ -1,36 +1,99 @@
 //#region imports
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { getVisibleEvents } from '../utils/getVisibleEvents';
 import type { EventDetails, EventCategory } from '../../../types/events';
-import type { LocationFilter, PriceFilter, SortOption } from '../types/eventFilters';
+import type {
+  LocationFilter,
+  PriceFilter,
+  SortOption
+} from '../types/eventFilters';
+import { useSearchParams } from 'react-router';
+import { useUpdateSearchParam } from '../../../hooks/useUpdateSearchParam';
 //#endregion
 
-export function useEventFilters(events: EventDetails[]) {
-  //#region input controls
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<EventCategory[]>([]);
-  const [locationFilter, setLocationFilter] = useState<LocationFilter>('all');
-  const [priceFilter, setPriceFilter] = useState<PriceFilter>('all');
-  const [sortBy, setSortBy] = useState<SortOption>('date');
+//#region default values
+const DEFAULT_SORT: SortOption = 'date';
+const DEFAULT_LOCATION: LocationFilter = 'all';
+const DEFAULT_PRICE: PriceFilter = 'all';
+//#endregion
+
+export function useEventFilters (events: EventDetails[]) {
+  //#region searchParams hooks
+  const [searchParams] = useSearchParams();
+  const updateSearchParam = useUpdateSearchParam();
   //#endregion
 
+  //#region current filter & sort values
+  const searchQuery = searchParams.get('search') ?? '';
+  const sortBy = (searchParams.get('sort') as SortOption) ?? DEFAULT_SORT;
+  const selectedCategories = useMemo(() => {
+    const raw = searchParams.get('categories');
+    return raw ? (raw.split(',') as EventCategory[]) : [];
+  }, [searchParams]);
+  const locationFilter =
+    (searchParams.get('location') as LocationFilter) ?? DEFAULT_LOCATION;
+  const priceFilter =
+    (searchParams.get('price') as PriceFilter) ?? DEFAULT_PRICE;
+  //#endregion
+
+  //#region update handlers
+  const setSearchQuery = (value: string) =>
+    updateSearchParam({ search: value || null });
+
+  const setSelectedCategories = (categories: EventCategory[]) =>
+    updateSearchParam({
+      categories: categories.length > 0 ? categories.join(',') : null
+    });
+
+  const setLocationFilter = (filter: LocationFilter) =>
+    updateSearchParam({
+      location: filter !== DEFAULT_LOCATION ? filter : null
+    });
+
+  const setPriceFilter = (filter: PriceFilter) =>
+    updateSearchParam({ price: filter !== DEFAULT_PRICE ? filter : null });
+
+  const setSortBy = (sort: SortOption) => updateSearchParam({ sort });
+  //#endregion
+
+  //#region derived values
   const visibleEvents = useMemo(
-    () => getVisibleEvents(events, { searchQuery, selectedCategories, locationFilter, priceFilter, sortBy }),
-    [events, searchQuery, selectedCategories, locationFilter, priceFilter, sortBy]
+    () =>
+      getVisibleEvents(events, {
+        searchQuery,
+        selectedCategories,
+        locationFilter,
+        priceFilter,
+        sortBy
+      }),
+    [
+      events,
+      searchQuery,
+      selectedCategories,
+      locationFilter,
+      priceFilter,
+      sortBy
+    ]
   );
 
   const hasActiveFilters =
-  selectedCategories.length > 0 || locationFilter !== 'all' || priceFilter !== 'all';
+    selectedCategories.length > 0 ||
+    locationFilter !== 'all' ||
+    priceFilter !== 'all';
 
-  //#region reset
+  //#endregion
+
+  //#region filter actions
   const clearFilters = () => {
-    setSelectedCategories([]);
-    setLocationFilter('all');
-    setPriceFilter('all');
+    updateSearchParam({
+      categories: null,
+      location: null,
+      price: null
+    });
   };
 
   const removeCategory = (category: EventCategory) => {
-    setSelectedCategories((prev) => prev.filter((c) => c !== category));
+    setSelectedCategories(selectedCategories.filter(c => c !== category));
   };
   //#endregion
 
@@ -48,6 +111,6 @@ export function useEventFilters(events: EventDetails[]) {
     visibleEvents,
     hasActiveFilters,
     clearFilters,
-    removeCategory,
+    removeCategory
   };
 }
