@@ -37,6 +37,16 @@
   }
 }
 
+.clearSearchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-color);
+  padding: 2px;
+
+  @include hover(color, var(--primary-color));
+}
+
 .eventsList {
   display: flex;
   flex-direction: column;

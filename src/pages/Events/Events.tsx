@@ -1,15 +1,15 @@
 //#region imports
-import { PageHeader } from "../../components/PageHeader";
-import { useEvents } from "../../contexts/EventContext";
-import { usePageTitle } from "../../hooks/usePageTitle";
-import { useEventFilters } from "./hooks/useEventFilters";
-import { ArrowUpDown, Search } from "lucide-react";
-import { CustomSelect } from "../../components/CustomSelect";
-import { SORT_OPTIONS } from "./utils/sortOptions";
-import { EventsFilterBar } from "./components/EventsFilterBar";
-import { EventItem } from "../../components/EventItem";
-import { FormField } from "../../components/FormField";
-import styles from "./Events.module.scss";
+import { PageHeader } from '../../components/PageHeader';
+import { useEvents } from '../../contexts/EventContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
+import { useEventFilters } from './hooks/useEventFilters';
+import { ArrowUpDown, Search, X } from 'lucide-react';
+import { CustomSelect } from '../../components/CustomSelect';
+import { SORT_OPTIONS } from './utils/sortOptions';
+import { EventsFilterBar } from './components/EventsFilterBar';
+import { EventItem } from '../../components/EventItem';
+import { FormField } from '../../components/FormField';
+import styles from './Events.module.scss';
 //#endregion
 
 export const Events = () => {
@@ -50,6 +50,18 @@ export const Events = () => {
               onChange={e => setSearchQuery(e.target.value)}
               placeholder='Search events...'
               startAdornment={<Search size={16} aria-hidden='true' />}
+              endAdornment={
+                searchQuery && (
+                  <button
+                    type='button'
+                    className={styles.clearSearchButton}
+                    onClick={() => setSearchQuery('')}
+                    aria-label='Clear search'
+                  >
+                    <X size={14} aria-hidden='true' />
+                  </button>
+                )
+              }
             />
           </div>
 
