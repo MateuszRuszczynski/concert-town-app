@@ -43,6 +43,6 @@
   color: var(--primary-color);
 }
 
-.error-message {
+.errorMessage {
   @include error-message;
 }
