@@ -8,6 +8,7 @@ import {
   validatePassword,
   validatePasswordMatch
 } from '../../../utils/validation';
+import { useNotification } from '../../../contexts/NotificationContext';
 //#endregion
 
 export function useSignUpForm () {
@@ -54,7 +55,9 @@ export function useSignUpForm () {
     email: validateEmail(email),
     password: validatePassword(password, isPasswordValid),
     confirmPassword: validatePasswordMatch(password, confirmPassword),
-    agreedToTerms: !agreedToTerms ? 'You must agree to the Terms and Conditions' : undefined,
+    agreedToTerms: !agreedToTerms
+      ? 'You must agree to the Terms and Conditions'
+      : undefined
   };
 
   const isFormValid = Object.values(rawFieldErrors).every(
@@ -69,7 +72,7 @@ export function useSignUpForm () {
         email: undefined,
         password: undefined,
         confirmPassword: undefined,
-        agreedToTerms: undefined,
+        agreedToTerms: undefined
       };
 
   const fieldErrors = {
@@ -90,6 +93,7 @@ export function useSignUpForm () {
   //#region submission
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError] = useState<string | null>(null);
+  const { showToast } = useNotification();
 
   const navigate = useNavigate();
 
@@ -105,7 +109,8 @@ export function useSignUpForm () {
 
     setTimeout(() => {
       setIsSubmitting(false);
-      navigate('/sign-in', { state: { justSignedUp: true } });
+      showToast('Account created successfully!', 'success');
+      navigate('/sign-in');
     }, 500);
   };
 

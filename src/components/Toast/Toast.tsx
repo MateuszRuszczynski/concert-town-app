@@ -1,33 +1,40 @@
 //#region imports
-import { CheckCircle, X } from "lucide-react";
-import { useEffect, type FC } from "react";
-import styles from "./Toast.module.scss";
+import type { FC } from 'react';
+import cn from 'classNames';
+import { CheckCircle, XCircle, Info, X, type LucideIcon } from 'lucide-react';
+import type { ToastVariant } from '../../types/notification';
+import styles from './Toast.module.scss';
 //#endregion
 
 interface Props {
   message: string;
+  variant: ToastVariant;
   onDismiss: () => void;
-  duration?: number;
 }
 
-export const Toast: FC<Props> = ({ message, onDismiss, duration = 1500 }) => {
-  useEffect(() => {
-    const timeoutId = setTimeout(onDismiss, duration);
-    return () => clearTimeout(timeoutId);
-  }, [onDismiss, duration]);
+const VARIANT_CONFIG: Record<
+  ToastVariant,
+  { icon: LucideIcon; className: string }
+> = {
+  success: { icon: CheckCircle, className: styles.success },
+  error: { icon: XCircle, className: styles.error },
+  info: { icon: Info, className: styles.info }
+};
+
+export const Toast: FC<Props> = ({ message, variant, onDismiss }) => {
+  const { icon: Icon, className } = VARIANT_CONFIG[variant];
 
   return (
-    <div className={styles.toast} role='status'>
-      <CheckCircle size={20} aria-hidden='true' />
-
+    <div className={cn(styles.toast, className)} role='status'>
+      <Icon size={18} aria-hidden='true' />
       <span className={styles.message}>{message}</span>
-
       <button
+        type='button'
         className={styles.dismissButton}
         onClick={onDismiss}
         aria-label='Dismiss'
       >
-        <X size={15} aria-hidden='true' />
+        <X size={14} aria-hidden='true' />
       </button>
     </div>
   );

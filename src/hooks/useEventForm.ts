@@ -1,3 +1,4 @@
+//#region imports
 import { useState, type SubmitEventHandler } from 'react';
 import { useNavigate } from 'react-router';
 import {
@@ -8,6 +9,8 @@ import {
 } from '../utils/eventValidation';
 import { useEvents } from '../contexts/EventContext/useEvents';
 import type { EventCategory, EventLocation } from '../types/events';
+import { useNotification } from '../contexts/NotificationContext';
+//#endregion
 
 export function useEventForm () {
   //#region input controls
@@ -126,6 +129,7 @@ export function useEventForm () {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const { addEvent } = useEvents();
+  const { showToast } = useNotification();
   const navigate = useNavigate();
 
   const clearForm = () => {
@@ -168,9 +172,10 @@ export function useEventForm () {
           capacity: Number(capacity),
           price: Number(price)
         }),
-        wait(600) // мінімальна тривалість стану "submitting"
+        wait(600)
       ]);
 
+      showToast('Event created successfully!', 'success');
       navigate('/events');
     } catch (err) {
       setSubmitError(
