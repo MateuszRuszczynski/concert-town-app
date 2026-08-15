@@ -47,6 +47,7 @@ export const DateLocationSection: FC<Props> = ({
         value={values.startsAt}
         onChange={e => onChange.onStartsAtChange(e.target.value)}
         errorMessage={errors.startsAt}
+        min={new Date().toISOString().slice(0, 16)}
         required
       />
 

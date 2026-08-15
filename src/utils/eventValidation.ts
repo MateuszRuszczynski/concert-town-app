@@ -29,9 +29,22 @@ export function validateEventHost(value: string): string | undefined {
 }
 
 export function validateDateRange(startsAt: string, endsAt: string): string | undefined {
-  if (!startsAt) return undefined; // окрема помилка для порожнього поля обробляється нижче
+  if (!startsAt) return undefined;
   if (!endsAt) return undefined;
   if (new Date(endsAt) <= new Date(startsAt)) return 'End time must be after start time';
+  return undefined;
+}
+
+export function validateStartDate(startsAt: string): string | undefined {
+  if (!startsAt) return undefined;
+
+  const now = new Date();
+  const start = new Date(startsAt);
+
+  if (start < now) {
+    return 'Start date cannot be in the past';
+  }
+
   return undefined;
 }
 

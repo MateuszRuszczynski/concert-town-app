@@ -5,7 +5,8 @@ import {
   validateDateRange,
   validateEventDescription,
   validateEventHost,
-  validateEventTitle
+  validateEventTitle,
+  validateStartDate
 } from '../utils/eventValidation';
 import { useEvents } from '../contexts/EventContext/useEvents';
 import type { EventCategory, EventLocation } from '../types/events';
@@ -83,7 +84,8 @@ export function useEventForm () {
     description: validateEventDescription(description),
     host: validateEventHost(host),
     category: category === '' ? 'Please select a category' : undefined,
-    startsAt: startsAt === '' ? 'Start date is required' : undefined,
+    startsAt:
+      startsAt === '' ? 'Start date is required' : validateStartDate(startsAt),
     endsAt: endsAt === '' ? 'End date is required' : dateRangeError,
     city:
       !isOnline && city.trim().length === 0 ? 'City is required' : undefined,
