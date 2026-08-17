@@ -3,13 +3,14 @@ from bookings.views import EventParticipantListView
 from events.views import (
     CategoryListCreateView,
     EventListCreateView,
-    MyEventsListView,
+    MyEventsListView, EventDetailView,
 )
 
 urlpatterns = [
     path("categories/", CategoryListCreateView.as_view(), name="category-list"),
     path("", EventListCreateView.as_view(), name="event-list"),
     path("my/", MyEventsListView.as_view(), name="my-events-list"),
+    path("<int:pk>/", EventDetailView.as_view(), name="event-detail"),
     path(
         "event/<int:event_id>/participants/",
         EventParticipantListView.as_view(),

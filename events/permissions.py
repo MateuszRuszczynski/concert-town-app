@@ -20,3 +20,19 @@ class IsOrganizerOrAdminOrReadOnly(permissions.BasePermission):
         ) or getattr(request.user, "is_superuser", False)
 
         return user_role in ["organizer", "admin"] or is_staff_or_superuser
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        if not (request.user and request.user.is_authenticated):
+            return False
+
+        is_staff_or_superuser = getattr(
+            request.user, "is_staff", False
+        ) or getattr(request.user, "is_superuser", False)
+
+        if is_staff_or_superuser:
+            return True
+
+        return obj.organizer == request.user

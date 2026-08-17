@@ -8,7 +8,6 @@ from events.models import Category, Event
 from events.permissions import IsOrganizerOrAdminOrReadOnly
 from events.serializers import CategorySerializer, EventSerializer
 
-
 class FlexibleSearchFilter(filters.SearchFilter):
     def get_search_terms(self, request):
         params = request.query_params.get(
@@ -17,7 +16,6 @@ class FlexibleSearchFilter(filters.SearchFilter):
         if params:
             return params.replace(",", " ").split()
         return super().get_search_terms(request)
-
 
 class EventFilter(django_filters.FilterSet):
     category = django_filters.ModelChoiceFilter(
@@ -30,12 +28,10 @@ class EventFilter(django_filters.FilterSet):
         model = Event
         fields = ["category", "category_id", "is_active", "location"]
 
-
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsOrganizerOrAdminOrReadOnly]
-
 
 class EventListCreateView(generics.ListCreateAPIView):
     queryset = Event.objects.filter(is_active=True).select_related(
@@ -60,6 +56,11 @@ class EventListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)
 
+class EventDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Event.objects.all().select_related("organizer", "category")
+    serializer_class = EventSerializer
+    permission_classes = [IsOrganizerOrAdminOrReadOnly]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 class MyEventsListView(generics.ListAPIView):
     serializer_class = EventSerializer
