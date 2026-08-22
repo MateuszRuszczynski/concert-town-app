@@ -1,7 +1,7 @@
 //#region imports
 import type { FC } from 'react';
 import cn from 'classNames';
-import { CheckCircle, XCircle, Info, X, type LucideIcon } from 'lucide-react';
+import { CheckCircle, XCircle, Info, X, type LucideIcon, Ban } from 'lucide-react';
 import type { ToastVariant } from '../../types/notification';
 import styles from './Toast.module.scss';
 //#endregion
@@ -17,7 +17,8 @@ const VARIANT_CONFIG: Record<
   { icon: LucideIcon; className: string }
 > = {
   success: { icon: CheckCircle, className: styles.success },
-  error: { icon: XCircle, className: styles.error },
+  error: { icon: Ban, className: styles.error },
+  cancel: { icon: XCircle, className: styles.cancel },
   info: { icon: Info, className: styles.info }
 };
 

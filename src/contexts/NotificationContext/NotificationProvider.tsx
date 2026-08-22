@@ -4,7 +4,7 @@ import { NotificationContext } from './NotificationContext';
 import type { ToastData, ToastVariant } from '../../types/notification';
 //#endregion
 
-const AUTO_DISMISS_MS = 2500;
+const AUTO_DISMISS_MS = 2000;
 
 export const NotificationProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [toast, setToast] = useState<ToastData | null>(null);

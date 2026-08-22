@@ -1,11 +1,16 @@
 .toast {
+  //#region vars
   --success-color: #166534;
   --info-color: #1E40AF;
+  --error-color: #7f1d1d;
+  --cancel-color: #dc6b6b;
 
   @include dark-theme {
     --success-color: #34d399;
     --info-color: #1E3A8A;
+    --error-color: #dc2626;
   }
+  //#endregion
 
   display: flex;
   align-items: center;
@@ -45,6 +50,11 @@
   color: var(--error-color);
 }
 
+.cancel {
+  border-left: 3px solid var(--cancel-color);
+  color: var(--cancel-color);
+}
+
 .info {
   border-left: 3px solid var(--info-color);
   color: var(--info-color);
@@ -53,10 +63,10 @@
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
+    transform: translateY(-20px);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
 }
