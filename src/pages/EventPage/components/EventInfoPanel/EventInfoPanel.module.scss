@@ -1,0 +1,44 @@
+.panel {
+  @include surface-block(14px);
+
+  padding: 20px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+
+  color: var(--primary-color);
+  margin-bottom: 16px;
+}
+
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--secondary-color);
+}
+
+.rowText {
+  color: var(--primary-color);
+}
+
+.rowIcon {
+  margin-top: 2px;
+}
+
+.rowContent {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}

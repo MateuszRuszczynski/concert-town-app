@@ -13,6 +13,12 @@ export interface OfflineLocation {
 
 export type EventLocation = 'online' | OfflineLocation;
 
+export type Participant = {
+  userId: string;
+  name: string;
+  email: string;
+};
+
 export interface EventDetails {
   id: string;
   title: string;
@@ -26,6 +32,7 @@ export interface EventDetails {
   registeredCount: number;
   host: string;
   relation?: 'organizing' | 'attending';
+  participants? : Participant[];
 }
 
-export type EventFormData = Omit<EventDetails, 'id' | 'registeredCount' | 'relation'>;
+export type EventFormData = Omit<EventDetails, 'id' | 'registeredCount' | 'relation' | 'participants'>;

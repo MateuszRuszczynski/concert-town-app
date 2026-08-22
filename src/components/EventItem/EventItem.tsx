@@ -1,9 +1,13 @@
 //#region imports
-import type { FC } from "react";
-import { CalendarDays, MapPin, Users } from "lucide-react";
-import type { EventDetails } from "../../types/events";
-import { CATEGORY_IMAGES } from "./categoriesImages";
-import styles from "./EventItem.module.scss";
+import type { FC } from 'react';
+import { Link } from 'react-router';
+import { CalendarDays, MapPin, Users } from 'lucide-react';
+import type { EventDetails } from '../../types/events';
+import { CATEGORY_IMAGES } from './categoriesImages';
+import { RelationBadge } from '../RelationBadge';
+import { CategoryBadge } from '../CategoryBadge';
+import styles from './EventItem.module.scss';
+import { formatEventDate } from '../../utils/dateFormatters';
 //#endregion
 
 interface Props {
@@ -11,37 +15,30 @@ interface Props {
 }
 
 export const EventItem: FC<Props> = ({ event }) => {
-  const date = new Intl.DateTimeFormat('en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  }).format(new Date(event.startsAt));
+  const date = formatEventDate(event.startsAt);
 
   const locationText =
     event.location === 'online' ? 'Online event' : event.location.city;
 
   return (
-    <div className={styles.eventItem}>
+    <Link to={`/events/${event.id}`} className={styles.eventItem}>
       <div className={styles.imgWrapper}>
         <img
           src={CATEGORY_IMAGES[event.category]}
-          alt=""
+          alt=''
           className={styles.eventImage}
         />
       </div>
 
       {event.relation && (
-        <div className={`${styles.relationBadge} ${styles[event.relation]}`}>
-          <span className={styles.badgeCircle} />
-
-          {event.relation}
+        <div className={styles.relationBadge}>
+          <RelationBadge relation={event.relation} variant='overlay' />
         </div>
       )}
 
       <div className={styles.eventSummary}>
         <div className={styles.eventMeta}>
-          <p className={styles.category}>{event.category}</p>
+          <CategoryBadge category={event.category} />
 
           <p className={styles.price}>
             {event.price > 0 ? `$${event.price}` : 'Free'}
@@ -70,6 +67,6 @@ export const EventItem: FC<Props> = ({ event }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

@@ -1,0 +1,15 @@
+.eventParticipants {
+  @include fade-in-animation;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @include page-container;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

@@ -1,0 +1,36 @@
+.eventPage {
+  @include page-container;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.contentGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @include on-desktop {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+  }
+}
+
+.mainColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @include on-desktop {
+    grid-column: span 2;
+  }
+}
+
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+

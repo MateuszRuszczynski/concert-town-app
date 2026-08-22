@@ -12,6 +12,9 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { EventsProvider } from './contexts/EventContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { NotificationContainer } from './components/NotificationContainer/NotificationContainer';
+import { EventPage } from './pages/EventPage';
+import { EditEvent } from './pages/EditEvent';
+import { EventParticipants } from './pages/EventParticipants';
 //#endregion
 
 function App () {
@@ -27,6 +30,12 @@ function App () {
 
                 <Route path='/events' element={<Events />} />
                 <Route path='/events/new' element={<NewEvent />} />
+                <Route path='/events/:id' element={<EventPage />} />
+                <Route path='/events/:id/edit' element={<EditEvent />} />
+                <Route
+                  path='/events/:id/participants'
+                  element={<EventParticipants />}
+                />
 
                 <Route path='/calendar' element={<Calendar />} />
               </Route>

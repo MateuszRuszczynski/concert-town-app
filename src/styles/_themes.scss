@@ -6,15 +6,19 @@
 
   --background-color: #fff;
   --surface-color: #fff;
-  --accent-color: #{$accent-color};
+  --accent-color: #0068e0;
+  --accent-hover: #2564e0cc;
   --accent-surface: #e9f2ff;
   --on-accent: #004396;
 
   --error-color: #eb0005;
   --error-bgc: #e7000b1a;
+  --error-hover: #e7000b33;
   --border-color: #e5e5e5;
   --button-bg: transparent;
   --button-hover: #f5f5f5;
+
+  --overlay-bg: #0a0a0a66;
 
   --form-field-color: #fff;
   --background-hover: #f5f5f5;
@@ -31,17 +35,21 @@ html.dark {
   --background-color: #0a0a0a;
   --color: #ffffff0b;
   --surface-color: #171717;
-  --accent-color: #{$accent-dark-color};
+  --accent-color: #0082f6;
+  --accent-hover: #427ff6cc;
   --accent-surface: #132e4c;
   --on-accent: #ccdff9;
 
   --error-color: #ff6466;
   --error-bgc: #ff64671a;
+  --error-hover: #ff64674d;
   --border-color: #ffffff1a;
   --button-bg: #ffffff0b;
   --button-hover: #26262680;
   --form-filed-color: #0a0a0a;
   --background-hover: #ffffff13;
+
+  --overlay-bg: #fafafa66;
 
   --light-gray-color: #ccced262;
 

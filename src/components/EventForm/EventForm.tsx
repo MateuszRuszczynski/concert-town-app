@@ -1,17 +1,34 @@
 //#region imports
-import { FormError } from "../FormError";
-import { Button } from "../Button";
-import { EventDetailsSection } from "./components/EventDetailsSection";
-import { DateLocationSection } from "./components/DateLocationSection";
-import { CapacityPricingSection } from "./components/CapacityPricingSection";
-import { useEventForm } from "../../hooks/useEventForm";
-import styles from "./EventForm.module.scss";
+import { FormError } from '../FormError';
+import { Button } from '../Button';
+import { EventDetailsSection } from './components/EventDetailsSection';
+import { DateLocationSection } from './components/DateLocationSection';
+import { CapacityPricingSection } from './components/CapacityPricingSection';
+import { useEventForm } from '../../hooks/useEventForm';
+import styles from './EventForm.module.scss';
+import type { EventFormData } from '../../types/events';
+import type { FC } from 'react';
 //#endregion
 
-export const EventForm = () => {
-  const { values, onChange, validation, submission } = useEventForm();
+interface Props {
+  eventId?: string;
+  initialValues?: EventFormData;
+}
+
+export const EventForm: FC<Props> = ({ eventId, initialValues }) => {
+  const { values, onChange, validation, submission } = useEventForm(
+    eventId,
+    initialValues
+  );
   const { fieldErrors } = validation;
-  const { isSubmitting, submitError, clearForm, handleSubmit } = submission;
+  const {
+    isSubmitting,
+    submitError,
+    handleSubmit,
+    submitLabel,
+    secondaryLabel,
+    secondaryAction
+  } = submission;
 
   return (
     <form onSubmit={handleSubmit} noValidate className={styles.eventForm}>
@@ -60,7 +77,10 @@ export const EventForm = () => {
       />
 
       <CapacityPricingSection
-        values={{ capacity: values.capacity, price: values.price }}
+        values={{
+          capacity: values.capacity.toString(),
+          price: values.price.toString()
+        }}
         onChange={{
           onCapacityChange: onChange.onCapacityChange,
           onPriceChange: onChange.onPriceChange
@@ -75,14 +95,14 @@ export const EventForm = () => {
           type='button'
           fitContent={true}
           variant='secondary'
-          onClick={clearForm}
+          onClick={secondaryAction}
           disabled={isSubmitting}
         >
-          Clear form
+          {secondaryLabel}
         </Button>
 
-        <Button type='submit' disabled={isSubmitting} fitContent={true}>
-          {isSubmitting ? 'Creating event…' : 'Create event'}
+        <Button type='submit' isLoading={isSubmitting} disabled={isSubmitting} fitContent={true}>
+          {submitLabel}
         </Button>
       </div>
     </form>

@@ -8,7 +8,11 @@ export interface EventsContextType {
   addEvent: (data: EventFormData) => Promise<void>;
   updateEvent: (id: string, data: Partial<EventFormData>) => Promise<void>;
   deleteEvent: (id: string) => Promise<void>;
+  registerForEvent: (id: string) => Promise<void>;
+  cancelRegistration: (id: string) => Promise<void>;
   refetchEvents: () => Promise<void>;
 }
 
-export const EventsContext = createContext<EventsContextType | undefined>(undefined);
+export const EventsContext = createContext<EventsContextType | undefined>(
+  undefined
+);

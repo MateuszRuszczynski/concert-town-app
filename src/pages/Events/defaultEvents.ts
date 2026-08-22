@@ -28,7 +28,200 @@ export const DEFAULT_EVENTS: EventDetails[] = [
     capacity: 40,
     price: 149,
     registeredCount: 38,
-    host: 'Convene Studio'
+    host: 'Convene Studio',
+    relation: 'organizing',
+    participants: [
+      {
+        userId: '1',
+        name: 'Oliver Bennett',
+        email: 'oliver.bennett@example.com'
+      },
+      {
+        userId: '2',
+        name: 'Emily Carter',
+        email: 'emily.carter@example.com'
+      },
+      {
+        userId: '3',
+        name: 'James Mitchell',
+        email: 'james.mitchell@example.com'
+      },
+      {
+        userId: '4',
+        name: 'Sophia Anderson',
+        email: 'sophia.anderson@example.com'
+      },
+      {
+        userId: '5',
+        name: 'William Turner',
+        email: 'william.turner@example.com'
+      },
+      {
+        userId: '6',
+        name: 'Charlotte Collins',
+        email: 'charlotte.collins@example.com'
+      },
+      {
+        userId: '7',
+        name: 'Henry Parker',
+        email: 'henry.parker@example.com'
+      },
+      {
+        userId: '8',
+        name: 'Amelia Harrison',
+        email: 'amelia.harrison@example.com'
+      },
+      {
+        userId: '9',
+        name: 'Jack Morgan',
+        email: 'jack.morgan@example.com'
+      },
+      {
+        userId: '10',
+        name: 'Isla Cooper',
+        email: 'isla.cooper@example.com'
+      },
+      {
+        userId: '11',
+        name: 'Thomas Richardson',
+        email: 'thomas.richardson@example.com'
+      },
+      {
+        userId: '12',
+        name: 'Grace Foster',
+        email: 'grace.foster@example.com'
+      },
+      {
+        userId: '13',
+        name: 'George Murphy',
+        email: 'george.murphy@example.com'
+      },
+      {
+        userId: '14',
+        name: 'Mia Thompson',
+        email: 'mia.thompson@example.com'
+      },
+      {
+        userId: '15',
+        name: 'Noah Watson',
+        email: 'noah.watson@example.com'
+      },
+      {
+        userId: '16',
+        name: 'Lily Roberts',
+        email: 'lily.roberts@example.com'
+      },
+      {
+        userId: '17',
+        name: 'Arthur Evans',
+        email: 'arthur.evans@example.com'
+      },
+      {
+        userId: '18',
+        name: 'Ella Walker',
+        email: 'ella.walker@example.com'
+      },
+      {
+        userId: '19',
+        name: 'Oscar Edwards',
+        email: 'oscar.edwards@example.com'
+      },
+      {
+        userId: '20',
+        name: 'Freya Hughes',
+        email: 'freya.hughes@example.com'
+      },
+      {
+        userId: '21',
+        name: 'Charlie Phillips',
+        email: 'charlie.phillips@example.com'
+      },
+      {
+        userId: '22',
+        name: 'Ava Wilson',
+        email: 'ava.wilson@example.com'
+      },
+      {
+        userId: '23',
+        name: 'Leo Morris',
+        email: 'leo.morris@example.com'
+      },
+      {
+        userId: '24',
+        name: 'Isabella Cook',
+        email: 'isabella.cook@example.com'
+      },
+      {
+        userId: '25',
+        name: 'Harry Bailey',
+        email: 'harry.bailey@example.com'
+      },
+      {
+        userId: '26',
+        name: 'Poppy Bell',
+        email: 'poppy.bell@example.com'
+      },
+      {
+        userId: '27',
+        name: 'Jack Stewart',
+        email: 'jack.stewart@example.com'
+      },
+      {
+        userId: '28',
+        name: 'Evie Scott',
+        email: 'evie.scott@example.com'
+      },
+      {
+        userId: '29',
+        name: 'Freddie Young',
+        email: 'freddie.young@example.com'
+      },
+      {
+        userId: '30',
+        name: 'Sophie King',
+        email: 'sophie.king@example.com'
+      },
+      {
+        userId: '31',
+        name: 'Archie Wright',
+        email: 'archie.wright@example.com'
+      },
+      {
+        userId: '32',
+        name: 'Ruby Green',
+        email: 'ruby.green@example.com'
+      },
+      {
+        userId: '33',
+        name: 'Finley Adams',
+        email: 'finley.adams@example.com'
+      },
+      {
+        userId: '34',
+        name: 'Chloe Nelson',
+        email: 'chloe.nelson@example.com'
+      },
+      {
+        userId: '35',
+        name: 'Theo Baker',
+        email: 'theo.baker@example.com'
+      },
+      {
+        userId: '36',
+        name: 'Alice Hall',
+        email: 'alice.hall@example.com'
+      },
+      {
+        userId: '37',
+        name: 'Arthur Clarke',
+        email: 'arthur.clarke@example.com'
+      },
+      {
+        userId: '38',
+        name: 'Florence Wood',
+        email: 'florence.wood@example.com'
+      }
+    ]
   },
   {
     id: 'evt-003',
@@ -42,8 +235,7 @@ export const DEFAULT_EVENTS: EventDetails[] = [
     price: 79,
     registeredCount: 3120,
     capacity: 5000,
-    host: 'Riverside Live',
-    relation: 'organizing'
+    host: 'Riverside Live'
   },
   {
     id: 'evt-004',
@@ -55,10 +247,152 @@ export const DEFAULT_EVENTS: EventDetails[] = [
     endsAt: '2026-11-20T21:30',
     location: { city: 'New York, NY', venue: 'The Hudson Loft' },
     price: 0,
-    registeredCount: 0,
+    registeredCount: 28,
     capacity: 120,
     host: 'Convene Studio',
-    relation: 'organizing'
+    relation: 'organizing',
+    participants: [
+      {
+        userId: '1',
+        name: 'Oliver Bennett',
+        email: 'oliver.bennett@example.com'
+      },
+      {
+        userId: '2',
+        name: 'Emily Carter',
+        email: 'emily.carter@example.com'
+      },
+      {
+        userId: '3',
+        name: 'James Mitchell',
+        email: 'james.mitchell@example.com'
+      },
+      {
+        userId: '4',
+        name: 'Sophia Anderson',
+        email: 'sophia.anderson@example.com'
+      },
+      {
+        userId: '5',
+        name: 'William Turner',
+        email: 'william.turner@example.com'
+      },
+      {
+        userId: '6',
+        name: 'Charlotte Collins',
+        email: 'charlotte.collins@example.com'
+      },
+      {
+        userId: '7',
+        name: 'Henry Parker',
+        email: 'henry.parker@example.com'
+      },
+      {
+        userId: '8',
+        name: 'Amelia Harrison',
+        email: 'amelia.harrison@example.com'
+      },
+      {
+        userId: '9',
+        name: 'Jack Morgan',
+        email: 'jack.morgan@example.com'
+      },
+      {
+        userId: '10',
+        name: 'Isla Cooper',
+        email: 'isla.cooper@example.com'
+      },
+      {
+        userId: '11',
+        name: 'Thomas Richardson',
+        email: 'thomas.richardson@example.com'
+      },
+      {
+        userId: '12',
+        name: 'Grace Foster',
+        email: 'grace.foster@example.com'
+      },
+      {
+        userId: '13',
+        name: 'George Murphy',
+        email: 'george.murphy@example.com'
+      },
+      {
+        userId: '14',
+        name: 'Mia Thompson',
+        email: 'mia.thompson@example.com'
+      },
+      {
+        userId: '15',
+        name: 'Noah Watson',
+        email: 'noah.watson@example.com'
+      },
+      {
+        userId: '16',
+        name: 'Lily Roberts',
+        email: 'lily.roberts@example.com'
+      },
+      {
+        userId: '17',
+        name: 'Arthur Evans',
+        email: 'arthur.evans@example.com'
+      },
+      {
+        userId: '18',
+        name: 'Ella Walker',
+        email: 'ella.walker@example.com'
+      },
+      {
+        userId: '19',
+        name: 'Oscar Edwards',
+        email: 'oscar.edwards@example.com'
+      },
+      {
+        userId: '20',
+        name: 'Freya Hughes',
+        email: 'freya.hughes@example.com'
+      },
+      {
+        userId: '21',
+        name: 'Charlie Phillips',
+        email: 'charlie.phillips@example.com'
+      },
+      {
+        userId: '22',
+        name: 'Ava Wilson',
+        email: 'ava.wilson@example.com'
+      },
+      {
+        userId: '23',
+        name: 'Leo Morris',
+        email: 'leo.morris@example.com'
+      },
+      {
+        userId: '24',
+        name: 'Isabella Cook',
+        email: 'isabella.cook@example.com'
+      },
+      {
+        userId: '25',
+        name: 'Harry Bailey',
+        email: 'harry.bailey@example.com'
+      },
+      {
+        userId: '26',
+        name: 'Poppy Bell',
+        email: 'poppy.bell@example.com'
+      },
+      {
+        userId: '27',
+        name: 'Jack Stewart',
+        email: 'jack.stewart@example.com'
+      },
+      {
+        userId: '28',
+        name: 'Evie Scott',
+        email: 'evie.scott@example.com'
+      }
+    ]
   },
   {
     id: 'evt-005',
