@@ -1,0 +1,11 @@
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  @include text-medium;
+
+  color: var(--secondary-color);
+
+  @include hover(color, var(--primary-color))
+}
