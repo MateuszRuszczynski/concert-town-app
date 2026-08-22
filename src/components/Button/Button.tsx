@@ -4,7 +4,7 @@ import type { ButtonHTMLAttributes, ReactNode, FC } from 'react';
 import styles from './Button.module.scss';
 //#endregion
 
-type ButtonVariant = 'primary' | 'secondary';
+type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -24,7 +24,8 @@ export const Button: FC<Props> = ({
     className={cn(styles.button, {
       [styles.loading]: isLoading,
       [styles.fitContent]: fitContent,
-      [styles.secondary]: variant === 'secondary'
+      [styles.secondary]: variant === 'secondary',
+      [styles.danger]: variant === 'danger',
     })}
     {...rest}
   >
