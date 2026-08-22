@@ -25,6 +25,8 @@ export const Events = () => {
     setLocationFilter,
     priceFilter,
     setPriceFilter,
+    relationFilter,
+    setRelationFilter,
     sortBy,
     setSortBy,
     visibleEvents,
@@ -81,12 +83,18 @@ export const Events = () => {
         </div>
 
         <EventsFilterBar
-          selectedCategories={selectedCategories}
-          onCategoriesChange={setSelectedCategories}
-          locationFilter={locationFilter}
-          onLocationFilterChange={setLocationFilter}
-          priceFilter={priceFilter}
-          onPriceFilterChange={setPriceFilter}
+          values={{
+            selectedCategories,
+            locationFilter,
+            priceFilter,
+            relationFilter
+          }}
+          updates={{
+            onCategoriesChange: setSelectedCategories,
+            onLocationFilterChange: setLocationFilter,
+            onPriceFilterChange: setPriceFilter,
+            onRelationFilterChange: setRelationFilter
+          }}
           hasActiveFilters={hasActiveFilters}
           onClearFilters={clearFilters}
           onRemoveCategory={removeCategory}

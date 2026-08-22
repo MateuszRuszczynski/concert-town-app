@@ -1,17 +1,10 @@
-import type { EventCategory, EventDetails } from '../../../types/events';
-import type { LocationFilter, PriceFilter, SortOption } from '../types/eventFilters';
+import type { EventDetails } from '../../../types/events';
+import type { FilterParams } from '../types/eventFilters';
 
-interface FilterParams {
-  searchQuery: string;
-  selectedCategories: EventCategory[];
-  locationFilter: LocationFilter;
-  priceFilter: PriceFilter; 
-  sortBy: SortOption;
-}
 
 export function getVisibleEvents (
   events: EventDetails[],
-  { searchQuery, selectedCategories, locationFilter, priceFilter, sortBy }: FilterParams
+  { searchQuery, selectedCategories, locationFilter, priceFilter, relationFilter, sortBy }: FilterParams
 ): EventDetails[] {
   let result = [...events];
 
@@ -38,6 +31,10 @@ export function getVisibleEvents (
     result = result.filter((event) =>
       priceFilter === 'free' ? event.price === 0 : event.price > 0
     );
+  }
+
+  if (relationFilter !== 'all') {
+    result = result.filter((event) => event.relation === relationFilter);
   }
 
   const sorted = [...result].sort((a, b) => {

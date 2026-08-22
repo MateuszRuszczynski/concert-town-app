@@ -4,7 +4,7 @@ import type { EventCategory } from '../../../../types/events';
 import type { FC } from 'react';
 import { Check, ChevronDown } from 'lucide-react';
 import { CATEGORIES_OPTIONS } from '../../../../components/EventForm/components/EventDetailsSection/categories';
-import styles from "./CategoryFilterDropdown.module.scss";
+import styles from './CategoryFilterDropdown.module.scss';
 //#endregion
 
 interface Props {
@@ -34,7 +34,7 @@ export const CategoryFilterDropdown: FC<Props> = ({ selected, onChange }) => {
               checked={selected.includes(option.value)}
               onCheckedChange={checked => toggleCategory(option.value, checked)}
               className={styles.item}
-              onSelect={e => e.preventDefault()} // не закривати dropdown після кожного вибору
+              onSelect={e => e.preventDefault()}
             >
               <span className={styles.checkbox}>
                 <DropdownMenu.ItemIndicator>

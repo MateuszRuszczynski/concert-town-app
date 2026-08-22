@@ -5,6 +5,7 @@ import type { EventDetails, EventCategory } from '../../../types/events';
 import type {
   LocationFilter,
   PriceFilter,
+  RelationFilter,
   SortOption
 } from '../types/eventFilters';
 import { useSearchParams } from 'react-router';
@@ -15,6 +16,7 @@ import { useUpdateSearchParam } from '../../../hooks/useUpdateSearchParam';
 const DEFAULT_SORT: SortOption = 'date';
 const DEFAULT_LOCATION: LocationFilter = 'all';
 const DEFAULT_PRICE: PriceFilter = 'all';
+const DEFAULT_RELATION: RelationFilter = 'all';
 //#endregion
 
 export function useEventFilters (events: EventDetails[]) {
@@ -34,6 +36,8 @@ export function useEventFilters (events: EventDetails[]) {
     (searchParams.get('location') as LocationFilter) ?? DEFAULT_LOCATION;
   const priceFilter =
     (searchParams.get('price') as PriceFilter) ?? DEFAULT_PRICE;
+  const relationFilter =
+    (searchParams.get('relation') as RelationFilter) ?? DEFAULT_RELATION;
   //#endregion
 
   //#region update handlers
@@ -53,6 +57,11 @@ export function useEventFilters (events: EventDetails[]) {
   const setPriceFilter = (filter: PriceFilter) =>
     updateSearchParam({ price: filter !== DEFAULT_PRICE ? filter : null });
 
+  const setRelationFilter = (filter: RelationFilter) =>
+    updateSearchParam({
+      relation: filter !== DEFAULT_RELATION ? filter : null
+    });
+
   const setSortBy = (sort: SortOption) => updateSearchParam({ sort });
   //#endregion
 
@@ -64,6 +73,7 @@ export function useEventFilters (events: EventDetails[]) {
         selectedCategories,
         locationFilter,
         priceFilter,
+        relationFilter,
         sortBy
       }),
     [
@@ -72,6 +82,7 @@ export function useEventFilters (events: EventDetails[]) {
       selectedCategories,
       locationFilter,
       priceFilter,
+      relationFilter,
       sortBy
     ]
   );
@@ -79,7 +90,8 @@ export function useEventFilters (events: EventDetails[]) {
   const hasActiveFilters =
     selectedCategories.length > 0 ||
     locationFilter !== 'all' ||
-    priceFilter !== 'all';
+    priceFilter !== 'all' ||
+    relationFilter !== 'all';
 
   //#endregion
 
@@ -88,7 +100,8 @@ export function useEventFilters (events: EventDetails[]) {
     updateSearchParam({
       categories: null,
       location: null,
-      price: null
+      price: null,
+      relation: null
     });
   };
 
@@ -106,6 +119,8 @@ export function useEventFilters (events: EventDetails[]) {
     setLocationFilter,
     priceFilter,
     setPriceFilter,
+    relationFilter,
+    setRelationFilter,
     sortBy,
     setSortBy,
     visibleEvents,

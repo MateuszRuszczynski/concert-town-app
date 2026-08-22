@@ -51,7 +51,7 @@ export function useSignInForm () {
       setIsSubmitting(false);
       setEmail('');
       setPassword('');
-      setHasAttemptedSubmit(false); // щоб після очищення не показувались старі fieldErrors
+      setHasAttemptedSubmit(false);
     }, 500);
   };
 

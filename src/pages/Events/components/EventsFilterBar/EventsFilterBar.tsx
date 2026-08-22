@@ -1,34 +1,48 @@
 //#region imports
-import type { FC } from "react";
-import type { EventCategory } from "../../../../types/events";
-import type { LocationFilter, PriceFilter } from "../../types/eventFilters";
-import { Filter } from "lucide-react";
-import { CategoryFilterDropdown } from "../CategoryFilterDropdown";
-import { CustomSelect } from "../../../../components/CustomSelect";
-import { LOCATION_FILTER_OPTIONS, PRICE_FILTER_OPTIONS } from "../../utils/sortOptions";
-import { FilterChip } from "../FilterChip";
-import styles from "./EventsFilterBar.module.scss";
+import type { FC } from 'react';
+import type { EventCategory } from '../../../../types/events';
+import type {
+  LocationFilter,
+  PriceFilter,
+  RelationFilter
+} from '../../types/eventFilters';
+import { Filter } from 'lucide-react';
+import { CategoryFilterDropdown } from '../CategoryFilterDropdown';
+import { CustomSelect } from '../../../../components/CustomSelect';
+import {
+  LOCATION_FILTER_OPTIONS,
+  PRICE_FILTER_OPTIONS,
+  RELATION_FILTER_OPTIONS
+} from '../../utils/sortOptions';
+import { FilterChip } from '../FilterChip';
+import styles from './EventsFilterBar.module.scss';
 //#endregion
 
-interface Props {
+interface FilterValues {
   selectedCategories: EventCategory[];
-  onCategoriesChange: (categories: EventCategory[]) => void;
   locationFilter: LocationFilter;
-  onLocationFilterChange: (filter: LocationFilter) => void;
   priceFilter: PriceFilter;
+  relationFilter: RelationFilter;
+}
+
+interface FilterUpdates {
+  onCategoriesChange: (categories: EventCategory[]) => void;
+  onLocationFilterChange: (filter: LocationFilter) => void;
   onPriceFilterChange: (filter: PriceFilter) => void;
+  onRelationFilterChange: (filter: RelationFilter) => void;
+}
+
+interface Props {
+  values: FilterValues;
+  updates: FilterUpdates;
   hasActiveFilters: boolean;
   onClearFilters: () => void;
   onRemoveCategory: (category: EventCategory) => void;
 }
 
 export const EventsFilterBar: FC<Props> = ({
-  selectedCategories,
-  onCategoriesChange,
-  locationFilter,
-  onLocationFilterChange,
-  priceFilter,
-  onPriceFilterChange,
+  values,
+  updates,
   hasActiveFilters,
   onClearFilters,
   onRemoveCategory
@@ -41,28 +55,35 @@ export const EventsFilterBar: FC<Props> = ({
 
     <div className={styles.controls}>
       <CategoryFilterDropdown
-        selected={selectedCategories}
-        onChange={onCategoriesChange}
+        selected={values.selectedCategories}
+        onChange={updates.onCategoriesChange}
       />
 
       <CustomSelect<LocationFilter>
         id='location-filter'
-        value={locationFilter}
-        onValueChange={onLocationFilterChange}
+        value={values.locationFilter}
+        onValueChange={updates.onLocationFilterChange}
         options={LOCATION_FILTER_OPTIONS}
       />
 
       <CustomSelect<PriceFilter>
         id='price-filter'
-        value={priceFilter}
-        onValueChange={onPriceFilterChange}
+        value={values.priceFilter}
+        onValueChange={updates.onPriceFilterChange}
         options={PRICE_FILTER_OPTIONS}
+      />
+
+      <CustomSelect<RelationFilter>
+        id='relation-filter'
+        value={values.relationFilter}
+        onValueChange={updates.onRelationFilterChange}
+        options={RELATION_FILTER_OPTIONS}
       />
     </div>
 
     {hasActiveFilters && (
       <div className={styles.activeFilters}>
-        {selectedCategories.map(category => (
+        {values.selectedCategories.map(category => (
           <FilterChip
             key={category}
             label={category}
@@ -70,17 +91,24 @@ export const EventsFilterBar: FC<Props> = ({
           />
         ))}
 
-        {locationFilter !== 'all' && (
+        {values.locationFilter !== 'all' && (
           <FilterChip
-            label={locationFilter === 'online' ? 'Online' : 'Offline'}
-            onRemove={() => onLocationFilterChange('all')}
+            label={values.locationFilter === 'online' ? 'Online' : 'Offline'}
+            onRemove={() => updates.onLocationFilterChange('all')}
           />
         )}
 
-        {priceFilter !== 'all' && (
+        {values.priceFilter !== 'all' && (
           <FilterChip
-            label={priceFilter === 'free' ? 'Free' : 'Paid'}
-            onRemove={() => onPriceFilterChange('all')}
+            label={values.priceFilter === 'free' ? 'Free' : 'Paid'}
+            onRemove={() => updates.onPriceFilterChange('all')}
+          />
+        )}
+
+        {values.relationFilter !== 'all' && (
+          <FilterChip
+            label={values.relationFilter === 'organizing' ? 'Organizing' : 'Attending'}
+            onRemove={() => updates.onRelationFilterChange('all')}
           />
         )}
 
