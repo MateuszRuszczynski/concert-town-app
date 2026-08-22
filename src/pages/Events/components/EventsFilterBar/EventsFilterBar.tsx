@@ -30,6 +30,7 @@ interface FilterUpdates {
   onLocationFilterChange: (filter: LocationFilter) => void;
   onPriceFilterChange: (filter: PriceFilter) => void;
   onRelationFilterChange: (filter: RelationFilter) => void;
+  onRemoveCategory: (category: EventCategory) => void;
 }
 
 interface Props {
@@ -37,89 +38,101 @@ interface Props {
   updates: FilterUpdates;
   hasActiveFilters: boolean;
   onClearFilters: () => void;
-  onRemoveCategory: (category: EventCategory) => void;
 }
 
 export const EventsFilterBar: FC<Props> = ({
   values,
   updates,
   hasActiveFilters,
-  onClearFilters,
-  onRemoveCategory
-}) => (
-  <div className={styles.filterBar}>
-    <span className={styles.groupLabel}>
-      <Filter size={12} aria-hidden='true' />
-      Filter by:
-    </span>
+  onClearFilters
+}) => {
+  const { selectedCategories, locationFilter, priceFilter, relationFilter } =
+    values;
+  const {
+    onCategoriesChange,
+    onLocationFilterChange,
+    onPriceFilterChange,
+    onRelationFilterChange,
+    onRemoveCategory
+  } = updates;
 
-    <div className={styles.controls}>
-      <CategoryFilterDropdown
-        selected={values.selectedCategories}
-        onChange={updates.onCategoriesChange}
-      />
+  return (
+    <div className={styles.filterBar}>
+      <span className={styles.groupLabel}>
+        <Filter size={12} aria-hidden='true' />
+        Filter by:
+      </span>
 
-      <CustomSelect<LocationFilter>
-        id='location-filter'
-        value={values.locationFilter}
-        onValueChange={updates.onLocationFilterChange}
-        options={LOCATION_FILTER_OPTIONS}
-      />
+      <div className={styles.controls}>
+        <CategoryFilterDropdown
+          selected={selectedCategories}
+          onChange={onCategoriesChange}
+        />
 
-      <CustomSelect<PriceFilter>
-        id='price-filter'
-        value={values.priceFilter}
-        onValueChange={updates.onPriceFilterChange}
-        options={PRICE_FILTER_OPTIONS}
-      />
+        <CustomSelect<LocationFilter>
+          id='location-filter'
+          value={locationFilter}
+          onValueChange={onLocationFilterChange}
+          options={LOCATION_FILTER_OPTIONS}
+        />
 
-      <CustomSelect<RelationFilter>
-        id='relation-filter'
-        value={values.relationFilter}
-        onValueChange={updates.onRelationFilterChange}
-        options={RELATION_FILTER_OPTIONS}
-      />
-    </div>
+        <CustomSelect<PriceFilter>
+          id='price-filter'
+          value={priceFilter}
+          onValueChange={onPriceFilterChange}
+          options={PRICE_FILTER_OPTIONS}
+        />
 
-    {hasActiveFilters && (
-      <div className={styles.activeFilters}>
-        {values.selectedCategories.map(category => (
-          <FilterChip
-            key={category}
-            label={category}
-            onRemove={() => onRemoveCategory(category)}
-          />
-        ))}
-
-        {values.locationFilter !== 'all' && (
-          <FilterChip
-            label={values.locationFilter === 'online' ? 'Online' : 'Offline'}
-            onRemove={() => updates.onLocationFilterChange('all')}
-          />
-        )}
-
-        {values.priceFilter !== 'all' && (
-          <FilterChip
-            label={values.priceFilter === 'free' ? 'Free' : 'Paid'}
-            onRemove={() => updates.onPriceFilterChange('all')}
-          />
-        )}
-
-        {values.relationFilter !== 'all' && (
-          <FilterChip
-            label={values.relationFilter === 'organizing' ? 'Organizing' : 'Attending'}
-            onRemove={() => updates.onRelationFilterChange('all')}
-          />
-        )}
-
-        <button
-          type='button'
-          className={styles.clearAllButton}
-          onClick={onClearFilters}
-        >
-          Clear all
-        </button>
+        <CustomSelect<RelationFilter>
+          id='relation-filter'
+          value={relationFilter}
+          onValueChange={onRelationFilterChange}
+          options={RELATION_FILTER_OPTIONS}
+        />
       </div>
-    )}
-  </div>
-);
+
+      {hasActiveFilters && (
+        <div className={styles.activeFilters}>
+          {selectedCategories.map(category => (
+            <FilterChip
+              key={category}
+              label={category}
+              onRemove={() => onRemoveCategory(category)}
+            />
+          ))}
+
+          {locationFilter !== 'all' && (
+            <FilterChip
+              label={locationFilter === 'online' ? 'Online' : 'Offline'}
+              onRemove={() => onLocationFilterChange('all')}
+            />
+          )}
+
+          {priceFilter !== 'all' && (
+            <FilterChip
+              label={priceFilter === 'free' ? 'Free' : 'Paid'}
+              onRemove={() => onPriceFilterChange('all')}
+            />
+          )}
+
+          {relationFilter !== 'all' && (
+            <FilterChip
+              label={
+                relationFilter === 'organizing' ? 'Organizing' : 'Attending'
+              }
+              onRemove={() => onRelationFilterChange('all')}
+            />
+          )}
+
+          <button
+            type='button'
+            className={styles.clearAllButton}
+            onClick={onClearFilters}
+          >
+            Clear all
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};

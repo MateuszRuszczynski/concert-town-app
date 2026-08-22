@@ -13,3 +13,9 @@ export interface FilterParams {
   relationFilter: RelationFilter;
   sortBy: SortOption;
 }
+
+export const DEFAULT_SORT: SortOption = 'date';
+export const DEFAULT_LOCATION: LocationFilter = 'all';
+export const DEFAULT_PRICE: PriceFilter = 'all';
+export const DEFAULT_RELATION: RelationFilter = 'all';
+

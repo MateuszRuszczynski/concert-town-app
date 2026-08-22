@@ -2,21 +2,18 @@
 import { useMemo } from 'react';
 import { getVisibleEvents } from '../utils/getVisibleEvents';
 import type { EventDetails, EventCategory } from '../../../types/events';
-import type {
-  LocationFilter,
-  PriceFilter,
-  RelationFilter,
-  SortOption
+import {
+  DEFAULT_LOCATION,
+  DEFAULT_PRICE,
+  DEFAULT_RELATION,
+  DEFAULT_SORT,
+  type LocationFilter,
+  type PriceFilter,
+  type RelationFilter,
+  type SortOption
 } from '../types/eventFilters';
 import { useSearchParams } from 'react-router';
 import { useUpdateSearchParam } from '../../../hooks/useUpdateSearchParam';
-//#endregion
-
-//#region default values
-const DEFAULT_SORT: SortOption = 'date';
-const DEFAULT_LOCATION: LocationFilter = 'all';
-const DEFAULT_PRICE: PriceFilter = 'all';
-const DEFAULT_RELATION: RelationFilter = 'all';
 //#endregion
 
 export function useEventFilters (events: EventDetails[]) {
@@ -38,6 +35,13 @@ export function useEventFilters (events: EventDetails[]) {
     (searchParams.get('price') as PriceFilter) ?? DEFAULT_PRICE;
   const relationFilter =
     (searchParams.get('relation') as RelationFilter) ?? DEFAULT_RELATION;
+
+  const filterValues = {
+    selectedCategories,
+    locationFilter,
+    priceFilter,
+    relationFilter,
+  };
   //#endregion
 
   //#region update handlers
@@ -63,6 +67,7 @@ export function useEventFilters (events: EventDetails[]) {
     });
 
   const setSortBy = (sort: SortOption) => updateSearchParam({ sort });
+
   //#endregion
 
   //#region derived values
@@ -108,24 +113,25 @@ export function useEventFilters (events: EventDetails[]) {
   const removeCategory = (category: EventCategory) => {
     setSelectedCategories(selectedCategories.filter(c => c !== category));
   };
+
+  const filterUpdates = {
+    onCategoriesChange: setSelectedCategories,
+    onLocationFilterChange: setLocationFilter,
+    onPriceFilterChange: setPriceFilter,
+    onRelationFilterChange: setRelationFilter,
+    onRemoveCategory: removeCategory,
+  };
   //#endregion
 
   return {
     searchQuery,
     setSearchQuery,
-    selectedCategories,
-    setSelectedCategories,
-    locationFilter,
-    setLocationFilter,
-    priceFilter,
-    setPriceFilter,
-    relationFilter,
-    setRelationFilter,
     sortBy,
     setSortBy,
+    filterValues,
+    filterUpdates,
+    clearFilters,
     visibleEvents,
     hasActiveFilters,
-    clearFilters,
-    removeCategory
   };
 }
