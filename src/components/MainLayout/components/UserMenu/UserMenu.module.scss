@@ -42,7 +42,7 @@
   &.onDesktopOnly {
     display: none;
 
-    @include on-desktop {
+    @include on-tablet {
       display: inline;
     }
   }

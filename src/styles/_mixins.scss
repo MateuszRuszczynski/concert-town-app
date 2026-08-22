@@ -6,8 +6,14 @@
   }
 }
 
+@mixin on-tablet {
+  @media (min-width: 760px) {
+    @content;
+  }
+}
+
 @mixin on-desktop {
-  @media (min-width: 768px) {
+  @media (min-width: 1010px) {
     @content;
   }
 }
@@ -36,8 +42,10 @@
 @mixin page-container {
   padding: 32px 16px;
 
-  @include on-desktop {
+  @include on-tablet {
     padding-inline: 32px;
+    max-width: 1152px;
+    margin: auto;
   }
 }
 
@@ -60,7 +68,7 @@
 }
 
 @mixin full-width-grid-item {
-  @include on-desktop {
+  @include on-tablet {
     grid-column: 1 / -1;
   }
 }

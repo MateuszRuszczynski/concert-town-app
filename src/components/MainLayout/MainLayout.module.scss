@@ -2,7 +2,7 @@
   min-height: 100vh;
   background-color: var(--background-color);
 
-  @include on-desktop {
+  @include on-tablet {
     display: grid;
     grid-template-columns: 240px 1fr;
     grid-template-rows: auto 1fr;
@@ -13,7 +13,7 @@
 }
 
 .sidebarArea {
-  @include on-desktop {
+  @include on-tablet {
     grid-area: sidebar;
     height: 100vh;
 
@@ -32,13 +32,13 @@
 
   backdrop-filter: blur(8px);
 
-  @include on-desktop {
+  @include on-tablet {
     grid-area: header;
   }
 }
 
 .content {
-  @include on-desktop {
+  @include on-tablet {
     grid-area: content;
   }
 }

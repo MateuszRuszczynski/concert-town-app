@@ -6,7 +6,7 @@
   @include surface-block(14px);
   padding: 20px;
 
-  @include on-desktop {
+  @include on-tablet {
     padding: 24px;
   }
 }
@@ -28,7 +28,7 @@
   flex-direction: column;
   gap: 16px;
 
-  @include on-desktop {
+  @include on-tablet {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }

@@ -18,7 +18,7 @@
   flex-direction: column;
   gap: 12px;
 
-  @include on-desktop {
+  @include on-tablet {
     flex-direction: row;
     align-items: end;
     justify-content: space-between;
@@ -32,7 +32,7 @@
 
 .searchBar,
 .sort {
-  @include on-desktop {
+  @include on-tablet {
     max-width: 350px;
   }
 }
@@ -52,7 +52,7 @@
   flex-direction: column;
   gap: 20px;
 
-  @include on-desktop {
+  @include on-tablet {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }

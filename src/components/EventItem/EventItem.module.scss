@@ -32,56 +32,10 @@
   overflow: hidden;
 }
 
-.organizing {
-  --badge-surface: #ffffffd9;
-  --badge-color: #e77000;
-
-  @include dark-theme {
-    --badge-surface: #0a0a0ad9;
-    --badge-color: #ffb800;
-  }
-}
-
-.attending {
-  --badge-surface: #ffffffd9;
-  --badge-color: #009867;
-
-  @include dark-theme {
-    --badge-surface: #0a0a0ad9;
-    --badge-color: #00d393;
-  }
-}
-
 .relationBadge {
   position: absolute;
   top: 12px;
   left: 12px;
-
-  padding: 2px 10px;
-
-  display: flex;
-  gap: 6px;
-  align-items: center;
-
-  background-color: var(--badge-surface);
-  color: var(--badge-color);
-
-  border-radius: 99px;
-
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  text-transform: capitalize;
-}
-
-.badgeCircle {
-  width: 6px;
-  height: 6px;
-
-  border-radius: 50%;
-  border-radius: 99px;
-
-  background-color: var(--badge-color);
 }
 
 .eventSummary {
@@ -96,17 +50,6 @@
 .eventMeta {
   display: flex;
   justify-content: space-between;
-}
-
-.category {
-  background-color: var(--accent-surface);
-  color: var(--on-accent);
-  border-radius: 99px;
-  padding: 2px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
-  text-transform: capitalize;
 }
 
 .price {
