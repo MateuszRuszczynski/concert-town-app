@@ -1,4 +1,5 @@
 .eventPage {
+  @include fade-in-animation;
   @include page-container;
 
   display: flex;
