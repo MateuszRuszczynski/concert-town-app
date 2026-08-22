@@ -1,0 +1,18 @@
+.eventFormLayout {
+  @include fade-in-animation;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  max-width: 672px;
+  margin: auto;
+
+  @include page-container;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
