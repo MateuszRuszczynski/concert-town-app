@@ -1,21 +1,16 @@
 //#region imports
-import { useState, type FC } from "react";
-import { LogOut, User2Icon } from "lucide-react";
-import { useNavigate } from "react-router";
-import { useOutsideClick } from "../../../../hooks/useOutsideClick";
-import styles from "./UserMenu.module.scss";
+import { useState } from 'react';
+import { LogOut, User2Icon } from 'lucide-react';
+import { useAuth } from '../../../../contexts/AuthContext/useAuth';
+import { useNavigate } from 'react-router';
+import { useOutsideClick } from '../../../../hooks/useOutsideClick';
+import styles from './UserMenu.module.scss';
 //#endregion
 
-interface Props {
-  user?: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
-}
-
-export const UserMenu: FC<Props> = ({ user }) => {
+export const UserMenu = () => {
+  const { user, signOut } = useAuth();
   const [isUserMenuShowed, setIsUserMenuShowed] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const navigate = useNavigate();
   const menuRef = useOutsideClick(() => setIsUserMenuShowed(false));
 
@@ -34,6 +29,16 @@ export const UserMenu: FC<Props> = ({ user }) => {
       </button>
     );
   }
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await signOut();
+      navigate('/sign-in');
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   const userName = user.firstName + ' ' + user.lastName;
   const userInitials = user.firstName[0] + user.lastName[0];
@@ -62,9 +67,12 @@ export const UserMenu: FC<Props> = ({ user }) => {
 
           <button
             className={styles.signOutButton}
-            onClick={() => navigate('/sign-in')}
+            onClick={handleSignOut}
+            disabled={isSigningOut}
           >
-            <LogOut size={16} /> Sign out
+            <LogOut size={16} />
+
+            {isSigningOut ? 'Signing out…' : 'Sign out'}
           </button>
         </div>
       )}

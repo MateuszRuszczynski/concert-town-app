@@ -9,6 +9,8 @@ import {
   validatePasswordMatch
 } from '../../../utils/validation';
 import { useNotification } from '../../../contexts/NotificationContext';
+import { useAuth } from '../../../contexts/AuthContext/useAuth';
+import { getErrorMessage } from '../../../utils/getErrorMessage';
 //#endregion
 
 export function useSignUpForm () {
@@ -91,13 +93,14 @@ export function useSignUpForm () {
   //#endregion
 
   //#region submission
+  const { signUp } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const { showToast } = useNotification();
 
   const navigate = useNavigate();
 
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setHasAttemptedSubmit(true);
 
@@ -107,11 +110,15 @@ export function useSignUpForm () {
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await signUp({ firstName, lastName, email, password});
       showToast('Account created successfully!', 'success');
-      navigate('/sign-in');
-    }, 500);
+      navigate('/dashboard');
+    } catch (err) {
+      setSubmitError(getErrorMessage(err, 'Something went wrong. Try again.'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const submission = {

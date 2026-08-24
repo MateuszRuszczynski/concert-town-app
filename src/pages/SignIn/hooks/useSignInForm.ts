@@ -1,5 +1,11 @@
 import { useState, type SubmitEventHandler } from 'react';
-import { validateEmail, validatePasswordCharacters } from '../../../utils/validation';
+import {
+  validateEmail,
+  validatePasswordCharacters
+} from '../../../utils/validation';
+import { useAuth } from '../../../contexts/AuthContext/useAuth';
+import { useNavigate } from 'react-router';
+import { getErrorMessage } from '../../../utils/getErrorMessage';
 
 export function useSignInForm () {
   //#region input controls
@@ -19,10 +25,15 @@ export function useSignInForm () {
 
   const rawFieldErrors = {
     email: validateEmail(email),
-    password: password.length === 0 ? 'Password is required' : validatePasswordCharacters(password),
+    password:
+      password.length === 0
+        ? 'Password is required'
+        : validatePasswordCharacters(password)
   };
 
-  const isFormValid = Object.values(rawFieldErrors).every((error) => error === undefined);
+  const isFormValid = Object.values(rawFieldErrors).every(
+    error => error === undefined
+  );
 
   const fieldErrors = hasAttemptedSubmit
     ? rawFieldErrors
@@ -35,10 +46,12 @@ export function useSignInForm () {
   //#endregion
 
   //#region submission
+  const { signIn } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async e => {
     e.preventDefault();
 
     setHasAttemptedSubmit(true);
@@ -47,12 +60,14 @@ export function useSignInForm () {
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      await signIn({ email, password });
+      navigate('/dashboard');
+    } catch (err) {
+      setSubmitError(getErrorMessage(err, 'Invalid email or password.'));
+    } finally {
       setIsSubmitting(false);
-      setEmail('');
-      setPassword('');
-      setHasAttemptedSubmit(false);
-    }, 500);
+    }
   };
 
   const submission = {
