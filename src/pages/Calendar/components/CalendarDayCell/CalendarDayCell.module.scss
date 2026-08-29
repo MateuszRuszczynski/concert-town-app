@@ -1,0 +1,51 @@
+.cell {
+  --empty-bg: #f5f5f54d;
+
+  @include dark-theme {
+    --empty-bg: #2626264d;
+  }
+
+  width: 100%;
+  height: 95.2px;
+  border-right: 0.8px solid var(--border-color);
+  border-bottom: 0.8px solid var(--border-color);
+
+  padding: 6px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &:nth-child(-n + 7) {
+    border-top: 0.8px solid var(--border-color);
+  }
+
+  &:nth-child(7n) {
+    border-right: none;
+  }
+}
+
+.empty {
+  background-color: var(--empty-bg);
+}
+
+.dayNumber {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+
+  color: var(--secondary-color);
+}
+
+.today {
+  color: $button-color;
+  background-color: var(--accent-color);
+}

@@ -1,0 +1,22 @@
+.calendar {
+  @include page-container;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include on-tablet {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.calendarBody {
+  @include surface-block(14px);
+}

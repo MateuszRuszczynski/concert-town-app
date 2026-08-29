@@ -1,0 +1,15 @@
+.weekdaysRow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.weekday {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+
+  color: var(--secondary-color);
+  text-align: center;
+
+  padding: 8px;
+}

@@ -1,0 +1,11 @@
+.navigator {
+  @include flex-row(8px);
+}
+
+.label {
+  width: 160px;
+  text-align: center;
+
+  @include text-medium;
+  color: var(--primary-color);
+}
