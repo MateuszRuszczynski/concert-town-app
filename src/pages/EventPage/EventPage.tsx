@@ -9,8 +9,8 @@ import { RegistrationProgress } from './components/RegistrationProgress';
 import { EventInfoPanel } from './components/EventInfoPanel';
 import { EventActions } from './components/EventActions';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import styles from './EventPage.module.scss';
 import { BackLink } from '../../components/BackLink';
+import styles from './EventPage.module.scss';
 //#endregion
 
 export const EventPage = () => {

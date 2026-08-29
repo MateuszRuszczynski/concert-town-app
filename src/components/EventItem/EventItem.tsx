@@ -6,8 +6,8 @@ import type { EventDetails } from '../../types/events';
 import { CATEGORY_IMAGES } from './categoriesImages';
 import { RelationBadge } from '../RelationBadge';
 import { CategoryBadge } from '../CategoryBadge';
-import styles from './EventItem.module.scss';
 import { formatEventDate } from '../../utils/dateFormatters';
+import styles from './EventItem.module.scss';
 //#endregion
 
 interface Props {

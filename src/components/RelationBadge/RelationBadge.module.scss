@@ -1,10 +1,6 @@
 .organizing {
   --badge-surface: #fe9a001f;
-  --badge-color: #e77000;
-
-  @include dark-theme {
-    --badge-color: #ffb800;
-  }
+  --badge-color: var(--organizer-color);
 }
 
 .attending {

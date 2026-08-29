@@ -5,6 +5,7 @@ import { FormField } from "../../../../components/FormField";
 import { PasswordVisibilityToggle } from "../../../../components/PasswordVisibilityToggle";
 import { Button } from "../../../../components/Button";
 import { Form } from "../../../../components/Form";
+import { FormError } from "../../../../components/FormError";
 //#endregion
 
 export const SingInForm = () => {
@@ -12,7 +13,7 @@ export const SingInForm = () => {
   const { email, setEmail, password, setPassword } = inputControls;
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const { fieldErrors } = validation;
-  const { handleSubmit, isSubmitting } = submission;
+  const { handleSubmit, isSubmitting, submitError } = submission;
 
   return (
     <Form onSubmit={handleSubmit} noValidate>
@@ -43,6 +44,8 @@ export const SingInForm = () => {
         }
         required
       />
+
+      {submitError && <FormError errorMessage={submitError} />}
 
       <Button type='submit' isLoading={isSubmitting}>
         {isSubmitting ? 'Please wait...' : 'Sign in'}

@@ -1,11 +1,20 @@
 //#region imports
+import cn from 'classNames';
 import { useState } from 'react';
 import { LogOut, User2Icon } from 'lucide-react';
 import { useAuth } from '../../../../contexts/AuthContext/useAuth';
 import { useNavigate } from 'react-router';
 import { useOutsideClick } from '../../../../hooks/useOutsideClick';
 import styles from './UserMenu.module.scss';
+import type { UserRole } from '../../../../types/user';
+import { capitalizeFirstWord } from '../../../../utils/capitalizeFirstWord';
 //#endregion
+
+const ROLE_LABELS: Record<UserRole, string> = {
+  customer: '',
+  organizer: 'Organizer',
+  admin: 'Admin'
+};
 
 export const UserMenu = () => {
   const { user, signOut } = useAuth();
@@ -42,15 +51,18 @@ export const UserMenu = () => {
 
   const userName = user.firstName + ' ' + user.lastName;
   const userInitials = user.firstName[0] + user.lastName[0];
+
   return (
     <div className={styles.userMenu} ref={menuRef}>
       <button
         className={styles.userTrigger}
         onClick={() => setIsUserMenuShowed(prev => !prev)}
       >
-        <div className={styles.avatar}>{userInitials}</div>
+        <div className={cn(styles.avatar, styles[user.role])}>
+          {userInitials}
+        </div>
 
-        <span className={`${styles.triggerLabel} ${styles.onDesktopOnly}`}>
+        <span className={cn(styles.triggerLabel, styles.onDesktopOnly)}>
           {userName}
         </span>
       </button>
@@ -61,6 +73,12 @@ export const UserMenu = () => {
             <span className={styles.userName}>{userName}</span>
 
             <span className={styles.userEmail}>{user.email}</span>
+
+            {user.role !== 'customer' && (
+              <span className={cn(styles.roleBadge, styles[user.role])}>
+                {capitalizeFirstWord(ROLE_LABELS[user.role])}
+              </span>
+            )}
           </div>
 
           <hr className={styles.divider} />

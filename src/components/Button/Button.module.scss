@@ -16,6 +16,11 @@
   background-color: var(--accent-color);
 
   @include hover(background-color, var(--accent-hover));
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 .loading {

@@ -11,6 +11,7 @@ import {
 import { useNotification } from '../../../contexts/NotificationContext';
 import { useAuth } from '../../../contexts/AuthContext/useAuth';
 import { getErrorMessage } from '../../../utils/getErrorMessage';
+import { capitalizeFirstWord } from '../../../utils/capitalizeFirstWord';
 //#endregion
 
 export function useSignUpForm () {
@@ -111,11 +112,13 @@ export function useSignUpForm () {
     setIsSubmitting(true);
 
     try {
-      await signUp({ firstName, lastName, email, password});
+      await signUp({ firstName, lastName, email, password, confirmPassword });
       showToast('Account created successfully!', 'success');
-      navigate('/dashboard');
+      navigate('/sign-in');
     } catch (err) {
-      setSubmitError(getErrorMessage(err, 'Something went wrong. Try again.'));
+      const errorMessage = capitalizeFirstWord(getErrorMessage(err, 'Failed to create account. Please try again.'));
+      showToast(errorMessage, 'error');
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

@@ -7,6 +7,8 @@ import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
 import { CalendarCheck } from 'lucide-react';
 import { Button } from '../../../../../../components/Button';
 import styles from './VisitorActions.module.scss';
+import { useAuth } from '../../../../../../contexts/AuthContext/useAuth';
+import { Link } from 'react-router';
 //#endregion
 
 interface Props {
@@ -14,6 +16,7 @@ interface Props {
 }
 
 export const VisitorActions: FC<Props> = ({ event }) => {
+  const { isAuthenticated } = useAuth();
   const { registerForEvent } = useEvents();
   const { showToast } = useNotification();
 
@@ -36,11 +39,24 @@ export const VisitorActions: FC<Props> = ({ event }) => {
 
   return (
     <div className={styles.actions}>
-      <Button onClick={handleRegister} isLoading={isRegistering}>
+      <Button
+        onClick={handleRegister}
+        isLoading={isRegistering}
+        disabled={!isAuthenticated || isRegistering}
+      >
         <CalendarCheck size={16} />
 
         {isRegistering ? 'Registering...' : 'Register'}
       </Button>
+
+      {!isAuthenticated && (
+        <p className={styles.signInHint}>
+          <Link to="/sign-in" state={{ redirectTo: `/events/${event.id}` }} className={styles.signInLink}>
+            Sign in
+          </Link>{' '}
+          to register
+        </p>
+      )}
     </div>
   );
 };
