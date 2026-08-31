@@ -1,0 +1,112 @@
+@mixin hover($_property, $_toValue) {
+  transition: #{$_property} 0.3s;
+
+  &:hover {
+    #{$_property}: $_toValue;
+  }
+}
+
+@mixin on-tablet {
+  @media (min-width: 760px) {
+    @content;
+  }
+}
+
+@mixin on-desktop {
+  @media (min-width: 1010px) {
+    @content;
+  }
+}
+
+@mixin dark-theme {
+  :global(html.dark) & {
+    @content;
+  }
+}
+
+@mixin fade-in-animation {
+  opacity: 0;
+  animation: fade-in 0.5s ease-in-out forwards;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@mixin page-container {
+  padding: 32px 16px;
+
+  @include on-tablet {
+    padding-inline: 32px;
+    max-width: 1152px;
+    margin: auto;
+  }
+}
+
+@mixin surface-block($borderRadius: 10px) {
+  background-color: var(--surface-color);
+  border: 0.8px solid var(--border-color);
+  border-radius: $borderRadius;
+}
+
+@mixin flex-row($gap: 8px) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+}
+
+@mixin text-medium {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+@mixin full-width-grid-item {
+  @include on-tablet {
+    grid-column: 1 / -1;
+  }
+}
+
+@mixin form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  color: var(--primary-color);
+}
+
+@mixin form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 0.8px solid var(--border-color);
+
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+
+  color: var(--primary-color);
+
+  background-color: var(--form-filed-color);
+
+  &:focus {
+    border-color: #0068e0;
+    outline: 3px solid #2564e080;
+  }
+
+  &::-ms-reveal,
+  &::-ms-clear {
+    display: none;
+  }
+}
+
+@mixin error-message {
+  font-size: 12px;
+  color: var(--error-color);
+}

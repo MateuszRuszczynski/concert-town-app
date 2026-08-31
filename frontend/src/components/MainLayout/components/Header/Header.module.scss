@@ -1,0 +1,30 @@
+.header {
+  --header-bg: #ffffffcc;
+
+  @include dark-theme {
+    --header-bg: rgba(10, 10, 10, 0.8);
+  }
+
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 0.8px solid var(--border-color);
+
+  background-color: var(--header-bg);
+
+  @include on-tablet {
+    justify-content: flex-end;
+    padding-inline: 32px;
+  }
+}
+
+.headerStart,
+.actions {
+  @include flex-row;
+}
+
+.headerStart {
+  @include on-tablet {
+    display: none;
+  }
+}

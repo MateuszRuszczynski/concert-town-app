@@ -1,0 +1,36 @@
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  padding-top: 32px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+
+  color: var(--secondary-color);
+  border-radius: 10px;
+
+  @include text-medium;
+
+  transition: all 0.3s;
+
+  &:hover {
+    color: var(--primary-color);
+    background-color: var(--background-hover);
+  }
+}
+
+.active {
+  background-color: var(--accent-surface);
+  color: var(--on-accent);
+
+  &:hover {
+    background-color: var(--accent-surface);
+    color: var(--on-accent);
+  }
+}

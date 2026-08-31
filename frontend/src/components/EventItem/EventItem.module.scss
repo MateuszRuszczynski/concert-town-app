@@ -1,0 +1,85 @@
+.eventItem {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+
+  @include surface-block(14px);
+  transition: border-color 0.3s;
+  overflow: hidden;
+
+  position: relative;
+
+  &:hover {
+    & .eventImage {
+      transform: scale(1.05);
+    }
+
+    border-color: var(--accent-color);;
+  }
+}
+
+.eventImage {
+  width: 100%;
+  aspect-ratio: 1.78;
+  object-fit: cover;
+
+  transition: transform 0.3s;
+}
+
+.imgWrapper {
+  overflow: hidden;
+}
+
+.relationBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.eventSummary {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 16px;
+}
+
+.eventMeta {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+
+  color: var(--primary-color);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+
+  color: var(--primary-color);
+  flex-grow: 1;
+}
+
+.eventAttributes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.attribute {
+  @include flex-row;
+
+  font-size: 14px;
+  line-height: 20px;
+
+  color: var(--secondary-color);
+}

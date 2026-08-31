@@ -1,0 +1,22 @@
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.signInHint {
+  text-align: center;
+  color: var(--secondary-color);
+
+  padding: 10px;
+  border: 0.8px dashed var(--border-color);
+  border-radius: 14px;
+}
+
+.signInLink {
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: underline;
+
+  @include hover(color, $accent-hvr-color);
+}

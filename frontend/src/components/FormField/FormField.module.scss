@@ -1,0 +1,60 @@
+.formfield {
+  @include form-field;
+}
+
+.label {
+  @include text-medium;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.fieldInput {
+  @include form-control;
+
+  color-scheme: light;
+
+  @include dark-theme {
+    color-scheme: dark;
+  }
+}
+
+.hasStartAdornment {
+  padding-left: 34px;
+}
+
+.hasEndAdornment {
+  padding-right: 40px;
+}
+
+.startAdornment {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  display: flex;
+}
+
+.endAdornment {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: flex;
+}
+
+.errorMessage {
+  @include error-message;
+}
+
+.successMessage {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--accent-color);;
+}

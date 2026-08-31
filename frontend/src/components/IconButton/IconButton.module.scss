@@ -1,0 +1,17 @@
+.iconButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  color: var(--primary-color);
+
+  border-radius: 10px;
+  border: 0.8px solid var(--border-color);
+
+  background-color: var(--button-bg);
+
+  @include hover(background-color, var(--background-hover));
+}

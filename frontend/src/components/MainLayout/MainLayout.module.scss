@@ -1,0 +1,44 @@
+.layout {
+  min-height: 100vh;
+  background-color: var(--background-color);
+
+  @include on-tablet {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'sidebar header'
+      'sidebar content';
+  }
+}
+
+.sidebarArea {
+  @include on-tablet {
+    grid-area: sidebar;
+    height: 100vh;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    align-self: start;
+  }
+}
+
+.headerArea {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  backdrop-filter: blur(8px);
+
+  @include on-tablet {
+    grid-area: header;
+  }
+}
+
+.content {
+  @include on-tablet {
+    grid-area: content;
+  }
+}

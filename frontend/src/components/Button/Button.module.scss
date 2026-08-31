@@ -1,0 +1,48 @@
+.button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+
+  height: 34px;
+  padding-inline: 10px;
+
+  @include text-medium;
+  
+  color: $button-color;
+  border-radius: 10px;
+  border: 0.8px solid rgba(0, 0, 0, 0);
+
+  background-color: var(--accent-color);
+
+  @include hover(background-color, var(--accent-hover));
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.loading {
+  opacity: 0.5;
+}
+
+.fitContent {
+  width: fit-content;
+}
+
+.secondary {
+  border-color: var(--border-color);
+  background-color: var(--button-bg);
+
+  color: var(--primary-color);
+
+  @include hover(background-color, var(--background-hover));
+}
+
+.danger {
+  background-color: var(--error-bgc);
+  color: var(--error-color);
+
+  @include hover(background-color, var(--error-hover));
+}

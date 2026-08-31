@@ -1,0 +1,130 @@
+.userMenu {
+  position: relative;
+}
+
+.userTrigger {
+  @include flex-row;
+
+  padding: 4px;
+  padding-right: 12px;
+  border: 0.8px solid var(--border-color);
+  border-radius: 100px;
+
+  @include hover(background-color, var(--button-hover));
+}
+
+.avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+
+  background-color: var(--accent-color);
+  color: $button-color;
+  border-radius: 50%;
+
+  &.organizer {
+    background-color: var(--organizer-color);
+  }
+
+  &.admin {
+    background-color: var(--admin-color);
+  }
+}
+
+.unregistered {
+  background-color: var(--light-gray-color);
+}
+
+.triggerLabel {
+  @include text-medium;
+
+  color: var(--primary-color);
+
+  &.onDesktopOnly {
+    display: none;
+
+    @include on-tablet {
+      display: inline;
+    }
+  }
+}
+
+.userMenuPanel {
+  position: absolute;
+  right: 0;
+
+  min-width: 222px;
+
+  margin-top: 8px;
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+
+  @include surface-block;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+.roleBadge {
+  font-size: 14px;
+  font-weight: 700;
+
+  margin-top: 4px;
+
+  &.organizer {
+    color: var(--organizer-color);
+  }
+
+  &.admin {
+    color: var(--admin-color);
+  }
+}
+
+.userName {
+  @include text-medium;
+  color: var(--primary-color);
+}
+
+.userEmail {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--secondary-color);
+}
+
+.divider {
+  height: 1px;
+  border: none;
+  background-color: var(--border-color);
+}
+
+.signOutButton {
+  @include flex-row;
+
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--primary-color);
+
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+
+  @include hover(background-color, var(--button-hover));
+
+  &:disabled {
+    color: var(--secondary-color);
+  }
+}

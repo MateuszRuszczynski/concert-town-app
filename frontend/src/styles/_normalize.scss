@@ -1,0 +1,41 @@
+* {
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+}
+
+html {
+  :root {
+    --scrollbar-track: #f5f5f5;
+    --scrollbar-thumb: #c5c5c5;
+  }
+
+  &.dark {
+    --scrollbar-track: #1a1a1a;
+    --scrollbar-thumb: #4a4a4a;
+  }
+
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  font-family: 'Inter', sans-serif;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+a {
+  text-decoration: none;
+}
+
+textarea {
+  font-family: inherit;
+}

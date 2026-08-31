@@ -1,0 +1,12 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 24px;
+
+  @include surface-block(14px);
+
+  width: 100%;
+  max-width: 385px;
+}

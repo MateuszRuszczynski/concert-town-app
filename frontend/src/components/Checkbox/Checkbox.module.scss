@@ -1,0 +1,48 @@
+.field {
+  @include form-field;
+  justify-content: center;
+
+  color: var(--primary-color);
+}
+
+.control {
+  @include flex-row;
+}
+
+.checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+
+  border: 1px solid var(--secondary-color);
+  border-radius: 4px;
+  background: #00000000;
+
+  &:checked {
+    background-color: var(--accent-color);;
+    border-color: var(--accent-color);;
+
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 0;
+      width: 5px;
+      height: 9px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+.label {
+  @include text-medium;
+  color: var(--primary-color);
+}
+
+.errorMessage {
+  @include error-message;
+}
