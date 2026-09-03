@@ -26,7 +26,7 @@ class EventFilter(django_filters.FilterSet):
 
     class Meta:
         model = Event
-        fields = ["category", "category_id", "is_active", "location"]
+        fields = ["category", "category_id", "is_active"]
 
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()

@@ -17,8 +17,11 @@ class Category(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    date = models.DateTimeField()
-    location = models.CharField(max_length=255)
+    date = models.DateTimeField(null=True, blank=True)
+    starts_at = models.DateTimeField(null=True, blank=True)
+    ends_at = models.DateTimeField(null=True, blank=True)
+    host = models.CharField(max_length=255, blank=True, default="")
+    location = models.JSONField(default=dict, blank=True)
 
     category = models.ForeignKey(
         Category,
@@ -45,7 +48,10 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.title} ({self.date.strftime('%Y-%m-%d %H:%M')})"
+        start = self.starts_at or self.date
+        if start is None:
+            return self.title
+        return f"{self.title} ({start.strftime('%Y-%m-%d %H:%M')})"
 
     class Meta:
         verbose_name = "Event"
