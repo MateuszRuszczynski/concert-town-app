@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "corsheaders",
     "accounts",
-    "core",
     "events",
     "bookings",
     "django_filters",

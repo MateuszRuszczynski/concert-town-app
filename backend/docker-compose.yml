@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:15-alpine
-    container_name: concert_town_db
     restart: always
     environment:
       POSTGRES_DB: concert_town_db
@@ -14,7 +13,6 @@ services:
 
   web:
     build: .
-    container_name: concert_town_backend
     restart: always
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
