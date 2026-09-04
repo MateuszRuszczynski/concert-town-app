@@ -12,6 +12,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
+    organizer_id = serializers.IntegerField(source="organizer.id", read_only=True)
 
     category_id = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
@@ -39,6 +40,7 @@ class EventSerializer(serializers.ModelSerializer):
             "available_seats",
             "image",
             "organizer",
+            "organizer_id",
             "is_active",
             "created_at",
             "updated_at",
