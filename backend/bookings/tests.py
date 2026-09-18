@@ -110,6 +110,34 @@ class EventRegistrationTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Event is fully booked", str(response.data))
 
+    def test_cannot_register_for_inactive_event(self):
+        self.event.is_active = False
+        self.event.save(update_fields=["is_active"])
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(self.url, {"event_id": self.event.id})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Event is not active", str(response.data))
+
+    def test_cannot_register_after_event_has_started(self):
+        self.event.starts_at = timezone.now() - timezone.timedelta(minutes=1)
+        self.event.save(update_fields=["starts_at"])
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(self.url, {"event_id": self.event.id})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Event registration is closed", str(response.data))
+
+    def test_organizer_cannot_register_for_own_event(self):
+        self.client.force_authenticate(user=self.organizer)
+
+        response = self.client.post(self.url, {"event_id": self.event.id})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("event you organize", str(response.data))
+
     def test_cancel_registration_success(self):
         self.client.force_authenticate(user=self.user)
         register_response = self.client.post(self.url, {"event_id": self.event.id})

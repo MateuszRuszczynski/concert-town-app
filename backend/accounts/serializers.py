@@ -5,6 +5,9 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -25,6 +28,26 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         attrs[self.username_field] = email_val
 
         return super().validate(attrs)
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(write_only=True)
+
+    def validate_refresh(self, value):
+        try:
+            token = RefreshToken(value)
+        except TokenError as error:
+            raise serializers.ValidationError("Token is invalid or expired.") from error
+
+        request = self.context["request"]
+        user_id = getattr(request.user, api_settings.USER_ID_FIELD)
+
+        if str(token.get(api_settings.USER_ID_CLAIM)) != str(user_id):
+            raise serializers.ValidationError(
+                "Token does not belong to the authenticated user."
+            )
+
+        return token
 
 
 class RegisterSerializer(serializers.ModelSerializer):

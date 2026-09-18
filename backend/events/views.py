@@ -2,10 +2,9 @@ import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
 
 from events.models import Category, Event
-from events.permissions import IsOrganizerOrAdminOrReadOnly
+from events.permissions import IsOrganizerOrAdmin, IsOrganizerOrAdminOrReadOnly
 from events.serializers import (
     CategorySerializer,
     EventDetailSerializer,
@@ -87,13 +86,23 @@ class EventDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class MyEventsListView(generics.ListAPIView):
     serializer_class = EventListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOrganizerOrAdmin]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ["is_active"]
+    ordering_fields = ["date", "starts_at", "title", "created_at", "price"]
+    ordering = ["-is_active", "-created_at"]
+    activity = None
 
     def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Event.objects.none()
-        return (
+        queryset = (
             Event.objects.filter(organizer=self.request.user)
             .select_related("organizer", "category")
-            .order_by("-created_at")
         )
+
+        activity = self.activity or self.request.query_params.get("status")
+        if activity == "active":
+            queryset = queryset.filter(is_active=True)
+        elif activity == "inactive":
+            queryset = queryset.filter(is_active=False)
+
+        return queryset

@@ -1,9 +1,13 @@
+from io import StringIO
+
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from events.models import Event
+from events.models import Category, Event
 
 User = get_user_model()
 
@@ -69,3 +73,159 @@ class EventListTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["title"], "Concert C")
+
+
+class OrganizerEventListTests(APITestCase):
+    def setUp(self):
+        self.organizer = User.objects.create_user(
+            email="organizer-list@example.com",
+            password="Password123!",
+            role=User.Role.ORGANIZER,
+        )
+        self.other_organizer = User.objects.create_user(
+            email="other-organizer-list@example.com",
+            password="Password123!",
+            role=User.Role.ORGANIZER,
+        )
+        self.customer = User.objects.create_user(
+            email="customer-list@example.com",
+            password="Password123!",
+        )
+        event_data = {
+            "description": "Description",
+            "starts_at": timezone.now() + timezone.timedelta(days=10),
+            "location": "Kyiv",
+            "price": "50.00",
+            "total_seats": 100,
+            "available_seats": 100,
+        }
+        self.active_event = Event.objects.create(
+            title="Active event",
+            organizer=self.organizer,
+            is_active=True,
+            **event_data,
+        )
+        self.inactive_event = Event.objects.create(
+            title="Inactive event",
+            organizer=self.organizer,
+            is_active=False,
+            **event_data,
+        )
+        Event.objects.create(
+            title="Other organizer event",
+            organizer=self.other_organizer,
+            is_active=True,
+            **event_data,
+        )
+
+    def test_organizer_gets_only_own_events(self):
+        self.client.force_authenticate(user=self.organizer)
+
+        response = self.client.get(reverse("my-events-list"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 2)
+        self.assertEqual(
+            [event["id"] for event in response.data["results"]],
+            [self.active_event.id, self.inactive_event.id],
+        )
+
+    def test_active_and_inactive_events_have_separate_endpoints(self):
+        self.client.force_authenticate(user=self.organizer)
+
+        active_response = self.client.get(reverse("my-active-events-list"))
+        inactive_response = self.client.get(reverse("my-inactive-events-list"))
+
+        self.assertEqual(active_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(inactive_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(active_response.data["count"], 1)
+        self.assertEqual(inactive_response.data["count"], 1)
+        self.assertEqual(
+            active_response.data["results"][0]["id"], self.active_event.id
+        )
+        self.assertEqual(
+            inactive_response.data["results"][0]["id"], self.inactive_event.id
+        )
+
+    def test_organizer_events_can_be_filtered_by_status(self):
+        self.client.force_authenticate(user=self.organizer)
+
+        response = self.client.get(reverse("my-events-list"), {"status": "inactive"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["id"], self.inactive_event.id)
+
+    def test_customer_cannot_access_organizer_events(self):
+        self.client.force_authenticate(user=self.customer)
+
+        response = self.client.get(reverse("my-events-list"))
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_inactive_event_is_visible_only_to_its_organizer(self):
+        url = reverse("event-detail", kwargs={"pk": self.inactive_event.id})
+
+        anonymous_response = self.client.get(url)
+        self.client.force_authenticate(user=self.other_organizer)
+        other_response = self.client.get(url)
+        self.client.force_authenticate(user=self.organizer)
+        organizer_response = self.client.get(url)
+
+        self.assertEqual(anonymous_response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(other_response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(organizer_response.status_code, status.HTTP_200_OK)
+
+
+class SeedDataTests(APITestCase):
+    def test_seed_data_matches_current_event_model(self):
+        call_command("seed_data", stdout=StringIO())
+
+        seeded_events = Event.objects.filter(organizer__email="admin@example.com")
+        category_slugs = set(Category.objects.values_list("slug", flat=True))
+        active_category_slugs = set(
+            seeded_events.filter(is_active=True).values_list(
+                "category__slug", flat=True
+            )
+        )
+        organizer = User.objects.get(email="admin@example.com")
+
+        self.assertEqual(seeded_events.count(), 11)
+        self.assertEqual(seeded_events.filter(is_active=True).count(), 9)
+        self.assertEqual(seeded_events.filter(is_active=False).count(), 2)
+        self.assertEqual(
+            category_slugs,
+            {
+                "conference",
+                "workshop",
+                "music",
+                "networking",
+                "webinar",
+                "social",
+            },
+        )
+        self.assertEqual(active_category_slugs, category_slugs)
+        self.assertEqual(organizer.role, User.Role.ADMIN)
+        self.assertTrue(organizer.is_staff)
+        self.assertTrue(organizer.is_superuser)
+
+        for event in seeded_events:
+            self.assertIsNotNone(event.starts_at)
+            self.assertIsNotNone(event.ends_at)
+            self.assertEqual(event.date, event.starts_at)
+            self.assertLess(event.starts_at, event.ends_at)
+            self.assertTrue(event.host)
+            self.assertLessEqual(event.available_seats, event.total_seats)
+            self.assertTrue(
+                event.location == "online"
+                or {"city", "venue"}.issubset(event.location)
+            )
+
+    def test_seed_data_is_idempotent(self):
+        call_command("seed_data", stdout=StringIO())
+        call_command("seed_data", stdout=StringIO())
+
+        self.assertEqual(
+            Event.objects.filter(organizer__email="admin@example.com").count(), 11
+        )
+        self.assertEqual(Category.objects.count(), 6)

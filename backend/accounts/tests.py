@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -109,6 +110,48 @@ class LogoutTests(APITestCase):
             format="json",
         )
         self.assertEqual(refresh_response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        profile_response = self.client.get(reverse("profile"))
+        self.assertEqual(profile_response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_logout_requires_authentication(self):
+        refresh_token = RefreshToken.for_user(self.user)
+
+        response = self.client.post(
+            reverse("token_blacklist"),
+            {"refresh": str(refresh_token)},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_cannot_logout_with_another_users_refresh_token(self):
+        other_user = User.objects.create_user(
+            email="other-logout@example.com", password="TestPass123!"
+        )
+        user_login = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": "logout@example.com", "password": "TestPass123!"},
+            format="json",
+        )
+        other_login = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": other_user.email, "password": "TestPass123!"},
+            format="json",
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {user_login.data['access']}"
+        )
+
+        response = self.client.post(
+            reverse("token_blacklist"),
+            {"refresh": other_login.data["refresh"]},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        profile_response = self.client.get(reverse("profile"))
+        self.assertEqual(profile_response.status_code, status.HTTP_200_OK)
 
 
 class ProfileTests(APITestCase):

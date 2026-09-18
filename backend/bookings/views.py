@@ -58,9 +58,15 @@ class EventCancelRegistration(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return EventRegistration.objects.filter(
-            user=self.request.user
-        ).select_related("event", "user")
+        return EventRegistration.objects.all().select_related("event", "user")
+
+    def get_object(self):
+        instance = super().get_object()
+        if instance.user != self.request.user:
+            raise PermissionDenied(
+                "You are not authorized to cancel this registration."
+            )
+        return instance
 
     def perform_destroy(self, instance):
         event = instance.event

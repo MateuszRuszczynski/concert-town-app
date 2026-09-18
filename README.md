@@ -281,7 +281,7 @@ Authorization: Bearer <access_token>
 | POST   | `/api/auth/register/`      | Create a customer account        | None           |
 | POST   | `/api/auth/login/`         | Obtain access and refresh tokens | None           |
 | POST   | `/api/auth/token/refresh/` | Rotate the access token          | Refresh token  |
-| POST   | `/api/auth/logout/`        | Blacklist the refresh token      | Refresh token  |
+| POST   | `/api/auth/logout/`        | Revoke the current token pair    | Required       |
 | GET    | `/api/auth/profile/`       | Get the current user profile     | Required       |
 
 Registration example:
@@ -314,7 +314,9 @@ Login example:
 | GET         | `/api/events/{id}/`                          | Retrieve an event                         | None                     |
 | PATCH / PUT | `/api/events/{id}/`                          | Update an event                           | Event organizer or admin |
 | DELETE      | `/api/events/{id}/`                          | Delete an event                           | Event organizer or admin |
-| GET         | `/api/events/my/`                            | List events organized by the current user | Required                 |
+| GET         | `/api/events/my/`                            | List events organized by the current user | Organizer or admin       |
+| GET         | `/api/events/my/active/`                     | List the organizer's active events        | Organizer or admin       |
+| GET         | `/api/events/my/inactive/`                   | List the organizer's inactive events      | Organizer or admin       |
 | GET         | `/api/events/categories/`                    | List categories                           | None                     |
 | POST        | `/api/events/categories/`                    | Create a category                         | Organizer or admin       |
 | GET         | `/api/events/event/{event_id}/participants/` | List event participants                   | Event organizer          |
@@ -327,6 +329,9 @@ Event list supports these query parameters:
 - `is_active=true|false`
 - `search=<term>` or `q=<term>`
 - `ordering=date`, `title`, `created_at`, or `price`
+
+The organizer event list also supports `status=active|inactive` and
+`is_active=true|false`.
 
 List responses are paginated and use the standard DRF shape:
 
@@ -357,8 +362,8 @@ Authentication uses short-lived JWT access tokens and refresh tokens:
 - Refresh tokens expire after 7 days.
 - Refresh-token rotation is enabled.
 - Rotated and logged-out refresh tokens are blacklisted.
-- Logging out prevents future access-token refreshes, but an already-issued access
-  token remains valid until it expires.
+- Logging out immediately revokes the submitted refresh token and the current access
+  token.
 
 Safe event methods are publicly readable. Event creation and modification require an
 organizer or administrator, and object-level checks ensure organizers can only modify
