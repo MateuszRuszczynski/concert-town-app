@@ -1,11 +1,13 @@
 from io import StringIO
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.management import call_command
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import AccessToken
 
 from events.models import Category, Event
 
@@ -73,6 +75,84 @@ class EventListTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["title"], "Concert C")
+
+
+class EventCreationPermissionTests(APITestCase):
+    def setUp(self):
+        cache.clear()
+        self.organizer = User.objects.create_user(
+            email="event-creator@example.com",
+            password="Password123!",
+            role=User.Role.ORGANIZER,
+        )
+        self.event_data = {
+            "title": "JWT organizer event",
+            "description": "Created with an organizer access token.",
+            "starts_at": timezone.now() + timezone.timedelta(days=10),
+            "ends_at": timezone.now() + timezone.timedelta(days=10, hours=2),
+            "host": "JWT Organizer",
+            "location": {"city": "Kyiv", "venue": "Test Hall"},
+            "price": "100.00",
+            "total_seats": 100,
+            "available_seats": 100,
+        }
+
+    def test_organizer_can_create_event_with_jwt_access_token(self):
+        login_response = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": self.organizer.email, "password": "Password123!"},
+            format="json",
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {login_response.data['access']}"
+        )
+        access_token = AccessToken(login_response.data["access"])
+
+        response = self.client.post(
+            reverse("event-list"), self.event_data, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["organizer"], self.organizer.id)
+        self.assertEqual(access_token["role"], User.Role.ORGANIZER)
+
+    def test_legacy_organizer_role_format_is_normalized(self):
+        self.organizer.role = " Organizer "
+        self.organizer.save(update_fields=["role"])
+        login_response = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": self.organizer.email, "password": "Password123!"},
+            format="json",
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {login_response.data['access']}"
+        )
+
+        response = self.client.post(
+            reverse("event-list"), self.event_data, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_customer_cannot_create_event_with_jwt_access_token(self):
+        customer = User.objects.create_user(
+            email="event-customer@example.com",
+            password="Password123!",
+        )
+        login_response = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": customer.email, "password": "Password123!"},
+            format="json",
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {login_response.data['access']}"
+        )
+
+        response = self.client.post(
+            reverse("event-list"), self.event_data, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class OrganizerEventListTests(APITestCase):

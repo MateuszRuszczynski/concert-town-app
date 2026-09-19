@@ -14,6 +14,12 @@ User = get_user_model()
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     email = serializers.EmailField(required=True)
 
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token["role"] = str(user.role).strip().lower()
+        return token
+
     def validate(self, attrs):
         email_val = attrs.get("email") or attrs.get(self.username_field)
         if not email_val:
