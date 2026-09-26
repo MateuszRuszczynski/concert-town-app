@@ -1,0 +1,34 @@
+.statCard {
+  color: var(--secondary-color);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.iconBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--accent-surface);
+}
+
+.icon {
+  color: var(--on-accent);
+}
+
+.value {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  line-height: 32px;
+  color: var(--primary-color);
+}
+
+.footer {
+  font-size: 12px;
+  line-height: 16px;
+}

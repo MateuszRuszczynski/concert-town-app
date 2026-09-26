@@ -1,0 +1,17 @@
+.emptyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px;
+  border: 0.8px dashed var(--border-color);
+  border-radius: 14px;
+}
+
+.emptyMessage {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--secondary-color);
+}

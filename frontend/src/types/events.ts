@@ -32,6 +32,7 @@ export interface EventDetails {
   organizerId: number;
   status: EventStatus;
   image?: File | null | undefined;
+  isActive: boolean;
 }
 
 export type EventFormData = Omit<
@@ -40,6 +41,8 @@ export type EventFormData = Omit<
   | 'organizerId'
   | 'participants'
   | 'category'
+  | 'isActive'
 > & {
   categoryId: number;
+  status: EventStatus;
 };

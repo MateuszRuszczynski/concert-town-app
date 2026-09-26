@@ -1,20 +1,24 @@
 //#region imports
 import type { FC } from 'react';
 import type { Participant } from '../../../../types/events';
-import styles from './ParticipantsTable.module.scss';
 import { Mail, User } from 'lucide-react';
+import { EmptyBlock } from '../../../../components/EmptyBlock';
+import { SkeletonItem } from '../../../../components/SkeletonItem';
+import styles from './ParticipantsTable.module.scss';
 //#endregion
 
 interface Props {
   participants: Participant[];
+  isLoading?: boolean;
 }
 
-export const ParticipantsTable: FC<Props> = ({ participants }) => {
-  if (participants.length === 0) {
+export const ParticipantsTable: FC<Props> = ({
+  participants,
+  isLoading = false
+}) => {
+  if (!isLoading && participants.length === 0) {
     return (
-      <p className={styles.emptyState}>
-        No one has registered for this event yet.
-      </p>
+      <EmptyBlock emptyMessage='No one has registered for this event yet.' />
     );
   }
 
@@ -48,13 +52,27 @@ export const ParticipantsTable: FC<Props> = ({ participants }) => {
       </thead>
 
       <tbody>
-        {participants.map((participant, i) => (
-          <tr key={participant.userId} className={styles.row}>
-            <td className={styles.cell}>{i + 1}</td>
-            <td className={styles.cell}>{participant.name}</td>
-            <td className={styles.cell}>{participant.email}</td>
-          </tr>
-        ))}
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <tr className={styles.row} key={i}>
+                <td className={styles.cell}>
+                  <SkeletonItem additionalClass={styles.numberSkeleton} />
+                </td>
+                <td className={styles.cell}>
+                  <SkeletonItem additionalClass={styles.nameSkeleton} />
+                </td>
+                <td className={styles.cell}>
+                  <SkeletonItem additionalClass={styles.emailSkeleton} />
+                </td>
+              </tr>
+            ))
+          : participants.map((participant, i) => (
+              <tr key={participant.userId} className={styles.row}>
+                <td className={styles.cell}>{i + 1}</td>
+                <td className={styles.cell}>{participant.name}</td>
+                <td className={styles.cell}>{participant.email}</td>
+              </tr>
+            ))}
       </tbody>
     </table>
   );

@@ -1,8 +1,11 @@
-import type { FC } from "react";
-import type { EventDetails } from "../../types/events";
-import { EventItemSkeleton } from "../EventItem/EventItemSkeleton";
-import { EventItem } from "../EventItem";
-import styles from './EventsList.module.scss';
+//#region imports
+import type { FC } from 'react';
+import type { EventDetails } from '../../types/events';
+import { EventItem } from '../EventItem';
+import { EmptyBlock } from '../EmptyBlock';
+import styles from './base.module.scss';
+import { EventsListSkeleton } from './EventsListSkeleton';
+//#endregion
 
 interface Props {
   events: EventDetails[];
@@ -12,22 +15,18 @@ interface Props {
 export const EventsList: FC<Props> = ({ events, isLoading }) => {
   if (isLoading) {
     return (
-      <ul className={styles.eventsList}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <li key={i}><EventItemSkeleton /></li>
-        ))}
-      </ul>
+      <EventsListSkeleton />
     );
   }
 
   if (events.length === 0) {
-    return <div className={styles.emptyBlock}>No events match your filters.</div>;
+    return <EmptyBlock emptyMessage='No events match your filters.' />;
   }
 
   return (
     <ul className={styles.eventsList}>
-      {events.map((event) => (
-        <li key={event.id} className={styles.eventListItem}>
+      {events.map(event => (
+        <li key={event.id}>
           <EventItem event={event} />
         </li>
       ))}

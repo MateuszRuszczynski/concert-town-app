@@ -2,6 +2,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useState,
   type FC,
   type ReactNode
@@ -24,7 +25,12 @@ export const RegistrationsProvider: FC<Props> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
 
   const { token } = useAuth();
-  const { refetchEvents } = useEvents();
+  const { events, refetchEvents } = useEvents();
+
+  const attendingEvents = useMemo(() => {
+    const registeredIds = new Set(registrations.map((r) => r.event));
+    return events.filter((e) => registeredIds.has(e.id));
+  }, [events, registrations]);
 
   const refetchRegistrations = useCallback(async () => {
     if (!token) return;
@@ -75,6 +81,7 @@ export const RegistrationsProvider: FC<Props> = ({ children }) => {
     <RegistrationsContext.Provider
       value={{
         registrations,
+        attendingEvents,
         isLoading,
         error,
         register,

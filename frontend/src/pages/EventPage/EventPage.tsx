@@ -21,8 +21,6 @@ export const EventPage = () => {
   const { id } = useParams<{ id: string }>();
   const { event, isLoading, refetch } = useEvent(id);
 
-  console.log(event);
-
   usePageTitle(event?.title || 'Event Not Found');
 
   const relation = useEventRelation(event || undefined);

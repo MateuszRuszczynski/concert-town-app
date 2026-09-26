@@ -1,25 +1,21 @@
 //#region imports
 import { useParams } from 'react-router';
-import { useEvents } from '../../contexts/EventContext';
 import type { EventFormData } from '../../types/events';
 import { EventForm } from '../../components/EventForm';
 import { EventFormLayout } from '../../components/EventFormLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
 import { EventNotFound } from '../EventNotFound';
+import { useEvent } from '../EventPage/hooks/useEvent';
 //#endregion
 
 export const EditEvent = () => {
   const { id } = useParams<{ id: string }>();
-  const { events } = useEvents();
+  const { event } = useEvent(id);
   const { user } = useAuth();
 
-  const event = events.find(e => e.id === Number(id));
-
   if (!event) {
-    return (
-      <EventNotFound />
-    );
+    return <EventNotFound />;
   }
 
   if (event.organizerId !== user?.id) {

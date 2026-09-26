@@ -1,8 +1,10 @@
 import { createContext } from "react";
 import type { Bookings } from "../../api/bookings/bookingsTypes";
+import type { EventDetails } from "../../types/events";
 
 export interface RegistrationsContextType {
   registrations: Bookings[];
+  attendingEvents: EventDetails[];
   isLoading: boolean;
   error: string | null;
   register: (eventId: number) => Promise<void>;

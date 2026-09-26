@@ -10,6 +10,8 @@ import { EventsContext } from './EventsContext';
 import type { EventDetails, EventFormData } from '../../types/events';
 import { useAuth } from '../AuthContext';
 import {
+  getActiveMyEvents,
+  getDrafts,
   mapEventFormDataToEventRequest,
   mapEventResponseToEventDetails
 } from '../../api/events';
@@ -27,13 +29,19 @@ type Props = {
 };
 
 export const EventsProvider: FC<Props> = ({ children }) => {
+  //#region state
   const [events, setEvents] = useState<EventDetails[]>([]);
   const [myEvents, setMyEvents] = useState<EventDetails[]>([]);
+  const [drafts, setDrafts] = useState<EventDetails[]>([]);
+  const [activeMyEvents, setActiveMyEvents] = useState<EventDetails[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMyEventsLoading, setIsMyEventsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { user, token } = useAuth();
+  //#endregion
 
+  //#region fetchers
   const refetchEvents = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -61,6 +69,61 @@ export const EventsProvider: FC<Props> = ({ children }) => {
     }
   }, [token, user?.role]);
 
+  const refetchDrafts = useCallback(async () => {
+    if (!token || user?.role === 'customer') {
+      setDrafts([]);
+      return;
+    }
+    try {
+      const response = await getDrafts(token);
+      setDrafts(response.results.map(mapEventResponseToEventDetails));
+    } catch {
+      setDrafts([]);
+    }
+  }, [token, user?.role]);
+
+  const refetchActiveMyEvents = useCallback(async () => {
+    if (!token || user?.role === 'customer') {
+      setActiveMyEvents([]);
+      return;
+    }
+    try {
+      const response = await getActiveMyEvents(token);
+      setActiveMyEvents(response.results.map(mapEventResponseToEventDetails));
+    } catch {
+      setActiveMyEvents([]);
+    }
+  }, [token, user?.role]);
+
+  const refetchMyEventsData = useCallback(async () => {
+    if (!token || user?.role === 'customer') {
+      setMyEvents([]);
+      setDrafts([]);
+      setActiveMyEvents([]);
+      return;
+    }
+
+    setIsMyEventsLoading(true);
+
+    try {
+      await Promise.all([
+        refetchMyEvents(),
+        refetchDrafts(),
+        refetchActiveMyEvents()
+      ]);
+    } finally {
+      setIsMyEventsLoading(false);
+    }
+  }, [
+    token,
+    user?.role,
+    refetchMyEvents,
+    refetchDrafts,
+    refetchActiveMyEvents
+  ]);
+  //#endregion
+
+  //#region effects
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     refetchEvents();
@@ -68,9 +131,11 @@ export const EventsProvider: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    refetchMyEvents();
-  }, [refetchMyEvents]);
+    refetchMyEventsData();
+  }, [refetchMyEventsData]);
+  //#endregion
 
+  //#region mutations
   const addEvent = useCallback(
     async (data: EventFormData) => {
       if (!token) throw new Error('Not authenticated');
@@ -80,9 +145,9 @@ export const EventsProvider: FC<Props> = ({ children }) => {
       );
       const newEvent = mapEventResponseToEventDetails(response);
       setEvents(prev => [newEvent, ...prev]);
-      await refetchMyEvents();
+      await refetchMyEventsData();
     },
-    [token, refetchMyEvents]
+    [token, refetchMyEventsData]
   );
 
   const updateEvent = useCallback(
@@ -92,9 +157,9 @@ export const EventsProvider: FC<Props> = ({ children }) => {
       const response = await eventsService.updateEvent(id, payload, token);
       const updated = mapEventResponseToEventDetails(response);
       setEvents(prev => prev.map(e => (e.id === id ? updated : e)));
-      await refetchMyEvents();
+      await refetchMyEventsData();
     },
-    [token, refetchMyEvents]
+    [token, refetchMyEventsData]
   );
 
   const deleteEvent = useCallback(
@@ -102,18 +167,22 @@ export const EventsProvider: FC<Props> = ({ children }) => {
       if (!token) throw new Error('Not authenticated');
       await eventsService.deleteEvent(id, token);
       setEvents(prev => prev.filter(e => e.id !== id));
-      await refetchMyEvents();
+      await refetchMyEventsData();
     },
-    [token, refetchMyEvents]
+    [token, refetchMyEventsData]
   );
+  //#endregion
 
   return (
     <EventsContext.Provider
       value={{
         events,
         myEvents,
+        drafts,
+        activeMyEvents,
         isLoading,
         error,
+        isMyEventsLoading,
         addEvent,
         updateEvent,
         deleteEvent,

@@ -51,13 +51,15 @@
   }
 }
 
-.emptyState {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--secondary-color);
-  font-size: 14px;
+.numberSkeleton {
+  width: 18px;
+  height: 16px;
+}
 
-  padding: 48px;
-  border: 0.8px dashed var(--border-color);
-  border-radius: 14px;
+.nameSkeleton {
+  height: 20px;
+}
+
+.emailSkeleton {
+  height: 20px;
 }

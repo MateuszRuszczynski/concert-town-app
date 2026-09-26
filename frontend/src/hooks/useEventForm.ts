@@ -191,7 +191,7 @@ export function useEventForm (
       capacity: Number(capacity),
       registeredCount: initialValues?.registeredCount || 0,
       price: Number(price),
-      status
+      status,
     };
 
     try {

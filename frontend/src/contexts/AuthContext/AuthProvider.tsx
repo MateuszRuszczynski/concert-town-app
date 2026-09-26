@@ -2,6 +2,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   type FC,
   type ReactNode
@@ -101,12 +102,19 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const refreshTokenRef = useRef(refreshTokenValue);
+
+  useEffect(() => {
+    refreshTokenRef.current = refreshTokenValue;
+  }, [refreshTokenValue]);
+
   useEffect(() => {
     setRefreshHandler(async () => {
-      if (!refreshTokenValue) return null;
+      const currentRefresh = refreshTokenRef.current;
+      if (!currentRefresh) return null;
 
       try {
-        const { access, refresh } = await refreshToken(refreshTokenValue);
+        const { access, refresh } = await refreshToken(currentRefresh);
         setToken(access);
         setRefreshTokenValue(refresh);
         return access;
@@ -115,21 +123,14 @@ export const AuthProvider: FC<Props> = ({ children }) => {
         return null;
       }
     });
-  }, [
-    refreshTokenValue,
-    setToken,
-    setRefreshTokenValue,
-    clearSession
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   //#endregion
 
   //#region auth actions
-  const signUp = useCallback(
-    async (data: SignUpData) => {
-      await registerUser(mapSignUpDataToRegisterRequest(data));
-    },
-    []
-  );
+  const signUp = useCallback(async (data: SignUpData) => {
+    await registerUser(mapSignUpDataToRegisterRequest(data));
+  }, []);
 
   const signIn = useCallback(
     async (data: SignInData) => {
@@ -144,11 +145,13 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   );
 
   const signOut = useCallback(async () => {
-    if (token && refreshTokenValue) {
-      await logOut(refreshTokenValue, token);
+    try {
+      if (token && refreshTokenValue) {
+        await logOut(refreshTokenValue, token);
+      }
+    } finally {
+      clearSession();
     }
-
-    clearSession();
   }, [clearSession, refreshTokenValue, token]);
   //#endregion
 

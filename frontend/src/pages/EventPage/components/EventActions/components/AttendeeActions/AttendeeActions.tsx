@@ -6,8 +6,8 @@ import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
 import { ConfirmDialog } from '../../../../../../components/ConfirmDialog';
 import { CalendarX } from 'lucide-react';
 import { Button } from '../../../../../../components/Button';
-import styles from "./AttendeeActions.module.scss";
 import { useRegistrations } from '../../../../../../contexts/RegistrationsContext';
+import styles from "./AttendeeActions.module.scss";
 //#endregion
 
 interface Props {

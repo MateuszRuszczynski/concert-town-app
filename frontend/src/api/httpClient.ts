@@ -35,7 +35,7 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   return data as T;
 };
 
-let refreshHandler: (() => Promise<string | null>) | null = null;
+export let refreshHandler: (() => Promise<string | null>) | null = null;
 
 export function setRefreshHandler(handler: () => Promise<string | null>) {
   refreshHandler = handler;

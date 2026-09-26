@@ -1,13 +1,14 @@
 //#region imports
 import cn from 'classNames';
 import type { FC } from 'react';
-import { Plus, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { HomeLink } from '../../../HomeLink';
 import { NavList } from '../NavList';
 import { Button } from '../../../Button';
-import styles from './Sidebar.module.scss';
 import { useAuth } from '../../../../contexts/AuthContext';
+import { AddEventButton } from '../../../AddEventButton';
+import styles from './Sidebar.module.scss';
 //#endregion
 
 interface Props {
@@ -72,18 +73,7 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
             </>
           )}
 
-          {user && (
-            <Button
-              onClick={() => {
-                navigate('/events/new');
-                onClose();
-              }}
-              disabled={user?.role === 'customer'}
-            >
-              <Plus size={16} />
-              Add event
-            </Button>
-          )}
+          {user && <AddEventButton onNavigate={onClose} />}
         </div>
       </aside>
     </>

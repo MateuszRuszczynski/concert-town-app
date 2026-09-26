@@ -1,9 +1,9 @@
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import styles from "./PageHeader.module.scss";
 
 interface Props {
   title: string;
-  subtitle: string;
+  subtitle: ReactNode;
 };
 
 export const PageHeader:FC<Props> = ({ title, subtitle }) => {

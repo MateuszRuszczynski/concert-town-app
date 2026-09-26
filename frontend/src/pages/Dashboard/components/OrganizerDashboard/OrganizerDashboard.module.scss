@@ -1,0 +1,45 @@
+.dashboard {
+  @include page-container;
+  @include fade-in-animation;
+
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  align-items: center;
+}
+
+.dashboardTabs {
+  width: fit-content;
+  display: flex;
+  align-self: center;
+  padding: 4px;
+  border-radius: 99px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  gap: 2px;
+}
+
+.pillTab {
+  padding: 8px 20px;
+  border-radius: 99px;
+  border: none;
+  background: transparent;
+  color: var(--secondary-color);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  @include hover(background-color, var(--hover-color));
+
+  &.active {
+    background: var(--accent-color);
+    color: #fff;
+  }
+}

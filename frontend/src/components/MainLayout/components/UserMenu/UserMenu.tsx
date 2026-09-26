@@ -59,7 +59,7 @@ export const UserMenu = () => {
         onClick={() => setIsUserMenuShowed(prev => !prev)}
       >
         <div className={cn(styles.avatar, styles[user.role])}>
-          {userInitials || 'AD'}
+          {userInitials || ''}
         </div>
 
         <span className={cn(styles.triggerLabel, styles.onDesktopOnly)}>

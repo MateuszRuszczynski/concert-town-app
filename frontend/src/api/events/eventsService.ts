@@ -32,13 +32,19 @@ export const eventsService = {
     get<PaginatedResponse<EventResponse>>(
       `/api/events/my/${buildQueryString(params)}`,
       { token }
-    )
+    ),
+  getDrafts: (token: string) =>
+    get<PaginatedResponse<EventResponse>>('/api/events/my/inactive/', { token }),
+  getActiveMyEvents: (token: string) =>
+  get<PaginatedResponse<EventResponse>>('/api/events/my/active/', { token }),
 };
 
 export const {
   getEvents,
   getEvent,
   getMyEvents,
+  getActiveMyEvents,
+  getDrafts,
   createEvent,
   updateEvent,
   deleteEvent,

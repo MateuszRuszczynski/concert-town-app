@@ -29,7 +29,8 @@ export function mapEventResponseToEventDetails (
     capacity: response.total_seats,
     price: response.price,
     status: response.is_active ? 'published' : 'draft',
-    registeredCount
+    registeredCount,
+    isActive: response.is_active,
   };
 }
 
