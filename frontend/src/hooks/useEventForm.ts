@@ -17,6 +17,7 @@ import {
   fromDateTimeInputValue,
   toDateTimeInputValue
 } from '../utils/dateTimeInputFormat';
+import { getErrorMessage } from '../utils/getErrorMessage';
 //#endregion
 
 export function useEventForm (
@@ -221,8 +222,7 @@ export function useEventForm (
 
       navigate(isEditMode ? `/events/${eventId}` : '/events');
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Something went wrong. Try again.';
+      const message = getErrorMessage(err, 'Something went wrong. Try again.');
       setSubmitError(message);
       showToast(message, 'error');
     } finally {
