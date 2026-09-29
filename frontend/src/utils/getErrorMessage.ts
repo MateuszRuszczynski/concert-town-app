@@ -10,6 +10,10 @@ export const getErrorMessage = (
     return error.detail;
   }
 
+  if (error instanceof Error) {
+    return error.message;
+  }
+
   for (const value of Object.values(error)) {
     if (Array.isArray(value) && typeof value[0] === 'string') {
       return value[0];

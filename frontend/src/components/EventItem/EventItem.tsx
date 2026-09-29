@@ -68,7 +68,7 @@ export const EventItem: FC<Props> = ({ event }) => {
           <div className={styles.attribute}>
             <MapPin size={16} aria-hidden='true' />
 
-            {event.location.city}
+            {event.location === 'online' ? 'Online event' : event.location.city}
           </div>
 
           <div className={styles.attribute}>

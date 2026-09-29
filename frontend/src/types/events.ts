@@ -1,7 +1,9 @@
-export interface EventLocation {
+export interface OfflineLocation {
   city: string;
   venue: string;
 }
+
+export type EventLocation = 'online' | OfflineLocation;
 
 export type Participant = {
   userId: number;

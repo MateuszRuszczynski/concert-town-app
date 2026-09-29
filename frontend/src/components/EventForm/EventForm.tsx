@@ -7,7 +7,7 @@ import { CapacityPricingSection } from './components/CapacityPricingSection';
 import { useEventForm } from '../../hooks/useEventForm';
 import type { EventFormData } from '../../types/events';
 import type { FC } from 'react';
-import styles from './EventForm.module.scss';
+import baseStyles from './base.module.scss';
 //#endregion
 
 interface Props {
@@ -32,7 +32,7 @@ export const EventForm: FC<Props> = ({ eventId, initialValues }) => {
   } = submission;
 
   return (
-    <form onSubmit={handleSubmit} noValidate className={styles.eventForm}>
+    <form onSubmit={handleSubmit} noValidate className={baseStyles.eventForm}>
       <EventDetailsSection
         values={{
           title: values.title,
@@ -60,12 +60,14 @@ export const EventForm: FC<Props> = ({ eventId, initialValues }) => {
         values={{
           startsAt: values.startsAt,
           endsAt: values.endsAt,
+          isOnline: values.isOnline,
           city: values.city,
           venue: values.venue
         }}
         onChange={{
           onStartsAtChange: onChange.setStartsAt,
           onEndsAtChange: onChange.setEndsAt,
+          onIsOnlineChange: onChange.setIsOnline,
           onCityChange: onChange.setCity,
           onVenueChange: onChange.setVenue
         }}
@@ -91,7 +93,7 @@ export const EventForm: FC<Props> = ({ eventId, initialValues }) => {
 
       {submitError && <FormError errorMessage={submitError} />}
 
-      <div className={styles.formButtons}>
+      <div className={baseStyles.formButtons}>
         <Button
           type='button'
           fitContent={true}

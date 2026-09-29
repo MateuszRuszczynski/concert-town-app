@@ -7,10 +7,11 @@ import type { FC } from 'react';
 
 interface Props {
   fitContent?: boolean;
+  additionalClass?: string;
 }
 
-export const ButtonSkeleton:FC<Props> = ({ fitContent }) => (
-  <SkeletonItem additionalClass={cn(baseStyles.button, {
+export const ButtonSkeleton:FC<Props> = ({ fitContent, additionalClass }) => (
+  <SkeletonItem additionalClass={cn(baseStyles.button, additionalClass, {
     [baseStyles.fitContent]: fitContent,
   })} />
 );

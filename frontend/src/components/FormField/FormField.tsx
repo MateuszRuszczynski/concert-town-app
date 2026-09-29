@@ -2,6 +2,7 @@
 import type { InputHTMLAttributes, ReactNode, FC } from "react";
 import cn from "classNames";
 import { Check } from "lucide-react";
+import baseStyles from './base.module.scss';
 import styles from "./FormField.module.scss";
 //#endregion
 
@@ -23,9 +24,9 @@ export const FormField: FC<Props> = ({
   endAdornment,
   ...inputProps
 }) => (
-  <div className={styles.formfield}>
+  <div className={baseStyles.formfield}>
     {label && (
-      <label htmlFor={id} className={styles.label}>
+      <label htmlFor={id} className={baseStyles.label}>
         {label}
       </label>
     )}

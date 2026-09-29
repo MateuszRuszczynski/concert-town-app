@@ -1,8 +1,10 @@
 //#region imports
 import type { FC, ReactNode } from 'react';
+import cn from 'classNames';
 import { PageHeader } from '../PageHeader/PageHeader';
-import styles from './EventFormLayout.module.scss';
 import { BackLink } from '../BackLink';
+import baseStyles from './base.module.scss';
+import styles from './EventFormLayout.module.scss';
 //#endregion
 
 interface Props {
@@ -20,8 +22,8 @@ export const EventFormLayout: FC<Props> = ({
   backTo,
   children
 }) => (
-  <section className={styles.eventFormLayout}>
-    <div className={styles.topBar}>
+  <section className={cn(baseStyles.eventFormLayout, styles.eventFormLayout)}>
+    <div className={baseStyles.topBar}>
       <BackLink to={backTo} label={backLabel} />
 
       <PageHeader title={title} subtitle={subtitle} />

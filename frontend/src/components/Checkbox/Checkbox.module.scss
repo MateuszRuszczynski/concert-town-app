@@ -5,18 +5,11 @@
   color: var(--primary-color);
 }
 
-.control {
-  @include flex-row;
-}
-
 .checkbox {
   appearance: none;
-  width: 16px;
-  height: 16px;
+  background: #00000000;
 
   border: 1px solid var(--secondary-color);
-  border-radius: 4px;
-  background: #00000000;
 
   &:checked {
     background-color: var(--accent-color);;
@@ -36,11 +29,6 @@
       transform: rotate(45deg);
     }
   }
-}
-
-.label {
-  @include text-medium;
-  color: var(--primary-color);
 }
 
 .errorMessage {

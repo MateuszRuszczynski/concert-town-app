@@ -1,11 +1,3 @@
-.formfield {
-  @include form-field;
-}
-
-.label {
-  @include text-medium;
-}
-
 .inputWrapper {
   position: relative;
 }

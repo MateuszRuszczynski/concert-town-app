@@ -1,5 +1,8 @@
+//#region imports
 import type { FC, ReactNode } from "react";
+import baseStyles from './base.module.scss';
 import styles from "./PageHeader.module.scss";
+//#endregion
 
 interface Props {
   title: string;
@@ -8,7 +11,7 @@ interface Props {
 
 export const PageHeader:FC<Props> = ({ title, subtitle }) => {
   return (
-    <header className={styles.pageHeader}>
+    <header className={baseStyles.pageHeader}>
       <h1 className={styles.title}>{title}</h1>
 
       <p className={styles.subtitle}>{subtitle}</p>

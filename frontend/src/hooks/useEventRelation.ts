@@ -7,15 +7,15 @@ import type { EventDetails } from '../types/events';
 export function useEventRelation (
   event: EventDetails | undefined
 ): 'organizing' | 'attending' | undefined {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { registrations } = useRegistrations();
 
   if (!event) return;
-  if (!user) return undefined;
+  if (!isAuthenticated) return undefined;
   const isRegistered = registrations.some(r => r.event === event.id);
 
   if (isRegistered) return 'attending';
-  if (event.organizerId === user.id) return 'organizing';
+  if (event.organizerId === user?.id) return 'organizing';
 
   return undefined;
 }

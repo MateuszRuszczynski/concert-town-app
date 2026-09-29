@@ -1,1 +1,2 @@
-export * from "./EventDetailsSection";
+export * from './EventDetailsSection';
+export * from './EventDetailsSectionSkeleton';

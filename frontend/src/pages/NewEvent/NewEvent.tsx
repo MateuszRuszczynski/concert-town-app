@@ -5,14 +5,21 @@ import { EventFormLayout } from '../../components/EventFormLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
 import { Button } from '../../components/Button';
+import { EventFormLayoutSkeleton } from '../../components/EventFormLayout/EventFormLayoutSkeleton';
 //#endregion
 
 export const NewEvent = () => {
-  const { user } = useAuth();
+  const { isOrganizerOrAdmin, isAuthenticated, isLoading } = useAuth();
 
   usePageTitle('New Event');
 
-  if (!user || user?.role === 'customer') {
+  if (isLoading) {
+    return (
+      <EventFormLayoutSkeleton backTo='/events' backLabel='Back to events' />
+    );
+  }
+
+  if (!isAuthenticated || !isOrganizerOrAdmin) {
     return (
       <ErrorPage
         type='access-denied'
@@ -21,9 +28,7 @@ export const NewEvent = () => {
         buttonText='Back to events'
         backTo='/events'
       >
-        <Button onClick={() => {}}>
-          Become an organizer
-        </Button>
+        <Button onClick={() => {}}>Become an organizer</Button>
       </ErrorPage>
     );
   }

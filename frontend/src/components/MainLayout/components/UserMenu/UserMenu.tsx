@@ -5,7 +5,6 @@ import { LogOut, User2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useOutsideClick } from '../../../../hooks/useOutsideClick';
 import type { UserRole } from '../../../../types/user';
-import { capitalizeFirstWord } from '../../../../utils/capitalizeFirstWord';
 import { useAuth } from '../../../../contexts/AuthContext';
 import styles from './UserMenu.module.scss';
 //#endregion
@@ -76,7 +75,7 @@ export const UserMenu = () => {
 
             {user.role !== 'customer' && (
               <span className={cn(styles.roleBadge, styles[user.role])}>
-                {capitalizeFirstWord(ROLE_LABELS[user.role])}
+                {ROLE_LABELS[user.role]}
               </span>
             )}
           </div>

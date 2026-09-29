@@ -7,12 +7,24 @@ import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
 import { EventNotFound } from '../EventNotFound';
 import { useEvent } from '../EventPage/hooks/useEvent';
+import { EventFormLayoutSkeleton } from '../../components/EventFormLayout/EventFormLayoutSkeleton';
 //#endregion
 
 export const EditEvent = () => {
   const { id } = useParams<{ id: string }>();
-  const { event } = useEvent(id);
-  const { user } = useAuth();
+  const { event, isLoading: eventLoading } = useEvent(id);
+  const { user, isLoading: authLoading } = useAuth();
+
+  const isLoading = eventLoading || authLoading;
+
+  if (isLoading) {
+    return (
+      <EventFormLayoutSkeleton
+        backTo={`/events/${event?.id}`}
+        backLabel='Back to event'
+      />
+    );
+  }
 
   if (!event) {
     return <EventNotFound />;

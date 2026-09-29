@@ -1,1 +1,2 @@
-export * from "./CapacityPricingSection";
+export * from './CapacityPricingSection';
+export * from './CapacityPricingSectionSkeleton';

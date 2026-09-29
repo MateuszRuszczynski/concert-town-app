@@ -4,9 +4,9 @@ import { EventFormSection } from '../EventFormSection';
 import { FormField } from '../../../FormField';
 import { TextareaField } from '../../../TextareaField';
 import { CustomSelect } from '../../../CustomSelect';
-import styles from './EventDetailsSection.module.scss';
 import { useCategories } from '../../../../contexts/CategoriesContext/useCategories';
 import type { EventStatus } from '../../../../types/events';
+import baseStyles from './base.module.scss';
 //#endregion
 
 interface EventDetailsValues {
@@ -47,7 +47,7 @@ export const EventDetailsSection: FC<Props> = ({
   return (
     <EventFormSection title='Event details'>
       <>
-        <div className={styles.fullWidth}>
+        <div className={baseStyles.fullWidth}>
           <FormField
             label='Title'
             id='title'
@@ -59,7 +59,7 @@ export const EventDetailsSection: FC<Props> = ({
           />
         </div>
 
-        <div className={styles.fullWidth}>
+        <div className={baseStyles.fullWidth}>
           <TextareaField
             label='Description'
             id='description'
@@ -72,7 +72,7 @@ export const EventDetailsSection: FC<Props> = ({
           />
         </div>
 
-        <div className={styles.fullWidth}>
+        <div className={baseStyles.fullWidth}>
           <FormField
             label='Host'
             id='host'

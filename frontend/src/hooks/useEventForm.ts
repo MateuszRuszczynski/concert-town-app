@@ -12,13 +12,23 @@ import { useEvents } from '../contexts/EventContext/useEvents';
 import type { EventFormData, EventStatus } from '../types/events';
 import { useNotification } from '../contexts/NotificationContext';
 import { normalizeNumericInput } from '../utils/normalizeNumericInput';
-import { toDatetimeLocal, datetimeLocalToUTC } from '../utils/dateUtils';
+import { toDatetimeLocal } from '../utils/dateUtils';
+import {
+  fromDateTimeInputValue,
+  toDateTimeInputValue
+} from '../utils/dateTimeInputFormat';
 //#endregion
 
 export function useEventForm (
   eventId: number | undefined,
   initialValues: EventFormData | undefined
 ) {
+  const isInitialOnline = initialValues?.location === 'online';
+  const initialOfflineLocation =
+    initialValues?.location && initialValues.location !== 'online'
+      ? initialValues.location
+      : undefined;
+
   //#region input controls;
   const [title, setTitle] = useState(initialValues?.title || '');
   const [description, setDescription] = useState(
@@ -29,13 +39,14 @@ export function useEventForm (
     initialValues?.categoryId || 0
   );
   const [startsAt, setStartsAt] = useState(
-    toDatetimeLocal(initialValues?.startsAt || '')
+    toDateTimeInputValue(initialValues?.startsAt || '')
   );
   const [endsAt, setEndsAt] = useState(
-    toDatetimeLocal(initialValues?.endsAt || '')
+    toDateTimeInputValue(initialValues?.endsAt || '')
   );
-  const [city, setCity] = useState(initialValues?.location.city ?? '');
-  const [venue, setVenue] = useState(initialValues?.location.venue ?? '');
+  const [isOnline, setIsOnline] = useState(isInitialOnline);
+  const [city, setCity] = useState(initialOfflineLocation?.city ?? '');
+  const [venue, setVenue] = useState(initialOfflineLocation?.venue ?? '');
   const [capacity, setCapacity] = useState(initialValues?.capacity || '100');
   const [price, setPrice] = useState(initialValues?.price || '0');
   const [status, setStatus] = useState<EventStatus>(
@@ -55,6 +66,7 @@ export function useEventForm (
     categoryId,
     startsAt,
     endsAt,
+    isOnline,
     city,
     venue,
     capacity,
@@ -69,6 +81,7 @@ export function useEventForm (
     setCategoryId,
     setStartsAt,
     setEndsAt,
+    setIsOnline,
     setCity,
     setVenue,
     onCapacityChange,
@@ -90,8 +103,10 @@ export function useEventForm (
     startsAt:
       startsAt === '' ? 'Start date is required' : validateStartDate(startsAt),
     endsAt: endsAt === '' ? 'End date is required' : dateRangeError,
-    city: city.trim().length === 0 ? 'City is required' : undefined,
-    venue: venue.trim().length === 0 ? 'Venue is required' : undefined,
+    city:
+      !isOnline && city.trim().length === 0 ? 'City is required' : undefined,
+    venue:
+      !isOnline && venue.trim().length === 0 ? 'Venue is required' : undefined,
     capacity:
       capacity === ''
         ? 'Capacity is required'
@@ -144,8 +159,9 @@ export function useEventForm (
     setCategoryId(initialValues?.categoryId ?? 0);
     setStartsAt(toDatetimeLocal(initialValues?.startsAt || ''));
     setEndsAt(toDatetimeLocal(initialValues?.endsAt || ''));
-    setCity(initialValues?.location?.city ?? '');
-    setVenue(initialValues?.location?.venue ?? '');
+    setIsOnline(isInitialOnline);
+    setCity(initialOfflineLocation?.city ?? '');
+    setVenue(initialOfflineLocation?.venue ?? '');
     setCapacity(initialValues?.capacity?.toString() ?? '100');
     setPrice(initialValues?.price?.toString() ?? '0');
     setHasAttemptedSubmit(false);
@@ -185,13 +201,13 @@ export function useEventForm (
       description,
       host,
       categoryId,
-      startsAt: datetimeLocalToUTC(startsAt),
-      endsAt: datetimeLocalToUTC(endsAt),
-      location: { city, venue },
+      startsAt: fromDateTimeInputValue(startsAt),
+      endsAt: fromDateTimeInputValue(endsAt),
+      location: isOnline ? 'online' : { city, venue },
       capacity: Number(capacity),
       registeredCount: initialValues?.registeredCount || 0,
       price: Number(price),
-      status,
+      status
     };
 
     try {
