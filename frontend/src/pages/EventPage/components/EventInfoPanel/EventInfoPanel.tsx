@@ -7,6 +7,7 @@ import {
   Clock,
   MapPin,
   Users,
+  Wifi,
   type LucideIcon
 } from 'lucide-react';
 import {
@@ -33,15 +34,15 @@ interface InfoRow {
 
 export const EventInfoPanel: FC<Props> = ({ event }) => {
   const date = formatEventDate(event.startsAt);
-  const startTime = formatEventTime(event.startsAt);
-  const endTime = formatEventTime(event.endsAt);
+  const startsAt = formatEventTime(event.startsAt);
+  const endsAt = formatEventTime(event.endsAt);
 
   const infoRows: InfoRow[] = [
     { icon: CalendarDays, content: { primary: date } },
-    { icon: Clock, content: { primary: `${startTime} - ${endTime}` } },
+    { icon: Clock, content: { primary: `${startsAt} - ${endsAt}` } },
     {
-      icon: MapPin,
-      content: { primary: event.location.venue, secondary: event.location.city }
+      icon: event.location === 'online' ? Wifi : MapPin,
+      content: event.location === 'online' ? { primary: 'Online event'} : { primary: event.location.venue, secondary: event.location.city }
     },
     { icon: Users, content: { primary: `Hosted by ${event.host}` } }
   ];

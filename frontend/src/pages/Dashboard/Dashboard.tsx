@@ -4,14 +4,19 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { OrganizerDashboard } from './components/OrganizerDashboard';
 import { CustomerDashboard } from './components/CustomerDashboard';
 import { ErrorPage } from '../ErrorPage';
+import { DashboardSkeleton } from './DashboardSkeleton';
 //#endregion
 
 export const Dashboard = () => {
   usePageTitle('Dashboard');
 
-  const { user } = useAuth();
+  const { isAuthenticated, isOrganizerOrAdmin, isLoading } = useAuth();
 
-  if (!user) {
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
+
+  if (!isAuthenticated) {
     return (
       <ErrorPage
         type='access-denied'
@@ -23,7 +28,5 @@ export const Dashboard = () => {
     );
   }
 
-  const isOrganizer = user.role === 'organizer' || user?.role === 'admin';
-
-  return isOrganizer ? <OrganizerDashboard /> : <CustomerDashboard />;
+  return isOrganizerOrAdmin ? <OrganizerDashboard /> : <CustomerDashboard />;
 };

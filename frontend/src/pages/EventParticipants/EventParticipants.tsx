@@ -21,11 +21,12 @@ export const EventParticipants = () => {
   const { participants, isLoading: participantsLoading } = useParticipants(
     Number(id)
   );
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
+  const isLoading = eventLoading || authLoading;
 
   usePageTitle(event ? `Participants — ${event.title}` : 'Participants');
 
-  if (eventLoading) {
+  if (isLoading) {
     return <EventParticipantsSkeleton eventId={id || ''} />;
   }
 

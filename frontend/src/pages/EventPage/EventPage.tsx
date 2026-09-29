@@ -15,17 +15,21 @@ import { useEvent } from './hooks/useEvent';
 import { EventPageSkeleton } from './EventPageSkeleton';
 import baseStyles from './base.module.scss';
 import styles from './EventPage.module.scss';
+import { useAuth } from '../../contexts/AuthContext';
 //#endregion
 
 export const EventPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { event, isLoading, refetch } = useEvent(id);
+  const { event, isLoading: eventLoading, refetch } = useEvent(id);
+  const { isLoading: authLoading } = useAuth();
+  const isLoading = eventLoading || authLoading;
 
   usePageTitle(event?.title || 'Event Not Found');
 
   const relation = useEventRelation(event || undefined);
 
   if (isLoading) return <EventPageSkeleton />;
+
   if (!event) {
     return <EventNotFound />;
   }

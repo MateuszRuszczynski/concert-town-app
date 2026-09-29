@@ -6,10 +6,13 @@ import { getEvent, mapEventResponseToEventDetails } from '../../../api/events';
 
 export function useEvent (id: string | undefined) {
   const [event, setEvent] = useState<EventDetails | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchEvent = useCallback(async () => {
-    if (!id) return;
+    if (!id) {
+      setIsLoading(false);
+      return;
+    }
 
     setIsLoading(true);
     setEvent(null);
