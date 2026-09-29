@@ -28,6 +28,8 @@ export function useEventFilters () {
 
   useEffect(() => {
     async function fetchEvents () {
+      setIsLoading(true);
+
       try {
         const response = await eventsService.getEvents({
           search: debouncedSearchQuery || undefined,
