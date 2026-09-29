@@ -145,9 +145,19 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   );
 
   const signOut = useCallback(async () => {
+    let currentToken = token;
+    let currentRefreshToken = refreshTokenValue;
+
+    if (!currentToken && currentRefreshToken) {
+      const refreshed = await refreshToken(currentRefreshToken);
+
+      currentToken = refreshed.access;
+      currentRefreshToken = refreshed.refresh ?? currentRefreshToken;
+    }
+
     try {
-      if (token && refreshTokenValue) {
-        await logOut(refreshTokenValue, token);
+      if (currentToken && currentRefreshToken) {
+        await logOut(currentRefreshToken, currentToken);
       }
     } finally {
       clearSession();
@@ -161,6 +171,8 @@ export const AuthProvider: FC<Props> = ({ children }) => {
         user,
         token,
         isAuthenticated: Boolean(user),
+        isOrganizerOrAdmin:
+          user?.role === 'organizer' || user?.role === 'admin',
         isLoading,
         signUp,
         signIn,

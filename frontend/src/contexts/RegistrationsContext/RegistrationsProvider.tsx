@@ -21,10 +21,10 @@ type Props = {
 
 export const RegistrationsProvider: FC<Props> = ({ children }) => {
   const [registrations, setRegistrations] = useState<Bookings[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { token } = useAuth();
+  const { token, isLoading: isAuthLoading } = useAuth();
   const { events, refetchEvents } = useEvents();
 
   const attendingEvents = useMemo(() => {
@@ -33,7 +33,11 @@ export const RegistrationsProvider: FC<Props> = ({ children }) => {
   }, [events, registrations]);
 
   const refetchRegistrations = useCallback(async () => {
-    if (!token) return;
+    if (isAuthLoading || !token) {
+      setIsLoading(false);
+      return;
+    }
+  
     setIsLoading(true);
     setError(null);
 
@@ -45,7 +49,7 @@ export const RegistrationsProvider: FC<Props> = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [token]);
+  }, [isAuthLoading, token]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

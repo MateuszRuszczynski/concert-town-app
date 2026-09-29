@@ -38,7 +38,11 @@ export const EventsProvider: FC<Props> = ({ children }) => {
   const [isMyEventsLoading, setIsMyEventsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { user, token } = useAuth();
+  const {
+    token,
+    isLoading: isAuthLoading,
+    isOrganizerOrAdmin
+  } = useAuth();
   //#endregion
 
   //#region fetchers
@@ -57,7 +61,7 @@ export const EventsProvider: FC<Props> = ({ children }) => {
   }, []);
 
   const refetchMyEvents = useCallback(async () => {
-    if (!token || user?.role === 'customer') {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
       setMyEvents([]);
       return;
     }
@@ -67,10 +71,10 @@ export const EventsProvider: FC<Props> = ({ children }) => {
     } catch {
       setMyEvents([]);
     }
-  }, [token, user?.role]);
+  }, [isAuthLoading, token, isOrganizerOrAdmin]);
 
   const refetchDrafts = useCallback(async () => {
-    if (!token || user?.role === 'customer') {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
       setDrafts([]);
       return;
     }
@@ -80,10 +84,10 @@ export const EventsProvider: FC<Props> = ({ children }) => {
     } catch {
       setDrafts([]);
     }
-  }, [token, user?.role]);
+  }, [isAuthLoading, token, isOrganizerOrAdmin]);
 
   const refetchActiveMyEvents = useCallback(async () => {
-    if (!token || user?.role === 'customer') {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
       setActiveMyEvents([]);
       return;
     }
@@ -93,10 +97,10 @@ export const EventsProvider: FC<Props> = ({ children }) => {
     } catch {
       setActiveMyEvents([]);
     }
-  }, [token, user?.role]);
+  }, [isAuthLoading, token, isOrganizerOrAdmin]);
 
   const refetchMyEventsData = useCallback(async () => {
-    if (!token || user?.role === 'customer') {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
       setMyEvents([]);
       setDrafts([]);
       setActiveMyEvents([]);
@@ -115,8 +119,9 @@ export const EventsProvider: FC<Props> = ({ children }) => {
       setIsMyEventsLoading(false);
     }
   }, [
+    isAuthLoading,
     token,
-    user?.role,
+    isOrganizerOrAdmin,
     refetchMyEvents,
     refetchDrafts,
     refetchActiveMyEvents
