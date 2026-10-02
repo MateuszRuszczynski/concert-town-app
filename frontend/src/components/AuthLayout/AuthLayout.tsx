@@ -3,6 +3,7 @@ import type { ReactNode, FC } from 'react';
 import { ThemeSwitcher } from '../ThemeSwitcher';
 import { Logo } from '../Logo';
 import styles from './AuthLayout.module.scss';
+import { Link } from 'react-router';
 //#endregion
 
 interface Props {
@@ -25,7 +26,9 @@ export const AuthLayout: FC<Props> = ({
 
     <header className={styles.header}>
       <div className={styles.logoWrapper}>
-        <Logo variant='medium' />
+        <Link to={'/events/'}>
+          <Logo variant='medium' />
+        </Link>
       </div>
 
       <h1 id='auth-title' className={styles.title}>
