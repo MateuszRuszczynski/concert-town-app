@@ -14,7 +14,7 @@ export const PageHeader:FC<Props> = ({ title, subtitle }) => {
     <header className={baseStyles.pageHeader}>
       <h1 className={styles.title}>{title}</h1>
 
-      <p className={styles.subtitle}>{subtitle}</p>
+      <div className={styles.subtitle}>{subtitle}</div>
     </header>
   );
 };

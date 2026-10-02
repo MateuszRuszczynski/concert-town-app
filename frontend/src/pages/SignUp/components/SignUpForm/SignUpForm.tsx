@@ -78,6 +78,7 @@ export const SignUpForm = () => {
           isPasswordValid ? 'Password meets all requirements' : undefined
         }
         errorMessage={fieldErrors.password}
+        autoComplete="new-password"
       />
 
       <FormField
@@ -95,6 +96,7 @@ export const SignUpForm = () => {
             onToggle={() => setIsConfirmVisible(prev => !prev)}
           />
         }
+        autoComplete="new-password"
         required
       />
 

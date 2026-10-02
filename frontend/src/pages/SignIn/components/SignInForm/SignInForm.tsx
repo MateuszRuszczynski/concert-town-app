@@ -25,6 +25,7 @@ export const SingInForm = () => {
         onChange={e => setEmail(e.target.value)}
         errorMessage={fieldErrors.email}
         placeholder='you@example.com'
+        autoComplete="email"
         required
       />
 
@@ -42,6 +43,7 @@ export const SingInForm = () => {
             onToggle={() => setIsPasswordVisible(prev => !prev)}
           />
         }
+        autoComplete="current-password"
         required
       />
 

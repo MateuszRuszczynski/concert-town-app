@@ -15,7 +15,7 @@ import {
 export function useMyEventFilters () {
   const [searchParams] = useSearchParams();
   const updateSearchParam = useUpdateSearchParam();
-  const { token } = useAuth();
+  const { token, isOrganizerOrAdmin } = useAuth();
 
   const searchQuery = searchParams.get('search') ?? '';
   const debouncedSearchQuery = useDebouncedValue(searchQuery, 400);
@@ -26,20 +26,23 @@ export function useMyEventFilters () {
 
   useEffect(() => {
     async function fetchMyEvents () {
-      if (!token) return;
+      if (!token || !isOrganizerOrAdmin) return;
       setIsLoading(true);
       try {
-        const response = await getMyEvents({
-          search: debouncedSearchQuery || undefined,
-          ordering: sortBy
-        }, token);
+        const response = await getMyEvents(
+          {
+            search: debouncedSearchQuery || undefined,
+            ordering: sortBy
+          },
+          token
+        );
         setEvents(response.results.map(mapEventResponseToEventDetails));
       } finally {
         setIsLoading(false);
       }
     }
     fetchMyEvents();
-  }, [token, debouncedSearchQuery, sortBy]);
+  }, [token, debouncedSearchQuery, sortBy, isOrganizerOrAdmin]);
 
   const setSearchQuery = (value: string) =>
     updateSearchParam({ search: value || null });

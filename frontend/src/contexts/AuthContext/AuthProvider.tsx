@@ -43,10 +43,12 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   //#region session helpers
   const loadAndSetUser = useCallback(
     async (access: string) => {
+      if (isLoading) return;
+    
       const profile = await getProfile(access);
       setUser(mapProfileToUser(profile));
     },
-    [setUser]
+    [setUser, isLoading]
   );
 
   const clearSession = useCallback(() => {

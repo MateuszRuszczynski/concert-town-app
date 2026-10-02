@@ -17,6 +17,7 @@ interface Props {
   isValid: boolean;
   successMessage?: string;
   errorMessage?: string;
+  autoComplete?: string;
 }
 
 export const PasswordField: FC<Props> = ({
@@ -25,7 +26,8 @@ export const PasswordField: FC<Props> = ({
   requirements,
   isValid,
   successMessage,
-  errorMessage
+  errorMessage,
+  autoComplete
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -43,6 +45,7 @@ export const PasswordField: FC<Props> = ({
         endAdornment={
           <PasswordVisibilityToggle isVisible={isVisible} onToggle={() => setIsVisible((prev) => !prev)} />
         }
+        autoComplete={autoComplete}
         required
       />
 

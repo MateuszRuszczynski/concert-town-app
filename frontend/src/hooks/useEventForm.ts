@@ -187,8 +187,6 @@ export function useEventForm (
   const secondaryAction = isEditMode ? resetToInitial : clearForm;
   const secondaryLabel = isEditMode ? 'Reset changes' : 'Clear form';
 
-  const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async e => {
     e.preventDefault();
     setHasAttemptedSubmit(true);
@@ -213,10 +211,10 @@ export function useEventForm (
 
     try {
       if (isEditMode && eventId) {
-        await Promise.all([updateEvent(eventId, eventData), wait(600)]);
+        await updateEvent(eventId, eventData);
         showToast('Event updated successfully!', 'success');
       } else {
-        await Promise.all([addEvent(eventData), wait(600)]);
+        await addEvent(eventData);
         showToast('Event created successfully!', 'success');
       }
 
