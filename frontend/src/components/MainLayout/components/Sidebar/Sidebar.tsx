@@ -18,7 +18,11 @@ interface Props {
 
 export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
-  const { isAuthenticated, isOrganizerOrAdmin } = useAuth();
+  const { isAuthenticated, isOrganizerOrAdmin, isLoading } = useAuth();
+
+  const showAuthenticated = !isLoading && isAuthenticated;
+  const showOrganizerPrompt =
+    !isLoading && isAuthenticated && !isOrganizerOrAdmin;
 
   return (
     <>
@@ -48,7 +52,7 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
         </nav>
 
         <div className={styles.actions}>
-          {!isAuthenticated && (
+          {!showAuthenticated && (
             <>
               <Button
                 onClick={() => {
@@ -64,7 +68,7 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
             </>
           )}
 
-          {(isAuthenticated && !isOrganizerOrAdmin) && (
+          {showOrganizerPrompt && (
             <>
               <Button onClick={() => {}}>Become an organizer</Button>
               <p className={styles.hint}>
@@ -73,7 +77,7 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
             </>
           )}
 
-          {isAuthenticated && <AddEventButton onNavigate={onClose} />}
+          {showAuthenticated && <AddEventButton onNavigate={onClose} />}
         </div>
       </aside>
     </>
