@@ -1,7 +1,7 @@
-from datetime import datetime, timezone
-
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import generics, status
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -13,9 +13,12 @@ from rest_framework_simplejwt.token_blacklist.models import (
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from .models import OrganizerRoleRequest, User
+from .permissions import IsAdminRoleOrStaff
 from .serializers import (
     CustomTokenObtainPairSerializer,
-    LogoutSerializer,
+    OrganizerRoleRequestCreateSerializer,
+    OrganizerRoleRequestSerializer,
     RegisterSerializer,
 )
 
@@ -83,3 +86,104 @@ class ProfileView(APIView):
             "first_name": request.user.first_name,
             "last_name": request.user.last_name,
         })
+
+
+class OrganizerRoleRequestListCreateView(APIView):
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAdminRoleOrStaff()]
+        return [IsAuthenticated()]
+
+    def get(self, request):
+        requests = OrganizerRoleRequest.objects.select_related(
+            "user", "reviewed_by"
+        )
+        request_status = request.query_params.get("status")
+        if request_status:
+            if request_status not in OrganizerRoleRequest.Status.values:
+                raise ValidationError({"status": "Invalid request status."})
+            requests = requests.filter(status=request_status)
+        return Response(OrganizerRoleRequestSerializer(requests, many=True).data)
+
+    def post(self, request):
+        serializer = OrganizerRoleRequestCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        with transaction.atomic():
+            user = User.objects.select_for_update().get(pk=request.user.pk)
+            if user.role != User.Role.CUSTOMER:
+                raise ValidationError(
+                    {"detail": "Only customers can request organizer access."}
+                )
+            if OrganizerRoleRequest.objects.filter(
+                user=user, status=OrganizerRoleRequest.Status.PENDING
+            ).exists():
+                raise ValidationError(
+                    {"detail": "You already have a pending organizer request."}
+                )
+            role_request = serializer.save(user=user)
+
+        return Response(
+            OrganizerRoleRequestSerializer(role_request).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class MyOrganizerRoleRequestsView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrganizerRoleRequestSerializer
+
+    def get_queryset(self):
+        return OrganizerRoleRequest.objects.filter(
+            user=self.request.user
+        ).select_related("user", "reviewed_by")
+
+
+class Conflict(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "The request conflicts with its current state."
+    default_code = "conflict"
+
+
+class OrganizerRoleRequestDecisionView(APIView):
+    permission_classes = [IsAdminRoleOrStaff]
+
+    def post(self, request, pk, decision):
+        if decision not in ("approve", "reject"):
+            raise ValidationError({"decision": "Choose approve or reject."})
+
+        with transaction.atomic():
+            try:
+                role_request = (
+                    OrganizerRoleRequest.objects.select_for_update()
+                    .select_related("user")
+                    .get(pk=pk)
+                )
+            except OrganizerRoleRequest.DoesNotExist:
+                return Response(
+                    {"detail": "Organizer request not found."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            if role_request.status != OrganizerRoleRequest.Status.PENDING:
+                raise Conflict(
+                    detail="This organizer request has already been reviewed.",
+                    code="request_already_reviewed",
+                )
+
+            role_request.status = (
+                OrganizerRoleRequest.Status.APPROVED
+                if decision == "approve"
+                else OrganizerRoleRequest.Status.REJECTED
+            )
+            role_request.reviewed_at = timezone.now()
+            role_request.reviewed_by = request.user
+            role_request.save(
+                update_fields=("status", "reviewed_at", "reviewed_by")
+            )
+
+            if decision == "approve":
+                role_request.user.role = User.Role.ORGANIZER
+                role_request.user.save(update_fields=("role",))
+
+        return Response(OrganizerRoleRequestSerializer(role_request).data)

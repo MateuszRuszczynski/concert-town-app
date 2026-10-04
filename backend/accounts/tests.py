@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .models import OrganizerRoleRequest
+
 User = get_user_model()
 
 
@@ -171,3 +173,146 @@ class ProfileTests(APITestCase):
         url = reverse("profile")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class OrganizerRoleRequestTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="customer@example.com")
+        self.admin = User.objects.create_user(
+            email="admin@example.com",
+            role=User.Role.ADMIN,
+        )
+        self.url = reverse("organizer-role-request-list")
+
+    def test_customer_can_request_organizer_role(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.url,
+            {"message": "I want to host concerts."},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["status"], OrganizerRoleRequest.Status.PENDING)
+        self.assertEqual(response.data["user_id"], self.user.id)
+        self.assertEqual(
+            OrganizerRoleRequest.objects.get().message,
+            "I want to host concerts.",
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.role, User.Role.CUSTOMER)
+
+    def test_unauthenticated_user_cannot_request_organizer_role(self):
+        response = self.client.post(self.url, {}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_user_cannot_create_second_pending_request(self):
+        self.client.force_authenticate(user=self.user)
+        self.client.post(self.url, {}, format="json")
+        response = self.client.post(self.url, {}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(OrganizerRoleRequest.objects.count(), 1)
+
+    def test_organizer_cannot_request_organizer_role(self):
+        self.user.role = User.Role.ORGANIZER
+        self.user.save(update_fields=("role",))
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(self.url, {}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_only_admin_can_list_requests(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.client.force_authenticate(user=self.admin)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_can_view_only_their_own_requests(self):
+        own_request = OrganizerRoleRequest.objects.create(user=self.user)
+        another_user = User.objects.create_user(email="another@example.com")
+        OrganizerRoleRequest.objects.create(user=another_user)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse("my-organizer-role-requests"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["id"], own_request.id)
+
+    def test_admin_approval_changes_role_and_records_reviewer(self):
+        role_request = OrganizerRoleRequest.objects.create(user=self.user)
+        self.client.force_authenticate(user=self.admin)
+
+        response = self.client.post(
+            reverse(
+                "organizer-role-request-decision",
+                kwargs={"pk": role_request.pk, "decision": "approve"},
+            ),
+            {},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["status"], OrganizerRoleRequest.Status.APPROVED)
+        self.user.refresh_from_db()
+        role_request.refresh_from_db()
+        self.assertEqual(self.user.role, User.Role.ORGANIZER)
+        self.assertEqual(role_request.reviewed_by, self.admin)
+        self.assertIsNotNone(role_request.reviewed_at)
+
+    def test_admin_rejection_keeps_customer_role(self):
+        role_request = OrganizerRoleRequest.objects.create(user=self.user)
+        self.client.force_authenticate(user=self.admin)
+
+        response = self.client.post(
+            reverse(
+                "organizer-role-request-decision",
+                kwargs={"pk": role_request.pk, "decision": "reject"},
+            ),
+            {},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["status"], OrganizerRoleRequest.Status.REJECTED)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.role, User.Role.CUSTOMER)
+
+    def test_non_admin_cannot_review_requests(self):
+        role_request = OrganizerRoleRequest.objects.create(user=self.user)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            reverse(
+                "organizer-role-request-decision",
+                kwargs={"pk": role_request.pk, "decision": "approve"},
+            ),
+            {},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_reviewed_request_cannot_be_decided_again(self):
+        role_request = OrganizerRoleRequest.objects.create(
+            user=self.user,
+            status=OrganizerRoleRequest.Status.REJECTED,
+        )
+        self.client.force_authenticate(user=self.admin)
+
+        response = self.client.post(
+            reverse(
+                "organizer-role-request-decision",
+                kwargs={"pk": role_request.pk, "decision": "approve"},
+            ),
+            {},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.role, User.Role.CUSTOMER)

@@ -9,6 +9,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .models import OrganizerRoleRequest
+
 User = get_user_model()
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -107,3 +109,30 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"email": "A user with this email already exists."}
             )
+
+
+class OrganizerRoleRequestCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizerRoleRequest
+        fields = ("message",)
+        extra_kwargs = {"message": {"required": False, "allow_blank": True}}
+
+
+class OrganizerRoleRequestSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(read_only=True)
+    user_email = serializers.EmailField(source="user.email", read_only=True)
+    reviewed_by_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = OrganizerRoleRequest
+        fields = (
+            "id",
+            "user_id",
+            "user_email",
+            "message",
+            "status",
+            "created_at",
+            "reviewed_at",
+            "reviewed_by_id",
+        )
+        read_only_fields = fields
