@@ -1,16 +1,14 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
+
 from .views import (
     CustomTokenObtainPairView,
+    LogoutView,
     MyOrganizerRoleRequestsView,
     OrganizerRoleRequestDecisionView,
     OrganizerRoleRequestListCreateView,
     ProfileView,
     RegisterView,
-    Logout
-)
-from rest_framework_simplejwt.views import (
-    TokenRefreshView,
-    TokenBlacklistView
 )
 
 urlpatterns = [

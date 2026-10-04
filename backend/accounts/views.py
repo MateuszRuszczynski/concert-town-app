@@ -1,3 +1,5 @@
+from datetime import datetime, timezone as datetime_timezone
+
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import generics, status
@@ -17,6 +19,7 @@ from .models import OrganizerRoleRequest, User
 from .permissions import IsAdminRoleOrStaff
 from .serializers import (
     CustomTokenObtainPairSerializer,
+    LogoutSerializer,
     OrganizerRoleRequestCreateSerializer,
     OrganizerRoleRequestSerializer,
     RegisterSerializer,
@@ -61,8 +64,12 @@ class LogoutView(APIView):
     def revoke_access_token(self, request):
         access_token = request.auth
         jti = access_token[api_settings.JTI_CLAIM]
-        issued_at = datetime.fromtimestamp(access_token["iat"], tz=timezone.utc)
-        expires_at = datetime.fromtimestamp(access_token["exp"], tz=timezone.utc)
+        issued_at = datetime.fromtimestamp(
+            access_token["iat"], tz=datetime_timezone.utc
+        )
+        expires_at = datetime.fromtimestamp(
+            access_token["exp"], tz=datetime_timezone.utc
+        )
         outstanding_token, _ = OutstandingToken.objects.get_or_create(
             jti=jti,
             defaults={
