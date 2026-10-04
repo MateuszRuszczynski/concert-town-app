@@ -1,7 +1,17 @@
 # Concert Town
 
-> **Type:** Full-stack event management application
-> **Main stack:** Django REST Framework + React + PostgreSQL
+| Endpoint | Method | Body | Response |
+|---|---|---|---|
+| `/api/auth/register/` | POST | `{"email":"...","password":"...","password_confirm":"..."}` | `201 {"id":1,"email":"..."}` |
+| `/api/auth/login/` | POST | `{"email":"...","password":"..."}` | `200 {"access":"...","refresh":"..."}` |
+| `/api/auth/token/refresh/` | POST | `{"refresh":"..."}` | `200 {"access":"...","refresh":"..."}` |
+| `/api/auth/logout/` | POST | `{"refresh":"..."}` | `205` |
+| `/api/auth/profile/` | GET | — | `200 {"email":"...","role":"..."}` |
+| `/api/auth/organizer-requests/` | POST | `{"message":"..."}` (optional) | Creates the signed-in customer's pending organizer-role request |
+| `/api/auth/organizer-requests/` | GET | Admin only; optional status filter (`pending`, `approved`, or `rejected`) | Lists organizer-role requests |
+| `/api/auth/organizer-requests/mine/` | GET | Authenticated user | Lists only the signed-in user's requests and their review status |
+| `/api/auth/organizer-requests/{id}/approve/` | POST | Admin only | Approves a pending request and changes the requester role to `organizer` |
+| `/api/auth/organizer-requests/{id}/reject/` | POST | Admin only | Rejects a pending request without changing the requester role |
 
 Concert Town is an application for discovering, organizing, and attending events.
 Users can browse events, register for events, manage events they organize, and view
