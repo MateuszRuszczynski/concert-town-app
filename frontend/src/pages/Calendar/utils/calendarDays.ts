@@ -28,7 +28,6 @@ export function getCalendarDays (
     if (lastDay) {
       lastDay.span = 7 - remainder + 1;
     }
-    days.length = days.length - remainder + 1;
   }
 
   return days;

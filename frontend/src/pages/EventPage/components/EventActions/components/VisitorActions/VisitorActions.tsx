@@ -1,23 +1,24 @@
 //#region imports
 import { useState, type FC } from 'react';
 import type { EventDetails } from '../../../../../../types/events';
-import { useEvents } from '../../../../../../contexts/EventContext';
 import { useNotification } from '../../../../../../contexts/NotificationContext';
 import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
 import { CalendarCheck } from 'lucide-react';
-import { Button } from '../../../../../../components/Button';
-import styles from './VisitorActions.module.scss';
-import { useAuth } from '../../../../../../contexts/AuthContext/useAuth';
+import { Button } from '../../../../../../components/ui/Button';
+import { useAuth } from '../../../../../../contexts/AuthContext';
 import { Link } from 'react-router';
+import { useRegistrations } from '../../../../../../contexts/RegistrationsContext';
+import styles from './VisitorActions.module.scss';
 //#endregion
 
 interface Props {
   event: EventDetails;
+  refetchEvent: () => Promise<void>;
 }
 
-export const VisitorActions: FC<Props> = ({ event }) => {
+export const VisitorActions: FC<Props> = ({ event, refetchEvent }) => {
   const { isAuthenticated } = useAuth();
-  const { registerForEvent } = useEvents();
+  const { register } = useRegistrations();
   const { showToast } = useNotification();
 
   const [isRegistering, setIsRegistering] = useState(false);
@@ -25,7 +26,8 @@ export const VisitorActions: FC<Props> = ({ event }) => {
   const handleRegister = async () => {
     setIsRegistering(true);
     try {
-      await registerForEvent(event.id);
+      await register(event.id);
+      await refetchEvent();
       showToast('You have registered for this event!', 'success');
     } catch (err) {
       showToast(

@@ -1,0 +1,49 @@
+.accessDeniedPage {
+  @include page-container;
+  @include fade-in-animation;
+}
+
+.mainBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  max-width: 500px;
+  margin: auto;
+
+  padding: 48px;
+  border: 0.8px dashed var(--border-color);
+  border-radius: 14px;
+}
+
+.searchXIcon {
+  color: var(--accent-color);
+}
+
+.lockIcon {
+  color: var(--error-color);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--primary-color);
+
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--secondary-color);
+
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}

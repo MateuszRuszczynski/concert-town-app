@@ -1,0 +1,17 @@
+.tab {
+  background: none;
+  color: var(--secondary-color);
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  padding: 10px 16px;
+  border-bottom: 2px solid transparent;
+
+  @include hover(color, var(--primary-color));
+
+  &.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--accent-color);
+    font-weight: 600;
+  }
+}

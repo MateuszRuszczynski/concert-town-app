@@ -1,10 +1,9 @@
 import type { EventDetails } from '../../../types/events';
 import type { FilterParams } from '../types/eventFilters';
 
-
 export function getVisibleEvents (
   events: EventDetails[],
-  { searchQuery, selectedCategories, locationFilter, priceFilter, relationFilter, sortBy }: FilterParams
+  { searchQuery, priceFilter, selectedCategories, sortBy }: Omit<FilterParams, 'relationFilter'>
 ): EventDetails[] {
   let result = [...events];
 
@@ -15,26 +14,14 @@ export function getVisibleEvents (
 
   if (selectedCategories.length > 0) {
     result = result.filter(event =>
-      selectedCategories.includes(event.category)
-    );
-  }
-
-  if (locationFilter !== 'all') {
-    result = result.filter(event =>
-      locationFilter === 'online'
-        ? event.location === 'online'
-        : event.location !== 'online'
+      selectedCategories.includes(event.category.slug)
     );
   }
 
   if (priceFilter !== 'all') {
-    result = result.filter((event) =>
-      priceFilter === 'free' ? event.price === 0 : event.price > 0
+    result = result.filter(event =>
+      priceFilter === 'free' ? +event.price === 0 : +event.price > 0
     );
-  }
-
-  if (relationFilter !== 'all') {
-    result = result.filter((event) => event.relation === relationFilter);
   }
 
   const sorted = [...result].sort((a, b) => {

@@ -1,1 +1,2 @@
-export * from "./RegistrationProgress";
+export * from './RegistrationProgress';
+export * from './RegistrationProgressSkeleton';

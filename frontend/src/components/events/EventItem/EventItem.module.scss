@@ -1,0 +1,52 @@
+.eventItem {
+  transition: border-color 0.3s;
+
+  &:hover {
+    & .eventImage {
+      transform: scale(1.05);
+    }
+
+    border-color: var(--accent-color);;
+  }
+}
+
+.eventImage {
+  transition: transform 0.3s;
+}
+
+.relationBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.draftBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+
+  color: var(--primary-color);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+
+  color: var(--primary-color);
+}
+
+.attribute {
+  @include flex-row;
+
+  font-size: 14px;
+  line-height: 20px;
+
+  color: var(--secondary-color);
+}

@@ -1,60 +1,27 @@
 //#region imports
 import type { FC } from 'react';
-import type { EventCategory } from '../../../../types/events';
-import type {
-  LocationFilter,
-  PriceFilter,
-  RelationFilter
-} from '../../types/eventFilters';
 import { Filter } from 'lucide-react';
-import { CategoryFilterDropdown } from '../CategoryFilterDropdown';
-import { CustomSelect } from '../../../../components/CustomSelect';
-import {
-  LOCATION_FILTER_OPTIONS,
-  PRICE_FILTER_OPTIONS,
-  RELATION_FILTER_OPTIONS
-} from '../../utils/sortOptions';
+import { CustomSelect } from '../../../../components/ui/CustomSelect';
 import { FilterChip } from '../FilterChip';
+import { useCategories } from '../../../../contexts/CategoriesContext/useCategories';
 import styles from './EventsFilterBar.module.scss';
 //#endregion
 
-interface FilterValues {
-  selectedCategories: EventCategory[];
-  locationFilter: LocationFilter;
-  priceFilter: PriceFilter;
-  relationFilter: RelationFilter;
-}
-
-interface FilterUpdates {
-  onCategoriesChange: (categories: EventCategory[]) => void;
-  onLocationFilterChange: (filter: LocationFilter) => void;
-  onPriceFilterChange: (filter: PriceFilter) => void;
-  onRelationFilterChange: (filter: RelationFilter) => void;
-  onRemoveCategory: (category: EventCategory) => void;
-}
-
 interface Props {
-  values: FilterValues;
-  updates: FilterUpdates;
+  categorySlug: string;
+  setCategorySlug: (slug: string) => void;
   hasActiveFilters: boolean;
   onClearFilters: () => void;
 }
 
 export const EventsFilterBar: FC<Props> = ({
-  values,
-  updates,
+  categorySlug,
+  setCategorySlug,
   hasActiveFilters,
   onClearFilters
 }) => {
-  const { selectedCategories, locationFilter, priceFilter, relationFilter } =
-    values;
-  const {
-    onCategoriesChange,
-    onLocationFilterChange,
-    onPriceFilterChange,
-    onRelationFilterChange,
-    onRemoveCategory
-  } = updates;
+  const { categories } = useCategories();
+  const selectedCategory = categories.find(c => c.slug === categorySlug);
 
   return (
     <div className={styles.filterBar}>
@@ -63,64 +30,20 @@ export const EventsFilterBar: FC<Props> = ({
         Filter by:
       </span>
 
-      <div className={styles.controls}>
-        <CategoryFilterDropdown
-          selected={selectedCategories}
-          onChange={onCategoriesChange}
+        <CustomSelect<string>
+          id='category'
+          value={categorySlug}
+          onValueChange={setCategorySlug}
+          options={categories.map(c => ({ value: c.slug, label: c.name }))}
+          placeholder='All categories'
         />
-
-        <CustomSelect<LocationFilter>
-          id='location-filter'
-          value={locationFilter}
-          onValueChange={onLocationFilterChange}
-          options={LOCATION_FILTER_OPTIONS}
-        />
-
-        <CustomSelect<PriceFilter>
-          id='price-filter'
-          value={priceFilter}
-          onValueChange={onPriceFilterChange}
-          options={PRICE_FILTER_OPTIONS}
-        />
-
-        <CustomSelect<RelationFilter>
-          id='relation-filter'
-          value={relationFilter}
-          onValueChange={onRelationFilterChange}
-          options={RELATION_FILTER_OPTIONS}
-        />
-      </div>
 
       {hasActiveFilters && (
         <div className={styles.activeFilters}>
-          {selectedCategories.map(category => (
+          {categorySlug !== '' && selectedCategory && (
             <FilterChip
-              key={category}
-              label={category}
-              onRemove={() => onRemoveCategory(category)}
-            />
-          ))}
-
-          {locationFilter !== 'all' && (
-            <FilterChip
-              label={locationFilter === 'online' ? 'Online' : 'Offline'}
-              onRemove={() => onLocationFilterChange('all')}
-            />
-          )}
-
-          {priceFilter !== 'all' && (
-            <FilterChip
-              label={priceFilter === 'free' ? 'Free' : 'Paid'}
-              onRemove={() => onPriceFilterChange('all')}
-            />
-          )}
-
-          {relationFilter !== 'all' && (
-            <FilterChip
-              label={
-                relationFilter === 'organizing' ? 'Organizing' : 'Attending'
-              }
-              onRemove={() => onRelationFilterChange('all')}
+              label={selectedCategory.name}
+              onRemove={() => setCategorySlug('')}
             />
           )}
 

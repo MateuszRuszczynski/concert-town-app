@@ -1,19 +1,20 @@
 //#region imports
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import type { EventCategory } from '../../../../types/events';
 import type { FC } from 'react';
 import { Check, ChevronDown } from 'lucide-react';
-import { CATEGORIES_OPTIONS } from '../../../../components/EventForm/components/EventDetailsSection/categories';
+import { useCategories } from '../../../../contexts/CategoriesContext/useCategories';
 import styles from './CategoryFilterDropdown.module.scss';
 //#endregion
 
 interface Props {
-  selected: EventCategory[];
-  onChange: (categories: EventCategory[]) => void;
+  selected: string[];
+  onChange: (categories: string[]) => void;
 }
 
 export const CategoryFilterDropdown: FC<Props> = ({ selected, onChange }) => {
-  const toggleCategory = (category: EventCategory, checked: boolean) => {
+  const { categories } = useCategories();
+
+  const toggleCategory = (category: string, checked: boolean) => {
     onChange(
       checked ? [...selected, category] : selected.filter(c => c !== category)
     );
@@ -28,11 +29,11 @@ export const CategoryFilterDropdown: FC<Props> = ({ selected, onChange }) => {
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content className={styles.content} sideOffset={4}>
-          {CATEGORIES_OPTIONS.map(option => (
+          {categories.map(c => (
             <DropdownMenu.CheckboxItem
-              key={option.value}
-              checked={selected.includes(option.value)}
-              onCheckedChange={checked => toggleCategory(option.value, checked)}
+              key={c.slug}
+              checked={selected.includes(c.slug)}
+              onCheckedChange={checked => toggleCategory(c.slug, checked)}
               className={styles.item}
               onSelect={e => e.preventDefault()}
             >
@@ -41,7 +42,7 @@ export const CategoryFilterDropdown: FC<Props> = ({ selected, onChange }) => {
                   <Check size={12} aria-hidden='true' />
                 </DropdownMenu.ItemIndicator>
               </span>
-              {option.label}
+              {c.name}
             </DropdownMenu.CheckboxItem>
           ))}
         </DropdownMenu.Content>

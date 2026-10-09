@@ -1,11 +1,11 @@
 //#region imports
 import { useState } from "react";
 import { useSignInForm } from "../../hooks/useSignInForm";
-import { FormField } from "../../../../components/FormField";
-import { PasswordVisibilityToggle } from "../../../../components/PasswordVisibilityToggle";
-import { Button } from "../../../../components/Button";
-import { Form } from "../../../../components/Form";
-import { FormError } from "../../../../components/FormError";
+import { FormField } from "../../../../components/ui/FormField";
+import { PasswordVisibilityToggle } from "../../../../components/ui/PasswordVisibilityToggle";
+import { Button } from "../../../../components/ui/Button";
+import { Form } from "../../../../components/ui/Form";
+import { FormError } from "../../../../components/ui/FormError";
 //#endregion
 
 export const SingInForm = () => {
@@ -25,6 +25,7 @@ export const SingInForm = () => {
         onChange={e => setEmail(e.target.value)}
         errorMessage={fieldErrors.email}
         placeholder='you@example.com'
+        autoComplete="email"
         required
       />
 
@@ -42,6 +43,7 @@ export const SingInForm = () => {
             onToggle={() => setIsPasswordVisible(prev => !prev)}
           />
         }
+        autoComplete="current-password"
         required
       />
 

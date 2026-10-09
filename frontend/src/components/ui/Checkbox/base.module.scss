@@ -1,0 +1,15 @@
+.control {
+  @include flex-row;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+
+  border-radius: 4px;
+}
+
+.label {
+  @include text-medium;
+  color: var(--primary-color);
+}

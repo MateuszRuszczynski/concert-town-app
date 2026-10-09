@@ -1,7 +1,6 @@
 //#region imports
+import cn from 'classNames';
 import { useParams } from 'react-router';
-import { useEvents } from '../../contexts/EventContext';
-import { EventNotFound } from './components/EventNotFound';
 import { EventHero } from './components/EventHero';
 import { EventHeader } from './components/EventHeader';
 import { EventDescription } from './components/EventDescription';
@@ -9,30 +8,40 @@ import { RegistrationProgress } from './components/RegistrationProgress';
 import { EventInfoPanel } from './components/EventInfoPanel';
 import { EventActions } from './components/EventActions';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { BackLink } from '../../components/BackLink';
+import { BackLink } from '../../components/ui/BackLink';
+import { useEventRelation } from '../../hooks/useEventRelation';
+import { EventNotFound } from '../EventNotFound';
+import { useEvent } from './hooks/useEvent';
+import { EventPageSkeleton } from './EventPageSkeleton';
+import baseStyles from './base.module.scss';
 import styles from './EventPage.module.scss';
+import { useAuth } from '../../contexts/AuthContext';
 //#endregion
 
 export const EventPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { events } = useEvents();
-
-  const event = events.find(e => e.id === id);
+  const { event, isLoading: eventLoading, refetch } = useEvent(id);
+  const { isLoading: authLoading } = useAuth();
+  const isLoading = eventLoading || authLoading;
 
   usePageTitle(event?.title || 'Event Not Found');
+
+  const relation = useEventRelation(event || undefined);
+
+  if (isLoading) return <EventPageSkeleton />;
 
   if (!event) {
     return <EventNotFound />;
   }
 
   return (
-    <section className={styles.eventPage}>
+    <section className={cn(baseStyles.eventPage, styles.eventPage)}>
       <BackLink to='/events' label='Back to events' />
 
       <EventHero event={event} />
 
-      <div className={styles.contentGrid}>
-        <div className={styles.mainColumn}>
+      <div className={baseStyles.contentGrid}>
+        <div className={baseStyles.mainColumn}>
           <EventHeader event={event} />
 
           <EventDescription description={event.description} />
@@ -43,10 +52,14 @@ export const EventPage = () => {
           />
         </div>
 
-        <div className={styles.sideColumn}>
+        <div className={baseStyles.sideColumn}>
           <EventInfoPanel event={event} />
 
-          <EventActions event={event} />
+          <EventActions
+            event={event}
+            relation={relation}
+            refetchEvent={refetch}
+          />
         </div>
       </div>
     </section>

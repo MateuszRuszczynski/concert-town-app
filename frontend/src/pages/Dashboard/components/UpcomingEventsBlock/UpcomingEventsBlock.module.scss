@@ -1,0 +1,47 @@
+.eventBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: -0.45px;
+
+  color: var(--primary-color);
+}
+
+.viewAllLink {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--accent-color);
+
+  @include hover(text-decoration, underline);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px;
+  border: 0.8px dashed var(--border-color);
+  border-radius: 14px;
+}
+
+.emptyMessage {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--secondary-color);
+}

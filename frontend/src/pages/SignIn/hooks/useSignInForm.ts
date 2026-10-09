@@ -3,11 +3,11 @@ import {
   validateEmail,
   validatePasswordCharacters
 } from '../../../utils/validation';
-import { useAuth } from '../../../contexts/AuthContext/useAuth';
-import { useNavigate } from 'react-router';
-import { getAuthErrorMessage } from '../../../api/getAuthErrorMessage';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useLocation, useNavigate } from 'react-router';
 import { useNotification } from '../../../contexts/NotificationContext';
 import { capitalizeFirstWord } from '../../../utils/capitalizeFirstWord';
+import { getAuthErrorMessage } from '../../../api/auth/getAuthErrorMessage';
 
 export function useSignInForm () {
   //#region input controls
@@ -54,6 +54,9 @@ export function useSignInForm () {
   const { showToast } = useNotification();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectTo = location.state?.redirectTo || '/dashboard';
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async e => {
     e.preventDefault();
@@ -66,7 +69,7 @@ export function useSignInForm () {
 
     try {
       await signIn({ email, password });
-      navigate('/dashboard');
+      navigate(redirectTo);
     } catch (err) {
       const errorMessage = capitalizeFirstWord(
         getAuthErrorMessage(err, 'Failed to sign in. Please try again.')

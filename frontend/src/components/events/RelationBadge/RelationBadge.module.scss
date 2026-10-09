@@ -1,0 +1,45 @@
+.organizing {
+  --badge-surface: var(--organizer-surface);
+  --badge-color: var(--organizer-color);
+}
+
+.attending {
+  --badge-surface: var(--attendee-surface);
+  --badge-color: var(--attendee-color);
+}
+
+.overlay {
+  --badge-surface: #ffffffd9;
+
+  @include dark-theme {
+    --badge-surface: #0a0a0ad9;
+  }
+}
+
+.relationBadge {
+  width: fit-content;
+  padding: 2px 10px;
+
+  display: flex;
+  gap: 6px;
+  align-items: center;
+
+  background-color: var(--badge-surface);
+  color: var(--badge-color);
+
+  border-radius: 99px;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-transform: capitalize;
+}
+
+.badgeCircle {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background-color: var(--badge-color);
+}

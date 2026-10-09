@@ -1,137 +1,81 @@
 //#region imports
-import { useMemo } from 'react';
-import { getVisibleEvents } from '../utils/getVisibleEvents';
-import type { EventDetails, EventCategory } from '../../../types/events';
-import {
-  DEFAULT_LOCATION,
-  DEFAULT_PRICE,
-  DEFAULT_RELATION,
-  DEFAULT_SORT,
-  type LocationFilter,
-  type PriceFilter,
-  type RelationFilter,
-  type SortOption
-} from '../types/eventFilters';
 import { useSearchParams } from 'react-router';
 import { useUpdateSearchParam } from '../../../hooks/useUpdateSearchParam';
+import type { EventDetails } from '../../../types/events';
+import { useEffect, useState } from 'react';
+import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
+import {
+  eventsService,
+  mapEventResponseToEventDetails
+} from '../../../api/events';
+import { getErrorMessage } from '../../../utils/getErrorMessage';
+import type { SortBy } from '../utils/sortOptions';
+import { getTotalPages } from '../../../utils/pagination';
 //#endregion
 
-export function useEventFilters (events: EventDetails[]) {
-  //#region searchParams hooks
+export function useEventFilters () {
   const [searchParams] = useSearchParams();
   const updateSearchParam = useUpdateSearchParam();
-  //#endregion
 
-  //#region current filter & sort values
   const searchQuery = searchParams.get('search') ?? '';
-  const sortBy = (searchParams.get('sort') as SortOption) ?? DEFAULT_SORT;
-  const selectedCategories = useMemo(() => {
-    const raw = searchParams.get('categories');
-    return raw ? (raw.split(',') as EventCategory[]) : [];
-  }, [searchParams]);
-  const locationFilter =
-    (searchParams.get('location') as LocationFilter) ?? DEFAULT_LOCATION;
-  const priceFilter =
-    (searchParams.get('price') as PriceFilter) ?? DEFAULT_PRICE;
-  const relationFilter =
-    (searchParams.get('relation') as RelationFilter) ?? DEFAULT_RELATION;
+  const debouncedSearchQuery = useDebouncedValue(searchQuery, 400);
+  const categorySlug = searchParams.get('category') ?? '';
+  const sortBy = (searchParams.get('sort') as SortBy) ?? 'date';
+  const page = Number(searchParams.get('page')) || 1;
 
-  const filterValues = {
-    selectedCategories,
-    locationFilter,
-    priceFilter,
-    relationFilter,
-  };
-  //#endregion
+  const [events, setEvents] = useState<EventDetails[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  //#region update handlers
+  useEffect(() => {
+    async function fetchEvents () {
+      setIsLoading(true);
+
+      try {
+        const response = await eventsService.getEvents({
+          search: debouncedSearchQuery || undefined,
+          category: categorySlug || undefined,
+          ordering: sortBy,
+          is_active: true,
+          page
+        });
+        setEvents(response.results.map(e => mapEventResponseToEventDetails(e)));
+        setTotalPages(getTotalPages(response.count, 10));
+      } catch (err) {
+        setError(getErrorMessage(err) || 'Something went wrong!');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchEvents();
+  }, [debouncedSearchQuery, categorySlug, sortBy, page]);
+
   const setSearchQuery = (value: string) =>
-    updateSearchParam({ search: value || null });
+    updateSearchParam({ search: value || null, page: null });
+  const setCategorySlug = (slug: string) =>
+    updateSearchParam({ category: slug || null, page: null });
+  const setSortBy = (sort: SortBy) => updateSearchParam({ sort, page: null });
+  const setPage = (newPage: number) => updateSearchParam({ page: newPage > 1 ? String(newPage) : null });
 
-  const setSelectedCategories = (categories: EventCategory[]) =>
-    updateSearchParam({
-      categories: categories.length > 0 ? categories.join(',') : null
-    });
+  const hasActiveFilters = categorySlug !== '';
 
-  const setLocationFilter = (filter: LocationFilter) =>
-    updateSearchParam({
-      location: filter !== DEFAULT_LOCATION ? filter : null
-    });
-
-  const setPriceFilter = (filter: PriceFilter) =>
-    updateSearchParam({ price: filter !== DEFAULT_PRICE ? filter : null });
-
-  const setRelationFilter = (filter: RelationFilter) =>
-    updateSearchParam({
-      relation: filter !== DEFAULT_RELATION ? filter : null
-    });
-
-  const setSortBy = (sort: SortOption) => updateSearchParam({ sort });
-
-  //#endregion
-
-  //#region derived values
-  const visibleEvents = useMemo(
-    () =>
-      getVisibleEvents(events, {
-        searchQuery,
-        selectedCategories,
-        locationFilter,
-        priceFilter,
-        relationFilter,
-        sortBy
-      }),
-    [
-      events,
-      searchQuery,
-      selectedCategories,
-      locationFilter,
-      priceFilter,
-      relationFilter,
-      sortBy
-    ]
-  );
-
-  const hasActiveFilters =
-    selectedCategories.length > 0 ||
-    locationFilter !== 'all' ||
-    priceFilter !== 'all' ||
-    relationFilter !== 'all';
-
-  //#endregion
-
-  //#region filter actions
-  const clearFilters = () => {
-    updateSearchParam({
-      categories: null,
-      location: null,
-      price: null,
-      relation: null
-    });
-  };
-
-  const removeCategory = (category: EventCategory) => {
-    setSelectedCategories(selectedCategories.filter(c => c !== category));
-  };
-
-  const filterUpdates = {
-    onCategoriesChange: setSelectedCategories,
-    onLocationFilterChange: setLocationFilter,
-    onPriceFilterChange: setPriceFilter,
-    onRelationFilterChange: setRelationFilter,
-    onRemoveCategory: removeCategory,
-  };
-  //#endregion
+  const clearFilters = () => updateSearchParam({ category: null });
 
   return {
+    page,
+    setPage,
     searchQuery,
     setSearchQuery,
+    categorySlug,
+    setCategorySlug,
     sortBy,
     setSortBy,
-    filterValues,
-    filterUpdates,
-    clearFilters,
-    visibleEvents,
+    events,
+    isLoading,
     hasActiveFilters,
+    clearFilters,
+    error,
+    totalPages
   };
 }

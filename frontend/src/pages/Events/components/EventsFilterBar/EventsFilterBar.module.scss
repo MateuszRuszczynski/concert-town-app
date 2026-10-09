@@ -14,14 +14,6 @@
   color: var(--primary-color);
 }
 
-.controls {
-  width: 100%;
-  display: flex;
-  gap: 6px;
-
-  flex-wrap: wrap;
-}
-
 .activeFilters {
   @include flex-row(5px);
   flex-wrap: wrap;

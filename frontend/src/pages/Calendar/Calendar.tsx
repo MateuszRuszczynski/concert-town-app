@@ -1,21 +1,25 @@
 //#region imports
-import { PageHeader } from '../../components/PageHeader';
 import { useEvents } from '../../contexts/EventContext';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCalendarMonth } from './hooks/useCalendarMonth';
-import styles from './Calendar.module.scss';
 import { MonthNavigator } from './components/MonthNavigator';
 import { CalendarWeekdays } from './components/CalendarWeekdays';
 import { useMemo } from 'react';
 import { groupEventsByDate } from './utils/groupEventsByDate';
 import { CalendarGrid } from './components/CalendarGrid';
+import { CalendarLegend } from './components/CalendarLegend';
+import { useAuth } from '../../contexts/AuthContext';
+import styles from './Calendar.module.scss';
+import { PageHeader } from '../../components/ui/PageHeader';
 //#endregion
 
 export const Calendar = () => {
   usePageTitle('Calendar');
 
+  const { user } = useAuth();
   const { events } = useEvents();
-  const { monthLabel, goToNextMonth, goToPreviousMonth, days } = useCalendarMonth();
+  const { monthLabel, goToNextMonth, goToPreviousMonth, days } =
+    useCalendarMonth();
 
   const eventsByDate = useMemo(() => groupEventsByDate(events), [events]);
 
@@ -33,6 +37,8 @@ export const Calendar = () => {
           onPrevious={goToPreviousMonth}
         />
       </div>
+
+      {user && <CalendarLegend />}
 
       <div className={styles.calendarBody}>
         <CalendarWeekdays />

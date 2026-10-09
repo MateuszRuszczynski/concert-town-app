@@ -16,6 +16,9 @@
   flex-direction: column;
   gap: 4px;
 
+  min-width: 0;
+  overflow: hidden;
+
   &:nth-child(-n + 7) {
     border-top: 0.8px solid var(--border-color);
   }
@@ -48,4 +51,50 @@
 .today {
   color: $button-color;
   background-color: var(--accent-color);
+}
+
+.eventLink {
+  display: block;
+  padding: 2px 6px;
+
+  border-radius: 4px;
+  background-color: var(--accent-surface);
+  color: var(--on-accent);
+
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16.5px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  max-width: 100%;
+
+  transition: color 0.3, background-color 0.3s;
+
+  &:hover {
+    background-color: var(--accent-color);
+    color: $button-color;
+  }
+
+  &.organizing {
+    background-color: var(--organizer-surface);
+    color: var(--organizer-color);
+
+    &:hover {
+      background-color: #fe9800e3;
+      color: #fff;
+    }
+  }
+
+  &.attending {
+    background-color: var(--attendee-surface);
+    color: var(--attendee-color);
+
+    &:hover {
+      background-color: #00bc7de0;
+      color: #fff;
+    }
+  }
 }

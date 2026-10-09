@@ -1,0 +1,23 @@
+.legend {
+  @include flex-row(16px);
+}
+
+.legendItem {
+  @include flex-row(6px);
+  font-size: 13px;
+  color: var(--secondary-color);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.organizing .dot {
+  background-color: var(--organizer-color);
+}
+
+.attending .dot {
+  background-color: var(--attendee-color);
+}

@@ -1,0 +1,15 @@
+.dashboard {
+  @include page-container;
+  @include fade-in-animation;
+
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  align-items: center;
+}

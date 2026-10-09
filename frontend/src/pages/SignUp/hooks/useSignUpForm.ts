@@ -9,7 +9,7 @@ import {
   validatePasswordMatch
 } from '../../../utils/validation';
 import { useNotification } from '../../../contexts/NotificationContext';
-import { useAuth } from '../../../contexts/AuthContext/useAuth';
+import { useAuth } from '../../../contexts/AuthContext';
 import { getErrorMessage } from '../../../utils/getErrorMessage';
 import { capitalizeFirstWord } from '../../../utils/capitalizeFirstWord';
 //#endregion

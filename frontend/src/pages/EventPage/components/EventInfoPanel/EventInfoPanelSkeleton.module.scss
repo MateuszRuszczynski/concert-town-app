@@ -1,0 +1,13 @@
+.price {
+  width: 100px;
+  height: 30px;
+}
+
+.row {
+  width: 50%;
+  height: 20px;
+
+  @include on-desktop {
+    width: 70%;
+  }
+}

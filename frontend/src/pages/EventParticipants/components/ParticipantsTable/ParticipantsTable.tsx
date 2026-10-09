@@ -1,30 +1,35 @@
 //#region imports
 import type { FC } from 'react';
 import type { Participant } from '../../../../types/events';
-import styles from './ParticipantsTable.module.scss';
 import { Mail, User } from 'lucide-react';
+import { EmptyBlock } from '../../../../components/ui/EmptyBlock';
+import { SkeletonItem } from '../../../../components/ui/SkeletonItem';
+import { Table } from '../../../../components/ui/Table';
+import styles from './ParticipantsTable.module.scss';
 //#endregion
 
 interface Props {
   participants: Participant[];
+  isLoading?: boolean;
 }
 
-export const ParticipantsTable: FC<Props> = ({ participants }) => {
-  if (participants.length === 0) {
+export const ParticipantsTable: FC<Props> = ({
+  participants,
+  isLoading = false
+}) => {
+  if (!isLoading && participants.length === 0) {
     return (
-      <p className={styles.emptyState}>
-        No one has registered for this event yet.
-      </p>
+      <EmptyBlock emptyMessage='No one has registered for this event yet.' />
     );
   }
 
   return (
-    <table className={styles.table}>
+    <Table>
       <thead>
         <tr>
-          <th className={styles.headerCell}>#</th>
-          <th className={styles.headerCell}>
-            <span className={styles.headerContent}>
+          <th>#</th>
+          <th>
+            <span>
               <User
                 size={14}
                 aria-hidden='true'
@@ -34,13 +39,9 @@ export const ParticipantsTable: FC<Props> = ({ participants }) => {
             </span>
           </th>
 
-          <th className={styles.headerCell}>
-            <span className={styles.headerContent}>
-              <Mail
-                size={14}
-                aria-hidden='true'
-                className={styles.headerIcon}
-              />
+          <th>
+            <span>
+              <Mail size={14} aria-hidden='true' />
               Email
             </span>
           </th>
@@ -48,14 +49,28 @@ export const ParticipantsTable: FC<Props> = ({ participants }) => {
       </thead>
 
       <tbody>
-        {participants.map((participant, i) => (
-          <tr key={participant.userId} className={styles.row}>
-            <td className={styles.cell}>{i + 1}</td>
-            <td className={styles.cell}>{participant.name}</td>
-            <td className={styles.cell}>{participant.email}</td>
-          </tr>
-        ))}
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <tr key={i}>
+                <td>
+                  <SkeletonItem additionalClass={styles.numberSkeleton} />
+                </td>
+                <td>
+                  <SkeletonItem additionalClass={styles.nameSkeleton} />
+                </td>
+                <td>
+                  <SkeletonItem additionalClass={styles.emailSkeleton} />
+                </td>
+              </tr>
+            ))
+          : participants.map((participant, i) => (
+              <tr key={participant.userId}>
+                <td>{i + 1}</td>
+                <td>{participant.name}</td>
+                <td>{participant.email}</td>
+              </tr>
+            ))}
       </tbody>
-    </table>
+    </Table>
   );
 };

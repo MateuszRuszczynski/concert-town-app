@@ -1,21 +1,22 @@
 //#region imports
 import { useState, type FC } from 'react';
 import type { EventDetails } from '../../../../../../types/events';
-import { useEvents } from '../../../../../../contexts/EventContext';
 import { useNotification } from '../../../../../../contexts/NotificationContext';
 import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
-import { ConfirmDialog } from '../../../../../../components/ConfirmDialog';
+import { ConfirmDialog } from '../../../ConfirmDialog';
 import { CalendarX } from 'lucide-react';
-import { Button } from '../../../../../../components/Button';
+import { Button } from '../../../../../../components/ui/Button';
+import { useRegistrations } from '../../../../../../contexts/RegistrationsContext';
 import styles from "./AttendeeActions.module.scss";
 //#endregion
 
 interface Props {
   event: EventDetails;
+  refetchEvent: () => Promise<void>;
 }
 
-export const AttendeeActions: FC<Props> = ({ event }) => {
-  const { cancelRegistration } = useEvents();
+export const AttendeeActions: FC<Props> = ({ event, refetchEvent }) => {
+  const { cancelRegistration } = useRegistrations();
   const { showToast } = useNotification();
 
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
@@ -25,6 +26,7 @@ export const AttendeeActions: FC<Props> = ({ event }) => {
     setIsCancelling(true);
     try {
       await cancelRegistration(event.id);
+      await refetchEvent();
       showToast('Registration cancelled', 'cancel');
       setIsCancelDialogOpen(false);
     } catch (err) {

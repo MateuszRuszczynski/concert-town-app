@@ -1,0 +1,61 @@
+.button {
+  //#region vars
+  --button-hover: #2564e0cc;
+  --error-hover: #e7000b33;
+
+  @include dark-theme {
+    --button-hover: #427ff6cc;
+    --error-hover: #ff64674d;
+  }
+  //#endregion
+
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+
+  padding: 7px 10px;
+
+  @include text-medium;
+  
+  color: $button-color;
+  border: 0.8px solid rgba(0, 0, 0, 0);
+
+  background-color: var(--accent-color);
+
+  @include hover(background-color, var(--button-hover));
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.loading {
+  opacity: 0.5;
+}
+
+.secondary {
+  border-color: var(--border-color);
+  background-color: var(--button-bg);
+
+  color: var(--primary-color);
+
+  @include hover(background-color, var(--background-hover));
+}
+
+.danger {
+  background-color: var(--error-bgc);
+  color: var(--error-color);
+
+  @include hover(background-color, var(--error-hover));
+}
+
+.success {
+  border-color: var(--border-color);
+  background-color: var(--button-bg);
+
+  color: var(--success-color);
+  
+  @include hover(background-color, rgba(52, 211, 153, 0.15));
+}

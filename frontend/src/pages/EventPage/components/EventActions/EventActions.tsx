@@ -8,10 +8,12 @@ import { VisitorActions } from './components/VisitorActions';
 
 interface Props {
   event: EventDetails;
+  relation: 'organizing' | 'attending' | undefined;
+  refetchEvent: () => Promise<void>;
 }
 
-export const EventActions: FC<Props> = ({ event }) => {
-  if (event.relation === 'organizing') return <OrganizerActions event={event} />;
-  if (event.relation === 'attending') return <AttendeeActions event={event} />;
-  return <VisitorActions event={event} />;
+export const EventActions: FC<Props> = ({ event, relation, refetchEvent }) => {
+  if (relation === 'organizing') return <OrganizerActions event={event} />;
+  if (relation === 'attending') return <AttendeeActions event={event} refetchEvent={refetchEvent}/>;
+  return <VisitorActions event={event} refetchEvent={refetchEvent} />;
 };

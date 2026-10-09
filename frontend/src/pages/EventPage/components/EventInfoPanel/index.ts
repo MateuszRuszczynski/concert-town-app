@@ -1,1 +1,2 @@
-export * from "./EventInfoPanel";
+export * from './EventInfoPanel';
+export * from './EventInfoPanelSkeleton';

@@ -1,9 +1,9 @@
 //#region imports
 import cn from 'classNames';
 import { useState, type FC } from 'react';
-import { FormField } from '../../../../components/FormField';
+import { FormField } from '../../../../components/ui/FormField';
 import { Check } from 'lucide-react';
-import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
+import { PasswordVisibilityToggle } from '../../../../components/ui/PasswordVisibilityToggle';
 import styles from './PasswordField.module.scss';
 //#endregion
 
@@ -17,6 +17,7 @@ interface Props {
   isValid: boolean;
   successMessage?: string;
   errorMessage?: string;
+  autoComplete?: string;
 }
 
 export const PasswordField: FC<Props> = ({
@@ -25,7 +26,8 @@ export const PasswordField: FC<Props> = ({
   requirements,
   isValid,
   successMessage,
-  errorMessage
+  errorMessage,
+  autoComplete
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -43,6 +45,7 @@ export const PasswordField: FC<Props> = ({
         endAdornment={
           <PasswordVisibilityToggle isVisible={isVisible} onToggle={() => setIsVisible((prev) => !prev)} />
         }
+        autoComplete={autoComplete}
         required
       />
 

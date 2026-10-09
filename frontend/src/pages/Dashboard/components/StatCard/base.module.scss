@@ -1,0 +1,27 @@
+.statCard {
+  @include surface-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.iconBlock {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 10px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

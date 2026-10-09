@@ -1,18 +1,32 @@
-import { PageHeader } from '../../components/PageHeader';
-import { useAuth } from '../../contexts/AuthContext/useAuth';
+//#region imports
+import { useAuth } from '../../contexts/AuthContext';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import styles from './Dashboard.module.scss';
+import { OrganizerDashboard } from './components/OrganizerDashboard';
+import { CustomerDashboard } from './components/CustomerDashboard';
+import { ErrorPage } from '../ErrorPage';
+import { DashboardSkeleton } from './DashboardSkeleton';
+//#endregion
 
 export const Dashboard = () => {
-  const { user } = useAuth();
   usePageTitle('Dashboard');
 
-  return (
-    <section className={styles.dashboard}>
-      <PageHeader
-        title='Dashboard'
-        subtitle={`Welcome back, ${user?.firstName}. Here's how your events are performing.`}
+  const { isAuthenticated, isOrganizerOrAdmin, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <ErrorPage
+        type='access-denied'
+        title='Sign in required'
+        subtitle='Sign in to see an overview of your events and activity.'
+        buttonText='Go to sign in'
+        backTo='/sign-in'
       />
-    </section>
-  );
+    );
+  }
+
+  return isOrganizerOrAdmin ? <OrganizerDashboard /> : <CustomerDashboard />;
 };

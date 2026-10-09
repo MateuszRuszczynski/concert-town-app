@@ -1,0 +1,21 @@
+.progress {
+  @include surface-block(14px);
+
+  padding: 20px;
+}
+
+.title {
+  margin-bottom: 12px;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 8px;
+}
+
+.progressBarTrack {
+  border-radius: 99px;
+}

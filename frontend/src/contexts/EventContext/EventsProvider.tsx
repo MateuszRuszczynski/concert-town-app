@@ -1,143 +1,199 @@
 //#region imports
-import { useState, useCallback, type FC, type ReactNode } from 'react';
+import {
+  useState,
+  useCallback,
+  type FC,
+  type ReactNode,
+  useEffect
+} from 'react';
 import { EventsContext } from './EventsContext';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { DEFAULT_EVENTS } from '../../pages/Events/defaultEvents';
 import type { EventDetails, EventFormData } from '../../types/events';
+import { useAuth } from '../AuthContext';
+import {
+  getActiveMyEvents,
+  getDrafts,
+  mapEventFormDataToEventRequest,
+  mapEventResponseToEventDetails
+} from '../../api/events';
+import { getErrorMessage } from '../../utils/getErrorMessage';
+import {
+  createEvent,
+  getEvents,
+  getMyEvents,
+  eventsService
+} from '../../api/events';
 //#endregion
 
-export const EventsProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [events, setEvents] = useLocalStorage<EventDetails[]>(
-    DEFAULT_EVENTS,
-    'events'
-  );
+type Props = {
+  children: ReactNode;
+};
+
+export const EventsProvider: FC<Props> = ({ children }) => {
+  //#region state
+  const [events, setEvents] = useState<EventDetails[]>([]);
+  const [eventsCount, setEventsCount] = useState(0);
+  const [myEvents, setMyEvents] = useState<EventDetails[]>([]);
+  const [drafts, setDrafts] = useState<EventDetails[]>([]);
+  const [activeMyEvents, setActiveMyEvents] = useState<EventDetails[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMyEventsLoading, setIsMyEventsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const SIMULATED_DELAY_MS = 800;
+  const {
+    token,
+    isLoading: isAuthLoading,
+    isOrganizerOrAdmin
+  } = useAuth();
+  //#endregion
 
+  //#region fetchers
   const refetchEvents = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 300));
+      const response = await getEvents();
+      setEventsCount(response.count);
+      setEvents(response.results.map(e => mapEventResponseToEventDetails(e)));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load events');
+      setError(getErrorMessage(err, 'Failed to load events'));
     } finally {
       setIsLoading(false);
     }
   }, []);
 
+  const refetchMyEvents = useCallback(async () => {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
+      setMyEvents([]);
+      return;
+    }
+    try {
+      const response = await getMyEvents({}, token);
+      setMyEvents(response.results.map(mapEventResponseToEventDetails));
+    } catch {
+      setMyEvents([]);
+    }
+  }, [isAuthLoading, token, isOrganizerOrAdmin]);
+
+  const refetchDrafts = useCallback(async () => {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
+      setDrafts([]);
+      return;
+    }
+    try {
+      const response = await getDrafts(token);
+      setDrafts(response.results.map(mapEventResponseToEventDetails));
+    } catch {
+      setDrafts([]);
+    }
+  }, [isAuthLoading, token, isOrganizerOrAdmin]);
+
+  const refetchActiveMyEvents = useCallback(async () => {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
+      setActiveMyEvents([]);
+      return;
+    }
+    try {
+      const response = await getActiveMyEvents(token);
+      setActiveMyEvents(response.results.map(mapEventResponseToEventDetails));
+    } catch {
+      setActiveMyEvents([]);
+    }
+  }, [isAuthLoading, token, isOrganizerOrAdmin]);
+
+  const refetchMyEventsData = useCallback(async () => {
+    if (isAuthLoading || !token || !isOrganizerOrAdmin) {
+      setMyEvents([]);
+      setDrafts([]);
+      setActiveMyEvents([]);
+      return;
+    }
+
+    setIsMyEventsLoading(true);
+
+    try {
+      await Promise.all([
+        refetchMyEvents(),
+        refetchDrafts(),
+        refetchActiveMyEvents()
+      ]);
+    } finally {
+      setIsMyEventsLoading(false);
+    }
+  }, [
+    isAuthLoading,
+    token,
+    isOrganizerOrAdmin,
+    refetchMyEvents,
+    refetchDrafts,
+    refetchActiveMyEvents
+  ]);
+  //#endregion
+
+  //#region effects
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    refetchEvents();
+  }, [refetchEvents]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    refetchMyEventsData();
+  }, [refetchMyEventsData]);
+  //#endregion
+
+  //#region mutations
   const addEvent = useCallback(
     async (data: EventFormData) => {
-      setError(null);
-      try {
-        const newEvent: EventDetails = {
-          ...data,
-          id: crypto.randomUUID(),
-          registeredCount: 0,
-          relation: 'organizing'
-        };
-        setEvents(prev => [newEvent, ...prev]);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to create event');
-        throw err;
-      }
+      if (!token) throw new Error('Not authenticated');
+      const response = await createEvent(
+        mapEventFormDataToEventRequest(data),
+        token
+      );
+      const newEvent = mapEventResponseToEventDetails(response);
+      setEvents(prev => [newEvent, ...prev]);
+      await refetchMyEventsData();
     },
-    [setEvents]
+    [token, refetchMyEventsData]
   );
 
   const updateEvent = useCallback(
-    async (id: string, data: Partial<EventFormData>) => {
-      setError(null);
-      try {
-        setEvents(prev =>
-          prev.map(event => (event.id === id ? { ...event, ...data } : event))
-        );
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to update event');
-        throw err;
-      }
+    async (id: number, data: Partial<EventFormData>) => {
+      if (!token) throw new Error('Not authenticated');
+      const payload = mapEventFormDataToEventRequest(data as EventFormData);
+      const response = await eventsService.updateEvent(id, payload, token);
+      const updated = mapEventResponseToEventDetails(response);
+      setEvents(prev => prev.map(e => (e.id === id ? updated : e)));
+      await refetchMyEventsData();
     },
-    [setEvents]
+    [token, refetchMyEventsData]
   );
 
   const deleteEvent = useCallback(
-    async (id: string) => {
-      setError(null);
-      try {
-        await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY_MS));
-        setEvents(prev => prev.filter(event => event.id !== id));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to delete event');
-        throw err;
-      }
+    async (id: number) => {
+      if (!token) throw new Error('Not authenticated');
+      await eventsService.deleteEvent(id, token);
+      setEvents(prev => prev.filter(e => e.id !== id));
+      await refetchMyEventsData();
     },
-    [setEvents]
+    [token, refetchMyEventsData]
   );
-
-  const registerForEvent = useCallback(
-    async (id: string) => {
-      setError(null);
-      try {
-        await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY_MS));
-
-        setEvents(prev =>
-          prev.map(event =>
-            event.id === id
-              ? {
-                  ...event,
-                  relation: 'attending',
-                  registeredCount: event.registeredCount + 1
-                }
-              : event
-          )
-        );
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to register');
-        throw err;
-      }
-    },
-    [setEvents]
-  );
-
-  const cancelRegistration = useCallback(
-    async (id: string) => {
-      setError(null);
-      try {
-        await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY_MS));
-        setEvents(prev =>
-          prev.map(event =>
-            event.id === id
-              ? {
-                  ...event,
-                  relation: undefined,
-                  registeredCount: Math.max(0, event.registeredCount - 1)
-                }
-              : event
-          )
-        );
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Failed to cancel registration'
-        );
-        throw err;
-      }
-    },
-    [setEvents]
-  );
+  //#endregion
 
   return (
     <EventsContext.Provider
       value={{
         events,
+        eventsCount,
+        myEvents,
+        drafts,
+        activeMyEvents,
         isLoading,
         error,
+        isMyEventsLoading,
         addEvent,
         updateEvent,
         deleteEvent,
-        registerForEvent,
-        cancelRegistration,
         refetchEvents
       }}
     >

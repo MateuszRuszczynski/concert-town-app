@@ -1,12 +1,15 @@
 //#region imports
-import cn from "classNames";
-import type { FC } from "react";
-import { Plus, X } from "lucide-react";
-import { useNavigate } from "react-router";
-import { HomeLink } from "../../../HomeLink";
-import { NavList } from "../NavList";
-import { Button } from "../../../Button";
-import styles from "./Sidebar.module.scss";
+import cn from 'classNames';
+import type { FC } from 'react';
+import { X } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { HomeLink } from '../HomeLink';
+import { NavList } from '../NavList';
+import { Button } from '../../../ui/Button';
+import { useAuth } from '../../../../contexts/AuthContext';
+import { AddEventButton } from '../../../events/AddEventButton';
+import styles from './Sidebar.module.scss';
+import { BecomeOrganizerButton } from '../../../organizer/BecomeOrganizerButton';
 //#endregion
 
 interface Props {
@@ -16,6 +19,11 @@ interface Props {
 
 export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const { isAuthenticated, isOrganizerOrAdmin, isLoading } = useAuth();
+
+  const showAuthenticated = !isLoading && isAuthenticated;
+  const showOrganizerPrompt =
+    !isLoading && isAuthenticated && !isOrganizerOrAdmin;
 
   return (
     <>
@@ -44,13 +52,35 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
           <NavList onNavigate={onClose} />
         </nav>
 
-        <Button onClick={() => {
-          navigate('/events/new')
-          onClose();
-        }}>
-          <Plus size={16} />
-          Add event
-        </Button>
+        <div className={styles.actions}>
+          {!showAuthenticated && (
+            <>
+              <Button
+                onClick={() => {
+                  navigate('/sign-in');
+                  onClose();
+                }}
+              >
+                Sign in
+              </Button>
+              <p className={styles.hint}>
+                Sign in to attend and organize events
+              </p>
+            </>
+          )}
+
+          {showOrganizerPrompt && (
+            <>
+              <BecomeOrganizerButton />
+              
+              <p className={styles.hint}>
+                Become an organizer to create and manage your own events
+              </p>
+            </>
+          )}
+
+          {showAuthenticated && <AddEventButton onNavigate={onClose} />}
+        </div>
       </aside>
     </>
   );

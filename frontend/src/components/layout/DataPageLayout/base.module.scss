@@ -1,0 +1,14 @@
+.page {
+  @include page-container;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+

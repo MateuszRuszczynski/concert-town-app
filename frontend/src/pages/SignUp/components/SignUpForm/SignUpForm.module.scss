@@ -7,5 +7,5 @@
   color: var(--primary-color);
   text-decoration: underline;
 
-  @include hover(color, $accent-hvr-color);
+  @include hover(color, $dark-blue-color);
 }

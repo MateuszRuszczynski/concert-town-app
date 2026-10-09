@@ -4,10 +4,6 @@
   @include dark-theme {
     --progress-bar-bg: #262626;
   }
-
-  @include surface-block(14px);
-
-  padding: 20px;
 }
 
 .title {
@@ -16,19 +12,12 @@
   font-weight: 600;
 
   color: var(--primary-color);
-  margin-bottom: 12px;
 }
 
 .statsRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
   font-size: 14px;
   line-height: 20px;
-
   color: var(--secondary-color);
-  margin-bottom: 8px;
 }
 
 .percentage {
@@ -39,9 +28,7 @@
 
 .progressBarTrack {
   height: 8px;
-
-  background-color: var(--progress-bar-bg);
-  border-radius: 99px;
+  background-color: var(--progress-bar-bg); 
 }
 
 .progressBarFill {

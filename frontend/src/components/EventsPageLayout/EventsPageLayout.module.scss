@@ -1,0 +1,9 @@
+.events {
+  @include fade-in-animation;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

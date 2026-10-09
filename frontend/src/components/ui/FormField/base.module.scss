@@ -1,0 +1,9 @@
+.formfield {
+  @include form-field;
+}
+
+.label {
+  @include text-medium;
+}
+
+
