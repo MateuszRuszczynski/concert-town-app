@@ -1,0 +1,28 @@
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  @include on-tablet {
+    flex-direction: row;
+  }
+}
+
+.buttonLabel {
+  display: none;
+
+  @include on-desktop {
+    display: inline;
+  }
+}
+
+.numberSkeleton {
+  width: 20px;
+  height: 16px;
+}
+
+.emailSkeleton,
+.statusSkeleton {
+  height: 22px;
+}
+

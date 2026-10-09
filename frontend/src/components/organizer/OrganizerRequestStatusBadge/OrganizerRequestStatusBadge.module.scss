@@ -1,0 +1,24 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pending {
+  background: var(--border-color);
+  color: var(--secondary-color);
+}
+
+.approved {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--success-color, #34d399);
+}
+
+.rejected {
+  background: rgba(255, 107, 107, 0.15);
+  color: var(--error-color, #ff6b6b);
+}
