@@ -27,7 +27,7 @@ from .serializers import (
 
 
 class LoginRateThrottle(AnonRateThrottle):
-    rate = "5/minute"
+    rate = "20/minute"
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
