@@ -8,7 +8,7 @@ import { RegistrationProgress } from './components/RegistrationProgress';
 import { EventInfoPanel } from './components/EventInfoPanel';
 import { EventActions } from './components/EventActions';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { BackLink } from '../../components/BackLink';
+import { BackLink } from '../../components/ui/BackLink';
 import { useEventRelation } from '../../hooks/useEventRelation';
 import { EventNotFound } from '../EventNotFound';
 import { useEvent } from './hooks/useEvent';

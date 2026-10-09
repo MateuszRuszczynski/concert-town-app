@@ -1,18 +1,16 @@
 //#region imports
-import cn from 'classNames';
 import { useParams } from 'react-router';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { BackLink } from '../../components/BackLink/BackLink';
-import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { ParticipantsTable } from './components/ParticipantsTable';
 import { useParticipants } from './hooks/useParticipants';
 import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
 import { EventNotFound } from '../EventNotFound';
 import { useEvent } from '../EventPage/hooks/useEvent';
-import { EventParticipantsSkeleton } from './EventParticipantsSkeleton';
-import baseStyles from './base.module.scss';
-import styles from './EventParticipants.module.scss';
+import {
+  DataPageLayout,
+  DataPageSkeleton
+} from '../../components/layout/DataPageLayout';
 //#endregion
 
 export const EventParticipants = () => {
@@ -27,7 +25,13 @@ export const EventParticipants = () => {
   usePageTitle(event ? `Participants — ${event.title}` : 'Participants');
 
   if (isLoading) {
-    return <EventParticipantsSkeleton eventId={id || ''} />;
+    return (
+      <DataPageSkeleton
+        backLink={{ to: `/events/${id}`, label: 'Back to event' }}
+      >
+        <ParticipantsTable participants={[]} isLoading={true} />
+      </DataPageSkeleton>
+    );
   }
 
   if (!event) {
@@ -47,22 +51,15 @@ export const EventParticipants = () => {
   }
 
   return (
-    <section
-      className={cn(baseStyles.eventParticipants, styles.eventParticipants)}
+    <DataPageLayout
+      title='Participants'
+      subtitle={`${participants.length} people registered for ${event?.title}.`}
+      backLink={{ to: `/events/${event?.id}`, label: 'Back to event' }}
     >
-      <div className={baseStyles.topBar}>
-        <BackLink to={`/events/${event?.id}`} label='Back to event' />
-
-        <PageHeader
-          title='Participants'
-          subtitle={`${participants.length} people registered for ${event?.title}.`}
-        />
-      </div>
-
       <ParticipantsTable
         participants={participants}
         isLoading={participantsLoading}
       />
-    </section>
+    </DataPageLayout>
   );
 };

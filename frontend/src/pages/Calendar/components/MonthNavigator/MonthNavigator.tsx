@@ -1,7 +1,7 @@
 //#region imports
 import type { FC } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { IconButton } from '../../../../components/IconButton/IconButton';
+import { IconButton } from '../../../../components/ui/IconButton/IconButton';
 import styles from './MonthNavigator.module.scss';
 //#endregion
 

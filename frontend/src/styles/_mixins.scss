@@ -6,6 +6,7 @@
   }
 }
 
+// #region Responsive & theme
 @mixin on-tablet {
   @media (min-width: 760px) {
     @content;
@@ -23,7 +24,9 @@
     @content;
   }
 }
+// #endregion
 
+// #region Animations
 @mixin fade-in-animation {
   opacity: 0;
   animation: fade-in 0.5s ease-in-out forwards;
@@ -76,18 +79,20 @@
 
   background-size: 400%;
   animation: shimmer 1.5s infinite linear;
-}
 
-@keyframes shimmer {
-  0% {
-    background-position: 100% 100%;
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 100%;
+    }
+
+    100% {
+      background-position: 0 0;
+    }
   }
-
-  100% {
-    background-position: 0 0;
-  }
 }
+// #endregion
 
+// #region Layout & surfaces
 @mixin page-container {
   padding: 32px 16px;
 
@@ -109,19 +114,17 @@
   align-items: center;
   gap: $gap;
 }
+// #endregion
 
+// #region Typography
 @mixin text-medium {
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
 }
+// #endregion
 
-@mixin full-width-grid-item {
-  @include on-tablet {
-    grid-column: 1 / -1;
-  }
-}
-
+// #region Forms
 @mixin form-field {
   display: flex;
   flex-direction: column;
@@ -152,6 +155,14 @@
   &::-ms-reveal,
   &::-ms-clear {
     display: none;
+  }
+}
+
+//#endregion
+
+@mixin full-width-grid-item {
+  @include on-tablet {
+    grid-column: 1 / -1;
   }
 }
 

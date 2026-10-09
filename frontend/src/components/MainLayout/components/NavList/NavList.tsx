@@ -45,9 +45,9 @@ interface Props {
 }
 
 export const NavList = ({ onNavigate }: Props) => {
-  const { user, isOrganizerOrAdmin } = useAuth();
+  const { isOrganizerOrAdmin, isAuthenticated } = useAuth();
 
-  const navItems = user ? [DASHBOARD_NAV_ITEM, ...BASE_NAV_ITEMS] : BASE_NAV_ITEMS;
+  const navItems = isAuthenticated ? [DASHBOARD_NAV_ITEM, ...BASE_NAV_ITEMS] : BASE_NAV_ITEMS;
 
   return (
     <ul className={styles.navList}>
@@ -65,7 +65,7 @@ export const NavList = ({ onNavigate }: Props) => {
             {label}
           </NavLink>
 
-          {children && (
+          {(children && isAuthenticated) && (
             <ul className={styles.subNavList}>
               {children
                 .filter(child => !child.requiresOrganizer || isOrganizerOrAdmin)

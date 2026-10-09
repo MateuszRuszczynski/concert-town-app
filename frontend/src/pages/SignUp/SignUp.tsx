@@ -1,8 +1,8 @@
 //#region imports
 import { Link } from "react-router";
-import { AuthLayout } from "../../components/AuthLayout";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { SignUpForm } from "./components/SignUpForm";
+import { AuthLayout } from "../../components/layout/AuthLayout";
 //#endregion
 
 export const SignUp = () => {

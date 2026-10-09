@@ -3,6 +3,7 @@ import type { EventDetails, EventFormData } from '../../types/events';
 
 export interface EventsContextType {
   events: EventDetails[];
+  eventsCount: number;
   myEvents: EventDetails[];
   drafts: EventDetails[];
   activeMyEvents: EventDetails[];

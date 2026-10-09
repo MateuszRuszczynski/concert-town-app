@@ -1,6 +1,6 @@
 //#region imports
-import { CategoryBadgeSkeleton } from '../../../../components/CategoryBadge';
-import { SkeletonItem } from '../../../../components/SkeletonItem';
+import { CategoryBadgeSkeleton } from '../../../../components/events/CategoryBadge';
+import { SkeletonItem } from '../../../../components/ui/SkeletonItem';
 import baseStyles from './base.module.scss';
 import styles from './EventHeaderSkeleton.module.scss';
 //#endregion

@@ -1,14 +1,14 @@
 //#region imports
-import { FormField } from '../../../../components/FormField';
+import { FormField } from '../../../../components/ui/FormField';
 import { PasswordField } from '../PasswordField';
-import { Button } from '../../../../components/Button';
-import { Form } from '../../../../components/Form';
+import { Button } from '../../../../components/ui/Button';
+import { Form } from '../../../../components/ui/Form';
 import { useSignUpForm } from '../../hooks/useSignUpForm';
-import { FormError } from '../../../../components/FormError';
+import { FormError } from '../../../../components/ui/FormError';
 import { useState } from 'react';
-import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
+import { PasswordVisibilityToggle } from '../../../../components/ui/PasswordVisibilityToggle';
 import { Link } from 'react-router';
-import { Checkbox } from '../../../../components/Checkbox';
+import { Checkbox } from '../../../../components/ui/Checkbox';
 import styles from './SignUpForm.module.scss';
 //#endregion
 

@@ -1,7 +1,7 @@
 //#region imports
-import { BackLink } from '../../components/BackLink';
-import { ButtonSkeleton } from '../../components/Button';
-import { SkeletonItem } from '../../components/SkeletonItem';
+import { BackLink } from '../../components/ui/BackLink';
+import { ButtonSkeleton } from '../../components/ui/Button';
+import { SkeletonItem } from '../../components/ui/SkeletonItem';
 import { EventHeaderSkeleton } from './components/EventHeader';
 import { EventHeroSkeleton } from './components/EventHero';
 import { EventInfoPanelSkeleton } from './components/EventInfoPanel';

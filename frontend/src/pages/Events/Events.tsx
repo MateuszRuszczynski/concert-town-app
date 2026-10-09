@@ -1,21 +1,26 @@
 //#region imports
-import { PageHeader } from '../../components/PageHeader';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { EventsFilterBar } from './components/EventsFilterBar';
 import { useEventFilters } from './hooks/useEventFilters';
 import { useAuth } from '../../contexts/AuthContext';
-import { EventsNav } from '../../components/EventsNav';
-import { EventsSearchSort } from '../../components/EventsSearchSort';
-import { EventsList } from '../../components/EventsList';
-import styles from './Events.module.scss';
+import {
+  EventsPageLayout,
+  EventsPageSkeleton
+} from '../../components/EventsPageLayout';
+import { useEvents } from '../../contexts/EventContext';
+import { EventsSearchSort } from './components/EventsSearchSort';
 //#endregion
 
 export const Events = () => {
   usePageTitle('Events');
 
-  const { user } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isLoading: eventsLoading } = useEvents();
 
   const {
+    page,
+    totalPages,
+    setPage,
     searchQuery,
     setSearchQuery,
     categorySlug,
@@ -28,32 +33,37 @@ export const Events = () => {
     isLoading
   } = useEventFilters();
 
+  if (authLoading || eventsLoading) {
+    return <EventsPageSkeleton />;
+  }
+
   return (
-    <section className={styles.events}>
-      {user && <EventsNav />}
+    <EventsPageLayout
+      title='Events'
+      subtitle='Discover and register for upcoming events.'
+      showNav={isAuthenticated}
+      toolbar={
+        <>
+          <EventsSearchSort
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+          />
 
-      <PageHeader
-        title='Events'
-        subtitle='Discover and register for upcoming events.'
-      />
-
-      <div className={styles.toolbar}>
-        <EventsSearchSort
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          sortBy={sortBy}
-          onSortChange={setSortBy}
-        />
-
-        <EventsFilterBar
-          categorySlug={categorySlug}
-          setCategorySlug={setCategorySlug}
-          hasActiveFilters={hasActiveFilters}
-          onClearFilters={clearFilters}
-        />
-      </div>
-
-      <EventsList events={events} isLoading={isLoading} />
-    </section>
+          <EventsFilterBar
+            categorySlug={categorySlug}
+            setCategorySlug={setCategorySlug}
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={clearFilters}
+          />
+        </>
+      }
+      page={page}
+      totalPages={totalPages}
+      onPageChange={setPage}
+      events={events}
+      isLoading={isLoading}
+    />
   );
 };

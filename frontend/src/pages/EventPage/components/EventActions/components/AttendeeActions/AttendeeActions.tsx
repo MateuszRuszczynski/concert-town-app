@@ -3,9 +3,9 @@ import { useState, type FC } from 'react';
 import type { EventDetails } from '../../../../../../types/events';
 import { useNotification } from '../../../../../../contexts/NotificationContext';
 import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
-import { ConfirmDialog } from '../../../../../../components/ConfirmDialog';
+import { ConfirmDialog } from '../../../ConfirmDialog';
 import { CalendarX } from 'lucide-react';
-import { Button } from '../../../../../../components/Button';
+import { Button } from '../../../../../../components/ui/Button';
 import { useRegistrations } from '../../../../../../contexts/RegistrationsContext';
 import styles from "./AttendeeActions.module.scss";
 //#endregion

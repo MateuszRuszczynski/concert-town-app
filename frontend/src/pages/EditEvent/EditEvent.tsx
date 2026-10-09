@@ -1,13 +1,13 @@
 //#region imports
 import { useParams } from 'react-router';
 import type { EventFormData } from '../../types/events';
-import { EventForm } from '../../components/EventForm';
-import { EventFormLayout } from '../../components/EventFormLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
 import { EventNotFound } from '../EventNotFound';
 import { useEvent } from '../EventPage/hooks/useEvent';
-import { EventFormLayoutSkeleton } from '../../components/EventFormLayout/EventFormLayoutSkeleton';
+import { EventForm } from '../../components/events/EventForm';
+import { EventFormLayoutSkeleton } from '../../components/layout/EventFormLayout/EventFormLayoutSkeleton';
+import { EventFormLayout } from '../../components/layout/EventFormLayout';
 //#endregion
 
 export const EditEvent = () => {

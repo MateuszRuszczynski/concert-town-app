@@ -1,5 +1,5 @@
 //#region imports
-import { SkeletonItem } from '../../../../components/SkeletonItem';
+import { SkeletonItem } from '../../../../components/ui/SkeletonItem';
 import baseStyles from './base.module.scss';
 import styles from './StatCardSkeleton.module.scss';
 //#endregion

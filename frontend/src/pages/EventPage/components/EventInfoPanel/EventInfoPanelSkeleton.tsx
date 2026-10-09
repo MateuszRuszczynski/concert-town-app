@@ -2,7 +2,7 @@
 import cn from 'classNames';
 import baseStyles from './base.module.scss';
 import styles from './EventInfoPanelSkeleton.module.scss';
-import { SkeletonItem } from '../../../../components/SkeletonItem';
+import { SkeletonItem } from '../../../../components/ui/SkeletonItem';
 //#endregion
 
 export const EventInfoPanelSkeleton = () => (

@@ -1,5 +1,5 @@
 //#region imports
-import { Button } from '../../components/Button';
+import { Button } from '../../components/ui/Button';
 import type { FC, ReactNode } from 'react';
 import { Lock, SearchX } from 'lucide-react';
 import { useNavigate } from 'react-router';

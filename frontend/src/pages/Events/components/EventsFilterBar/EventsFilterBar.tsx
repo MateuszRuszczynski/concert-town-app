@@ -1,7 +1,7 @@
 //#region imports
 import type { FC } from 'react';
 import { Filter } from 'lucide-react';
-import { CustomSelect } from '../../../../components/CustomSelect';
+import { CustomSelect } from '../../../../components/ui/CustomSelect';
 import { FilterChip } from '../FilterChip';
 import { useCategories } from '../../../../contexts/CategoriesContext/useCategories';
 import styles from './EventsFilterBar.module.scss';
@@ -37,10 +37,6 @@ export const EventsFilterBar: FC<Props> = ({
           options={categories.map(c => ({ value: c.slug, label: c.name }))}
           placeholder='All categories'
         />
-        {/* <CategoryFilterDropdown
-          selected={selectedCategories}
-          onChange={onCategoriesChange}
-        /> */}
 
       {hasActiveFilters && (
         <div className={styles.activeFilters}>

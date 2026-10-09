@@ -4,7 +4,7 @@ import type { EventDetails } from '../../../../../../types/events';
 import { useNotification } from '../../../../../../contexts/NotificationContext';
 import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
 import { CalendarCheck } from 'lucide-react';
-import { Button } from '../../../../../../components/Button';
+import { Button } from '../../../../../../components/ui/Button';
 import { useAuth } from '../../../../../../contexts/AuthContext';
 import { Link } from 'react-router';
 import { useRegistrations } from '../../../../../../contexts/RegistrationsContext';

@@ -2,8 +2,8 @@
 import type { FC, ReactNode } from 'react';
 import type { EventDetails } from '../../../../types/events';
 import { Link } from 'react-router';
-import { EventsList } from '../../../../components/EventsList';
-import { EmptyBlock } from '../../../../components/EmptyBlock';
+import { EventsList } from '../../../../components/events/EventsList';
+import { EmptyBlock } from '../../../../components/ui/EmptyBlock';
 import styles from './UpcomingEventsBlock.module.scss';
 //#endregion
 

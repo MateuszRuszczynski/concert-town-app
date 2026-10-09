@@ -31,6 +31,7 @@ type Props = {
 export const EventsProvider: FC<Props> = ({ children }) => {
   //#region state
   const [events, setEvents] = useState<EventDetails[]>([]);
+  const [eventsCount, setEventsCount] = useState(0);
   const [myEvents, setMyEvents] = useState<EventDetails[]>([]);
   const [drafts, setDrafts] = useState<EventDetails[]>([]);
   const [activeMyEvents, setActiveMyEvents] = useState<EventDetails[]>([]);
@@ -52,6 +53,7 @@ export const EventsProvider: FC<Props> = ({ children }) => {
 
     try {
       const response = await getEvents();
+      setEventsCount(response.count);
       setEvents(response.results.map(e => mapEventResponseToEventDetails(e)));
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to load events'));
@@ -182,6 +184,7 @@ export const EventsProvider: FC<Props> = ({ children }) => {
     <EventsContext.Provider
       value={{
         events,
+        eventsCount,
         myEvents,
         drafts,
         activeMyEvents,

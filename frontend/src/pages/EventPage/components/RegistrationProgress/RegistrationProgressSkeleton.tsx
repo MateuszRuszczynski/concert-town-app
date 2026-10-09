@@ -1,6 +1,6 @@
 //#region imports
 import cn from 'classNames';
-import { SkeletonItem } from '../../../../components/SkeletonItem';
+import { SkeletonItem } from '../../../../components/ui/SkeletonItem';
 import baseStyles from './base.module.scss';
 import styles from './RegistrationProgressSkeleton.module.scss';
 //#endregion

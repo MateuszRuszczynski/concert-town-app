@@ -1,11 +1,11 @@
 //#region imports
 import { useState } from 'react';
 import cn from 'classNames';
-import { PageHeader } from '../../../../components/PageHeader';
 import { useAuth } from '../../../../contexts/AuthContext';
-import { AddEventButton } from '../../../../components/AddEventButton';
 import { OrganizerPanel } from '../OrganizerPanel';
 import { AttendeePanel } from '../AttendeePanel';
+import { AddEventButton } from '../../../../components/events/AddEventButton';
+import { PageHeader } from '../../../../components/ui/PageHeader';
 import styles from './OrganizerDashboard.module.scss';
 //#endregion
 

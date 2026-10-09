@@ -1,4 +1,12 @@
 .userMenu {
+  //#region vars
+  --admin-color: #7c3aed;
+
+  @include dark-theme {
+    --admin-color: #a78bfa;
+  }
+  //#endregion
+
   position: relative;
 }
 
@@ -39,7 +47,13 @@
 }
 
 .unregistered {
-  background-color: var(--light-gray-color);
+  --unregistered-color: #ccced2;
+
+  @include dark-theme {
+    --unregistered-color: #ccced262;
+  }
+
+  background-color: var(--unregistered-color);
 }
 
 .triggerLabel {

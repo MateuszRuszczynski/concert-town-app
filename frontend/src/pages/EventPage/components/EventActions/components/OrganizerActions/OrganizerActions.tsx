@@ -4,9 +4,9 @@ import type { EventDetails } from '../../../../../../types/events';
 import { useEvents } from '../../../../../../contexts/EventContext';
 import { useNavigate } from 'react-router';
 import { useNotification } from '../../../../../../contexts/NotificationContext';
-import { Button } from '../../../../../../components/Button';
+import { Button } from '../../../../../../components/ui/Button';
 import { Pencil, Trash2, Users } from 'lucide-react';
-import { ConfirmDialog } from '../../../../../../components/ConfirmDialog';
+import { ConfirmDialog } from '../../../ConfirmDialog';
 import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
 import styles from './OrganizerActions.module.scss';
 //#endregion

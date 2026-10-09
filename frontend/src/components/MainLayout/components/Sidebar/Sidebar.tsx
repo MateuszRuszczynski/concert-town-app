@@ -3,12 +3,13 @@ import cn from 'classNames';
 import type { FC } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { HomeLink } from '../../../HomeLink';
+import { HomeLink } from '../HomeLink';
 import { NavList } from '../NavList';
-import { Button } from '../../../Button';
+import { Button } from '../../../ui/Button';
 import { useAuth } from '../../../../contexts/AuthContext';
-import { AddEventButton } from '../../../AddEventButton';
+import { AddEventButton } from '../../../events/AddEventButton';
 import styles from './Sidebar.module.scss';
+import { BecomeOrganizerButton } from '../../../organizer/BecomeOrganizerButton';
 //#endregion
 
 interface Props {
@@ -70,7 +71,8 @@ export const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
 
           {showOrganizerPrompt && (
             <>
-              <Button onClick={() => {}}>Become an organizer</Button>
+              <BecomeOrganizerButton />
+              
               <p className={styles.hint}>
                 Become an organizer to create and manage your own events
               </p>

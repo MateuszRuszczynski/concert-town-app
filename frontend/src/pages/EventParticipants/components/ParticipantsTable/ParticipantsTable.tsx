@@ -2,8 +2,9 @@
 import type { FC } from 'react';
 import type { Participant } from '../../../../types/events';
 import { Mail, User } from 'lucide-react';
-import { EmptyBlock } from '../../../../components/EmptyBlock';
-import { SkeletonItem } from '../../../../components/SkeletonItem';
+import { EmptyBlock } from '../../../../components/ui/EmptyBlock';
+import { SkeletonItem } from '../../../../components/ui/SkeletonItem';
+import { Table } from '../../../../components/ui/Table';
 import styles from './ParticipantsTable.module.scss';
 //#endregion
 
@@ -23,12 +24,12 @@ export const ParticipantsTable: FC<Props> = ({
   }
 
   return (
-    <table className={styles.table}>
+    <Table>
       <thead>
         <tr>
-          <th className={styles.headerCell}>#</th>
-          <th className={styles.headerCell}>
-            <span className={styles.headerContent}>
+          <th>#</th>
+          <th>
+            <span>
               <User
                 size={14}
                 aria-hidden='true'
@@ -38,13 +39,9 @@ export const ParticipantsTable: FC<Props> = ({
             </span>
           </th>
 
-          <th className={styles.headerCell}>
-            <span className={styles.headerContent}>
-              <Mail
-                size={14}
-                aria-hidden='true'
-                className={styles.headerIcon}
-              />
+          <th>
+            <span>
+              <Mail size={14} aria-hidden='true' />
               Email
             </span>
           </th>
@@ -54,26 +51,26 @@ export const ParticipantsTable: FC<Props> = ({
       <tbody>
         {isLoading
           ? Array.from({ length: 5 }).map((_, i) => (
-              <tr className={styles.row} key={i}>
-                <td className={styles.cell}>
+              <tr key={i}>
+                <td>
                   <SkeletonItem additionalClass={styles.numberSkeleton} />
                 </td>
-                <td className={styles.cell}>
+                <td>
                   <SkeletonItem additionalClass={styles.nameSkeleton} />
                 </td>
-                <td className={styles.cell}>
+                <td>
                   <SkeletonItem additionalClass={styles.emailSkeleton} />
                 </td>
               </tr>
             ))
           : participants.map((participant, i) => (
-              <tr key={participant.userId} className={styles.row}>
-                <td className={styles.cell}>{i + 1}</td>
-                <td className={styles.cell}>{participant.name}</td>
-                <td className={styles.cell}>{participant.email}</td>
+              <tr key={participant.userId}>
+                <td>{i + 1}</td>
+                <td>{participant.name}</td>
+                <td>{participant.email}</td>
               </tr>
             ))}
       </tbody>
-    </table>
+    </Table>
   );
 };

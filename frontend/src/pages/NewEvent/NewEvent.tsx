@@ -1,11 +1,11 @@
 //#region imports
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { EventForm } from '../../components/EventForm';
-import { EventFormLayout } from '../../components/EventFormLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
-import { Button } from '../../components/Button';
-import { EventFormLayoutSkeleton } from '../../components/EventFormLayout/EventFormLayoutSkeleton';
+import { BecomeOrganizerButton } from '../../components/organizer/BecomeOrganizerButton';
+import { EventForm } from '../../components/events/EventForm';
+import { EventFormLayoutSkeleton } from '../../components/layout/EventFormLayout/EventFormLayoutSkeleton';
+import { EventFormLayout } from '../../components/layout/EventFormLayout';
 //#endregion
 
 export const NewEvent = () => {
@@ -19,7 +19,19 @@ export const NewEvent = () => {
     );
   }
 
-  if (!isAuthenticated || !isOrganizerOrAdmin) {
+  if (!isAuthenticated) {
+    return (
+      <ErrorPage
+        type='access-denied'
+        title='Sign in required'
+        subtitle='Sign in to create an event.'
+        buttonText='Go to sign in'
+        backTo='/sign-in'
+      />
+    );
+  }
+
+  if (!isOrganizerOrAdmin) {
     return (
       <ErrorPage
         type='access-denied'
@@ -28,7 +40,7 @@ export const NewEvent = () => {
         buttonText='Back to events'
         backTo='/events'
       >
-        <Button onClick={() => {}}>Become an organizer</Button>
+        <BecomeOrganizerButton />
       </ErrorPage>
     );
   }

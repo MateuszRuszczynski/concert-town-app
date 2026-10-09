@@ -2,10 +2,10 @@
 import type { FC } from 'react';
 import cn from 'classNames';
 import type { EventDetails } from '../../../../types/events';
-import { RelationBadge } from '../../../../components/RelationBadge';
-import { CategoryBadge } from '../../../../components/CategoryBadge';
+import { RelationBadge } from '../../../../components/events/RelationBadge';
+import { CategoryBadge } from '../../../../components/events/CategoryBadge';
 import { useEventRelation } from '../../../../hooks/useEventRelation';
-import { DraftBadge } from '../../../../components/DraftBadge';
+import { DraftBadge } from '../../../../components/events/DraftBadge';
 import baseStyles from './base.module.scss';
 import styles from './EventHeader.module.scss';
 //#endregion

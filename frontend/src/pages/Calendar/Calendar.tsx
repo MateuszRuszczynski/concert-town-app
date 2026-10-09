@@ -1,5 +1,4 @@
 //#region imports
-import { PageHeader } from '../../components/PageHeader';
 import { useEvents } from '../../contexts/EventContext';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCalendarMonth } from './hooks/useCalendarMonth';
@@ -11,6 +10,7 @@ import { CalendarGrid } from './components/CalendarGrid';
 import { CalendarLegend } from './components/CalendarLegend';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './Calendar.module.scss';
+import { PageHeader } from '../../components/ui/PageHeader';
 //#endregion
 
 export const Calendar = () => {

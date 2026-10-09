@@ -1,6 +1,6 @@
 //#region imports
-import { Button } from '../../../../components/Button';
-import { PageHeader } from '../../../../components/PageHeader';
+import { BecomeOrganizerButton } from '../../../../components/organizer/BecomeOrganizerButton';
+import { PageHeader } from '../../../../components/ui/PageHeader';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { AttendeePanel } from '../AttendeePanel';
 import styles from './CustomerDashboard.module.scss';
@@ -17,9 +17,7 @@ export const CustomerDashboard = () => {
           subtitle={`Welcome back, ${user?.firstName} Here's what's coming up for you.`}
         />
 
-        <Button fitContent={true} onClick={() => {}}>
-          Become an organizer
-        </Button>
+        <BecomeOrganizerButton fitContent={true} />
       </div>
 
       <AttendeePanel />

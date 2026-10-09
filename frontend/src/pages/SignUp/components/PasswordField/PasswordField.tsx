@@ -1,9 +1,9 @@
 //#region imports
 import cn from 'classNames';
 import { useState, type FC } from 'react';
-import { FormField } from '../../../../components/FormField';
+import { FormField } from '../../../../components/ui/FormField';
 import { Check } from 'lucide-react';
-import { PasswordVisibilityToggle } from '../../../../components/PasswordVisibilityToggle';
+import { PasswordVisibilityToggle } from '../../../../components/ui/PasswordVisibilityToggle';
 import styles from './PasswordField.module.scss';
 //#endregion
 

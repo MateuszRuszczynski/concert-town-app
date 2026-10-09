@@ -19,6 +19,7 @@ export function useEvent (id: string | undefined) {
 
     try {
       const resp = await getEvent(id);
+
       setEvent(mapEventResponseToEventDetails(resp));
     } finally {
       setIsLoading(false);

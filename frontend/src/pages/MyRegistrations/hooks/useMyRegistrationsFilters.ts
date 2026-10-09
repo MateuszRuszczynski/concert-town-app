@@ -2,52 +2,47 @@
 import { useSearchParams } from 'react-router';
 import { useUpdateSearchParam } from '../../../hooks/useUpdateSearchParam';
 import { useAuth } from '../../../contexts/AuthContext';
-import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { useEffect, useState } from 'react';
 import type { EventDetails } from '../../../types/events';
-import type { SortBy } from '../../Events/utils/sortOptions';
 import { getRegistrations } from '../../../api/bookings/bookingsService';
-import { useEvents } from '../../../contexts/EventContext';
+import { getTotalPages } from '../../../utils/pagination';
+import { getEvent, mapEventResponseToEventDetails } from '../../../api/events';
 //#endregion
 
 export function useMyRegistationsFilters () {
   const [searchParams] = useSearchParams();
   const updateSearchParam = useUpdateSearchParam();
-  const { events: allEvents } = useEvents();
+
   const { token } = useAuth();
 
-  const searchQuery = searchParams.get('search') ?? '';
-  const debouncedSearchQuery = useDebouncedValue(searchQuery, 400);
-  const sortBy = (searchParams.get('sort') as SortBy) ?? 'date';
+  const page = Number(searchParams.get('page')) || 1;
 
   const [events, setEvents] = useState<EventDetails[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchMyEvents () {
+    async function fetchMyRegisteredEvents () {
       if (!token) return;
       setIsLoading(true);
       try {
-        const response = await getRegistrations(
-          {
-            search: debouncedSearchQuery || undefined,
-            ordering: sortBy
-          },
-          token
-        );
+        const response = await getRegistrations({ page }, token);
 
-        const registeredIds = new Set(response.results.map(r => r.event));
-        setEvents(allEvents.filter(e => registeredIds.has(e.id)));
-      } finally {
+        const eventDetails = await Promise.all(
+        response.results.map((r) => getEvent(String(r.event)))
+      );
+
+        setEvents(eventDetails.map(mapEventResponseToEventDetails));
+        setTotalPages(getTotalPages(response.count, 10));
+      }  finally {
         setIsLoading(false);
       }
     }
-    fetchMyEvents();
-  }, [token, debouncedSearchQuery, sortBy, allEvents]);
+    fetchMyRegisteredEvents();
+  }, [token, page]);
 
-  const setSearchQuery = (value: string) =>
-    updateSearchParam({ search: value || null });
-  const setSortBy = (sort: SortBy) => updateSearchParam({ sort });
+  const setPage = (newPage: number) =>
+    updateSearchParam({ page: newPage > 1 ? String(newPage) : null });
 
-  return { searchQuery, setSearchQuery, sortBy, setSortBy, events, isLoading };
+  return { events, isLoading, page, setPage, totalPages };
 }
