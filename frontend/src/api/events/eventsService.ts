@@ -16,7 +16,7 @@ export const eventsService = {
     get<PaginatedResponse<EventResponse>>(
       `/api/events/${buildQueryString(params)}`
     ),
-  getEvent: (id: string) => get<EventResponse>(`/api/events/${id}/`),
+  getEvent: (id: string, token?: string) => get<EventResponse>(`/api/events/${id}/`, { token }),
   createEvent: (data: EventRequest, token: string) =>
     post<EventResponse>('/api/events/', data, { token }),
   updateEvent: (id: number, data: Partial<EventRequest>, token: string) =>

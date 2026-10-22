@@ -62,7 +62,7 @@ class EventListTests(APITestCase):
         self.event1 = Event.objects.create(
             title="Concert A",
             description="Description A",
-            date="2026-08-01T19:00:00Z",
+            starts_at="2026-08-01T19:00:00Z",
             location="Kyiv",
             price="50.00",
             total_seats=100,
@@ -72,7 +72,7 @@ class EventListTests(APITestCase):
         self.event2 = Event.objects.create(
             title="Concert B",
             description="Description B",
-            date="2026-08-02T19:00:00Z",
+            starts_at="2026-08-02T19:00:00Z",
             location="Odesa",
             price="30.00",
             total_seats=50,
@@ -100,7 +100,7 @@ class EventListTests(APITestCase):
         Event.objects.create(
             title="Concert C",
             description="Description C",
-            date="2026-08-03T19:00:00Z",
+            starts_at="2026-08-03T19:00:00Z",
             location="Lviv",
             price="40.00",
             total_seats=75,
@@ -151,7 +151,7 @@ class EventCreationPermissionTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["organizer"], self.organizer.id)
+        self.assertEqual(response.data["organizer_id"], self.organizer.id)
         self.assertEqual(access_token["role"], User.Role.ORGANIZER)
 
     def test_legacy_organizer_role_format_is_normalized(self):
@@ -330,10 +330,10 @@ class SeedDataTests(APITestCase):
         for event in seeded_events:
             self.assertIsNotNone(event.starts_at)
             self.assertIsNotNone(event.ends_at)
-            self.assertEqual(event.date, event.starts_at)
             self.assertLess(event.starts_at, event.ends_at)
             self.assertTrue(event.host)
             self.assertLessEqual(event.available_seats, event.total_seats)
+            self.assertEqual(event.available_seats, event.total_seats - event.registrations.count())
             self.assertTrue(
                 event.location == "online"
                 or {"city", "venue"}.issubset(event.location)

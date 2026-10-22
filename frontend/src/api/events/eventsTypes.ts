@@ -5,7 +5,7 @@ export interface EventResponse {
   title: string;
   description: string;
   starts_at: string;
-  ends_at: string;
+  ends_at: string | null;
   host: string;
   location: EventLocation;
   category: Category;
@@ -21,13 +21,12 @@ export interface EventRequest {
   title: string;
   description: string;
   starts_at: string;
-  ends_at: string;
+  ends_at: string | null;
   host: string;
   location: EventLocation;
   category_id: number;
   price: number;
   total_seats: number;
-  available_seats: number;
   is_active: boolean;
   organizer_id?: string;
 }

@@ -30,7 +30,10 @@ class IsOrganizerOrAdminOrReadOnly(permissions.BasePermission):
             if obj.is_active:
                 return True
 
-            return can_manage_event(request.user, obj)
+            return can_manage_event(request.user, obj) or bool(
+                request.user.is_authenticated
+                and obj.registrations.filter(user=request.user).exists()
+            )
 
         return can_manage_event(request.user, obj)
 

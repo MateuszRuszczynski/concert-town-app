@@ -36,8 +36,7 @@ export function useEventFilters () {
         const response = await eventsService.getEvents({
           search: debouncedSearchQuery || undefined,
           category: categorySlug || undefined,
-          ordering: sortBy,
-          is_active: true,
+          ordering: sortBy === 'date' ? 'starts_at' : sortBy,
           page
         });
         setEvents(response.results.map(e => mapEventResponseToEventDetails(e)));

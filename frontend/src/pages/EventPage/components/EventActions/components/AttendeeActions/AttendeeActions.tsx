@@ -49,7 +49,7 @@ export const AttendeeActions: FC<Props> = ({ event, refetchEvent }) => {
           </Button>
         }
         title='Cancel your registration?'
-        description='You will lose your spot at this event.'
+        description='You will lose your spot at this event. Cancellation is available only before the event starts.'
         confirmLabel={isCancelling ? "Canceling..." : "Cancel registration"}
         onConfirm={handleCancelRegistration}
         isLoading={isCancelling}

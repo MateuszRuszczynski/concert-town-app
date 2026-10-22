@@ -20,7 +20,7 @@ export const CalendarDayCell: FC<Props> = ({ date, events, span = 1 }) => {
   const { myEvents } = useEvents();
   const { registrations } = useRegistrations();
   const registeredEventIds = useMemo(
-    () => new Set(registrations.map(r => r.event)),
+    () => new Set(registrations.map(r => r.event.id)),
     [registrations]
   );
 

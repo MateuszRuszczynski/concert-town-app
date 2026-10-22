@@ -43,7 +43,7 @@ export const RegistrationsProvider: FC<Props> = ({ children }) => {
       setRegistrations(response.results);
 
       const results = await Promise.allSettled(
-        response.results.map(r => getEvent(String(r.event)))
+        response.results.map(r => getEvent(String(r.event.id), token))
       );
 
       const details = results
@@ -79,7 +79,7 @@ export const RegistrationsProvider: FC<Props> = ({ children }) => {
   const cancelRegistration = useCallback(
     async (eventId: number) => {
       if (!token) throw new Error('Not authenticated');
-      const registration = registrations.find(r => r.event === eventId);
+      const registration = registrations.find(r => r.event.id === eventId);
 
       if (!registration)
         throw new Error('Registration not found for this event');

@@ -26,7 +26,7 @@ class EventRegistrationTests(APITestCase):
         self.event = Event.objects.create(
             title="Concert A",
             description="Description A",
-            date=timezone.now() + timezone.timedelta(days=10),
+            starts_at=timezone.now() + timezone.timedelta(days=10),
             location="Kyiv",
             price="50.00",
             total_seats=2,
@@ -46,7 +46,9 @@ class EventRegistrationTests(APITestCase):
         self.assertEqual(EventRegistration.objects.count(), 1)
         self.event.refresh_from_db()
         self.assertEqual(self.event.available_seats, 1)
-        self.assertEqual(response.data["registration"]["event"], self.event.id)
+        self.assertEqual(response.data["registration"]["event"]["id"], self.event.id)
+        self.assertIn("starts_at", response.data["registration"]["event"])
+        self.assertNotIn("date", response.data["registration"]["event"])
         self.assertEqual(response.data["message"], "Registration successful.")
 
     def test_event_registration_is_rate_limited(self):

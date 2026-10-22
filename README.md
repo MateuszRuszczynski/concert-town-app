@@ -389,7 +389,7 @@ Login example:
 | POST        | `/api/events/`                               | Create an event                           | Organizer or admin       |
 | GET         | `/api/events/{id}/`                          | Retrieve an event                         | None                     |
 | PATCH / PUT | `/api/events/{id}/`                          | Update an event                           | Event organizer or admin |
-| DELETE      | `/api/events/{id}/`                          | Delete an event                           | Event organizer or admin |
+| DELETE      | `/api/events/{id}/`                          | Deactivate an event and preserve registrations | Event organizer or admin |
 | GET         | `/api/events/my/`                            | List events organized by the current user | Organizer or admin       |
 | GET         | `/api/events/my/active/`                     | List the organizer's active events        | Organizer or admin       |
 | GET         | `/api/events/my/inactive/`                   | List the organizer's inactive events      | Organizer or admin       |
@@ -402,12 +402,37 @@ Event list supports these query parameters:
 - `category=<slug>`
 - `category_id=<id>`
 - `organizer=<user_id>` or `organizer_id=<user_id>`
-- `is_active=true|false`
 - `search=<term>` or `q=<term>`
-- `ordering=date`, `title`, `created_at`, or `price`
+- `ordering=starts_at`, `title`, `created_at`, or `price` (prefix with `-` for descending order)
 
 The organizer event list also supports `status=active|inactive` and
 `is_active=true|false`.
+
+`starts_at` is the single required start timestamp; the legacy `date` field has
+been removed. `ends_at` is optional and must be strictly later than `starts_at`
+when supplied. New or changed times must be in the future. Existing timestamps
+can be sent back unchanged when editing a past event, including deactivation or
+title corrections. Event responses expose the owner as `organizer_id`.
+
+`available_seats` is read-only. The server initializes it to `total_seats` and
+recalculates it from registrations when an organizer changes capacity. Capacity
+cannot be reduced below the number of registrations. Booking, capacity changes,
+deactivation, and cancellation lock the event row in PostgreSQL to serialize
+concurrent changes.
+
+Location is required when creating an event. Use either `"online"` or an object
+with non-empty string fields `city` (at most 100 characters) and `venue` (at most
+255 characters). Leading and trailing whitespace is removed. For multipart image
+uploads, send the location object as a JSON-encoded form field.
+
+Event images must be JPEG (`.jpg` or `.jpeg`), PNG, or WebP, no larger than 5 MB.
+The image content is verified and must match the extension.
+
+`DELETE` returns `204` and sets `is_active=False`; it does not remove the event or
+its registrations. Inactive events are hidden from public listings. Their
+details remain accessible to their organizer, admins, and registered attendees.
+Direct database deletion through Django's ORM is protected when registrations
+exist, and organizer accounts with events cannot be deleted through the ORM.
 
 List responses are paginated and use the standard DRF shape:
 
@@ -428,8 +453,14 @@ List responses are paginated and use the standard DRF shape:
 | GET    | `/api/bookings/my-registrations/` | List the current user’s registrations  | Required           |
 | DELETE | `/api/bookings/cancel/{id}/`      | Cancel a registration                  | Registration owner |
 
-Registration responses include a lightweight nested `event` object with its ID,
-title, date, location, and image.
+Registration responses include a lightweight nested `event` object with `id`,
+`title`, `starts_at`, `location`, `image`, and `is_active`. The frontend uses the
+nested ID when loading details or canceling a registration.
+
+Registration cancellation is allowed only before `starts_at`, including for an
+inactive event. Once an event has started, cancellation returns `400` and keeps
+the registration and seat count unchanged. Successful cancellation returns a
+seat exactly once and preserves other event fields.
 
 ---
 
@@ -444,7 +475,7 @@ Authentication uses short-lived JWT access tokens and refresh tokens:
 - Logging out immediately revokes the submitted refresh token and the current access
   token.
 
-Safe event methods are publicly readable. Event creation and modification require an
+Active events are publicly readable. Event creation and modification require an
 organizer or administrator, and object-level checks ensure organizers can only modify
 their own events. Participant lists are visible to the event organizer and admins.
 
@@ -465,6 +496,16 @@ python manage.py migrate
 Existing migrations cover the accounts, events, bookings, and JWT token blacklist
 apps. Do not edit generated migration files manually unless there is a specific
 database migration reason to do so.
+
+The event review migrations preserve existing `starts_at` values, otherwise copy
+`date` into `starts_at`, and then remove `date`. Events missing both timestamps
+are deactivated and receive their `created_at` timestamp as a historical
+fallback; an organizer must set a future start before reopening registrations.
+Seat counts are reconciled against actual registrations. If a legacy event has
+more registrations than capacity, capacity is raised to the registration count
+to preserve all bookings. These data migrations run once; they do not re-seed
+or delete events. The `seed_data` command also preserves existing registrations
+and derives remaining seats from them when rerun.
 
 ---
 

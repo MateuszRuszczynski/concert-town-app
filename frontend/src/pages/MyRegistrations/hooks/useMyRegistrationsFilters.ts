@@ -29,7 +29,7 @@ export function useMyRegistationsFilters () {
         const response = await getRegistrations({ page }, token);
 
         const eventDetails = await Promise.all(
-        response.results.map((r) => getEvent(String(r.event)))
+        response.results.map((r) => getEvent(String(r.event.id), token))
       );
 
         setEvents(eventDetails.map(mapEventResponseToEventDetails));

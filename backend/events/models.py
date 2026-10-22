@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 
+from .validators import validate_event_image
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -17,8 +19,7 @@ class Category(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    date = models.DateTimeField(null=True, blank=True)
-    starts_at = models.DateTimeField(null=True, blank=True)
+    starts_at = models.DateTimeField()
     ends_at = models.DateTimeField(null=True, blank=True)
     host = models.CharField(max_length=255, blank=True, default="")
     location = models.JSONField(default=dict, blank=True)
@@ -35,11 +36,13 @@ class Event(models.Model):
     total_seats = models.PositiveIntegerField()
     available_seats = models.PositiveIntegerField()
 
-    image = models.ImageField(upload_to="events/", blank=True, null=True)
+    image = models.ImageField(
+        upload_to="events/", blank=True, null=True, validators=[validate_event_image]
+    )
 
     organizer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="events",
     )
 
@@ -48,12 +51,18 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        start = self.starts_at or self.date
-        if start is None:
-            return self.title
-        return f"{self.title} ({start.strftime('%Y-%m-%d %H:%M')})"
+        return f"{self.title} ({self.starts_at.strftime('%Y-%m-%d %H:%M')})"
 
     class Meta:
         verbose_name = "Event"
         verbose_name_plural = "Events"
-        ordering = ["date"]
+        ordering = ["starts_at", "id"]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(total_seats__gt=0), name="event_positive_capacity"
+            ),
+            models.CheckConstraint(
+                condition=models.Q(available_seats__lte=models.F("total_seats")),
+                name="event_available_seats_within_capacity",
+            ),
+        ]

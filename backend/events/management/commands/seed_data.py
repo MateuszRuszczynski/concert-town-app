@@ -2,7 +2,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
 
@@ -64,7 +64,6 @@ class Command(BaseCommand):
                 "category": categories["music"],
                 "price": Decimal("1200.00"),
                 "total_seats": 5000,
-                "available_seats": 1200,
                 "is_active": True,
             },
             {
@@ -80,7 +79,6 @@ class Command(BaseCommand):
                 "category": categories["music"],
                 "price": Decimal("600.00"),
                 "total_seats": 300,
-                "available_seats": 50,
                 "is_active": True,
             },
             {
@@ -95,7 +93,6 @@ class Command(BaseCommand):
                 "category": categories["music"],
                 "price": Decimal("850.00"),
                 "total_seats": 2000,
-                "available_seats": 1800,
                 "is_active": True,
             },
             {
@@ -111,7 +108,6 @@ class Command(BaseCommand):
                 "category": categories["music"],
                 "price": Decimal("450.00"),
                 "total_seats": 800,
-                "available_seats": 200,
                 "is_active": True,
             },
             {
@@ -127,7 +123,6 @@ class Command(BaseCommand):
                 "category": categories["social"],
                 "price": Decimal("350.00"),
                 "total_seats": 400,
-                "available_seats": 10,
                 "is_active": True,
             },
             {
@@ -143,7 +138,6 @@ class Command(BaseCommand):
                 "category": categories["conference"],
                 "price": Decimal("999.00"),
                 "total_seats": 800,
-                "available_seats": 158,
                 "is_active": True,
             },
             {
@@ -159,7 +153,6 @@ class Command(BaseCommand):
                 "category": categories["workshop"],
                 "price": Decimal("499.00"),
                 "total_seats": 40,
-                "available_seats": 12,
                 "is_active": True,
             },
             {
@@ -175,7 +168,6 @@ class Command(BaseCommand):
                 "category": categories["networking"],
                 "price": Decimal("0.00"),
                 "total_seats": 120,
-                "available_seats": 92,
                 "is_active": True,
             },
             {
@@ -191,7 +183,6 @@ class Command(BaseCommand):
                 "category": categories["webinar"],
                 "price": Decimal("0.00"),
                 "total_seats": 1000,
-                "available_seats": 640,
                 "is_active": True,
             },
             {
@@ -207,7 +198,6 @@ class Command(BaseCommand):
                 "category": categories["webinar"],
                 "price": Decimal("0.00"),
                 "total_seats": 1000,
-                "available_seats": 426,
                 "is_active": False,
             },
             {
@@ -223,7 +213,6 @@ class Command(BaseCommand):
                 "category": categories["social"],
                 "price": Decimal("0.00"),
                 "total_seats": 90,
-                "available_seats": 45,
                 "is_active": False,
             },
         ]
@@ -231,15 +220,23 @@ class Command(BaseCommand):
         created_count = 0
         updated_count = 0
         for event_data in events_data:
-            starts_at = event_data["starts_at"]
-            _, event_created = Event.objects.update_or_create(
+            event, event_created = Event.objects.select_for_update().get_or_create(
                 title=event_data["title"],
                 organizer=organizer,
-                defaults={**event_data, "date": starts_at},
+                defaults={**event_data, "available_seats": event_data["total_seats"]},
             )
             if event_created:
                 created_count += 1
             else:
+                registered_count = event.registrations.count()
+                if event_data["total_seats"] < registered_count:
+                    raise CommandError(
+                        f"Seed capacity is below registrations for {event.title}."
+                    )
+                for field, value in event_data.items():
+                    setattr(event, field, value)
+                event.available_seats = event.total_seats - registered_count
+                event.save()
                 updated_count += 1
 
         self.stdout.write(

@@ -24,7 +24,7 @@ export function mapEventResponseToEventDetails (
     category: response.category,
     organizerId: response.organizer_id,
     startsAt: response.starts_at,
-    endsAt: response.ends_at,
+    endsAt: response.ends_at ?? '',
     location: response.location,
     capacity: response.total_seats,
     price: response.price,
@@ -42,12 +42,11 @@ export function mapEventFormDataToEventRequest (
     description: data.description,
     host: data.host,
     starts_at: data.startsAt,
-    ends_at: data.endsAt,
+    ends_at: data.endsAt || null,
     location: data.location,
     category_id: data.categoryId,
     price: data.price,
     total_seats: data.capacity,
-    available_seats: data.capacity - data.registeredCount,
     is_active: data.status === 'published',
   };
 }

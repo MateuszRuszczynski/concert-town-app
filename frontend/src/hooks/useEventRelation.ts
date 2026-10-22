@@ -12,7 +12,7 @@ export function useEventRelation (
 
   if (!event) return;
   if (!isAuthenticated) return undefined;
-  const isRegistered = registrations.some(r => r.event === event.id);
+  const isRegistered = registrations.some(r => r.event.id === event.id);
 
   if (isRegistered) return 'attending';
   if (event.organizerId === user?.id) return 'organizing';

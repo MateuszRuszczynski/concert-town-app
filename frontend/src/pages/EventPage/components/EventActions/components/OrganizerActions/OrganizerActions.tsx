@@ -27,10 +27,10 @@ export const OrganizerActions: FC<Props> = ({ event }) => {
     setIsDeleting(true);
     try {
       await deleteEvent(event.id, event.organizerId);
-      showToast('Event deleted', 'cancel');
+      showToast('Event deactivated', 'cancel');
       navigate('/events');
     } catch (err) {
-      showToast(getErrorMessage(err, 'Failed to delete event'), 'error');
+      showToast(getErrorMessage(err, 'Failed to deactivate event'), 'error');
     } finally {
       setIsDeleting(false);
     }
@@ -55,12 +55,12 @@ export const OrganizerActions: FC<Props> = ({ event }) => {
         trigger={
           <Button variant='danger'>
             <Trash2 size={16} aria-hidden='true' />
-            Delete event
+            Deactivate event
           </Button>
         }
-        title='Delete this event?'
-        description='This action cannot be undone. All registrations will be cancelled.'
-        confirmLabel={isDeleting ? 'Deleting...' : 'Delete'}
+        title='Deactivate this event?'
+        description='The event will be hidden from public listings. Existing registrations will be preserved.'
+        confirmLabel={isDeleting ? 'Deactivating...' : 'Deactivate'}
         onConfirm={handleDelete}
         isLoading={isDeleting}
         isOpen={isDeleteDialogOpen}

@@ -7,14 +7,9 @@ from .models import EventRegistration
 
 
 class RegisteredEventSerializer(serializers.ModelSerializer):
-    date = serializers.SerializerMethodField()
-
     class Meta:
         model = Event
-        fields = ["id", "title", "date", "location", "image"]
-
-    def get_date(self, obj):
-        return obj.starts_at or obj.date
+        fields = ["id", "title", "starts_at", "location", "image", "is_active"]
 
 
 class EventRegistrationSerializer(serializers.ModelSerializer):
@@ -51,8 +46,7 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
         if not event.is_active:
             raise serializers.ValidationError("Event is not active.")
 
-        starts_at = event.starts_at or event.date
-        if starts_at is not None and starts_at <= timezone.now():
+        if event.starts_at <= timezone.now():
             raise serializers.ValidationError("Event registration is closed.")
 
         if event.available_seats <= 0:

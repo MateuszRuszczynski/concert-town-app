@@ -1,8 +1,9 @@
 from django.db import transaction
 from django.db.models import F
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics, status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
@@ -23,7 +24,7 @@ class EventRegistrationCreateView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        registration = serializer.save()
+        serializer.save()
         return Response(
             {
                 "message": "Registration successful.",
@@ -73,11 +74,19 @@ class EventCancelRegistration(generics.DestroyAPIView):
         return instance
 
     def perform_destroy(self, instance):
-        event = instance.event
         with transaction.atomic():
-            event.available_seats = F("available_seats") + 1
-            event.save()
-            instance.delete()
+            event = Event.objects.select_for_update().get(pk=instance.event_id)
+            registration = get_object_or_404(
+                EventRegistration.objects.select_for_update(), pk=instance.pk
+            )
+            if event.starts_at <= timezone.now():
+                raise ValidationError(
+                    "Registration cannot be canceled after the event has started."
+                )
+            registration.delete()
+            Event.objects.filter(pk=event.pk).update(
+                available_seats=F("available_seats") + 1
+            )
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

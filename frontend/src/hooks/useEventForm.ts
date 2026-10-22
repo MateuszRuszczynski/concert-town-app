@@ -12,7 +12,6 @@ import { useEvents } from '../contexts/EventContext/useEvents';
 import type { EventFormData, EventStatus } from '../types/events';
 import { useNotification } from '../contexts/NotificationContext';
 import { normalizeNumericInput } from '../utils/normalizeNumericInput';
-import { toDatetimeLocal } from '../utils/dateUtils';
 import {
   fromDateTimeInputValue,
   toDateTimeInputValue
@@ -94,7 +93,19 @@ export function useEventForm (
   //#region validation
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
-  const dateRangeError = validateDateRange(startsAt, endsAt);
+  const startUnchanged =
+    initialValues !== undefined &&
+    startsAt === toDateTimeInputValue(initialValues.startsAt);
+  const endUnchanged =
+    initialValues !== undefined &&
+    endsAt === toDateTimeInputValue(initialValues.endsAt);
+  const submittedStartsAt = initialValues && startUnchanged
+    ? initialValues.startsAt
+    : fromDateTimeInputValue(startsAt);
+  const submittedEndsAt = initialValues && endUnchanged
+    ? initialValues.endsAt
+    : fromDateTimeInputValue(endsAt);
+  const dateRangeError = validateDateRange(submittedStartsAt, submittedEndsAt);
 
   const rawFieldErrors = {
     title: validateEventTitle(title),
@@ -102,17 +113,27 @@ export function useEventForm (
     host: validateEventHost(host),
     category: categoryId === 0 ? 'Category is required' : undefined,
     startsAt:
-      startsAt === '' ? 'Start date is required' : validateStartDate(startsAt),
-    endsAt: endsAt === '' ? 'End date is required' : dateRangeError,
+      startsAt === ''
+        ? 'Start date is required'
+        : startUnchanged ? undefined : validateStartDate(startsAt),
+    endsAt: dateRangeError,
     city:
-      !isOnline && city.trim().length === 0 ? 'City is required' : undefined,
+      !isOnline && city.trim().length === 0
+        ? 'City is required'
+        : !isOnline && city.trim().length > 100
+        ? 'City must be at most 100 characters' : undefined,
     venue:
-      !isOnline && venue.trim().length === 0 ? 'Venue is required' : undefined,
+      !isOnline && venue.trim().length === 0
+        ? 'Venue is required'
+        : !isOnline && venue.trim().length > 255
+        ? 'Venue must be at most 255 characters' : undefined,
     capacity:
       capacity === ''
         ? 'Capacity is required'
         : Number(capacity) <= 0
         ? 'Capacity must be greater than 0'
+        : Number(capacity) < (initialValues?.registeredCount ?? 0)
+        ? 'Capacity cannot be less than the number of registrations'
         : undefined,
     price:
       price === ''
@@ -158,8 +179,8 @@ export function useEventForm (
     setDescription(initialValues?.description ?? '');
     setHost(initialValues?.host ?? '');
     setCategoryId(initialValues?.categoryId ?? 0);
-    setStartsAt(toDatetimeLocal(initialValues?.startsAt || ''));
-    setEndsAt(toDatetimeLocal(initialValues?.endsAt || ''));
+    setStartsAt(toDateTimeInputValue(initialValues?.startsAt || ''));
+    setEndsAt(toDateTimeInputValue(initialValues?.endsAt || ''));
     setIsOnline(isInitialOnline);
     setCity(initialOfflineLocation?.city ?? '');
     setVenue(initialOfflineLocation?.venue ?? '');
@@ -200,8 +221,8 @@ export function useEventForm (
       description,
       host,
       categoryId,
-      startsAt: fromDateTimeInputValue(startsAt),
-      endsAt: fromDateTimeInputValue(endsAt),
+      startsAt: submittedStartsAt,
+      endsAt: submittedEndsAt,
       location: isOnline ? 'online' : { city, venue },
       capacity: Number(capacity),
       registeredCount: initialValues?.registeredCount || 0,
