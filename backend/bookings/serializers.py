@@ -3,13 +3,12 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from events.models import Event
+from events.serializers import EventDetailSerializer
 from .models import EventRegistration
 
 
-class RegisteredEventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = ["id", "title", "starts_at", "location", "image", "is_active"]
+class RegisteredEventSerializer(EventDetailSerializer):
+    pass
 
 
 class EventRegistrationSerializer(serializers.ModelSerializer):

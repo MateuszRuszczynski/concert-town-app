@@ -49,6 +49,27 @@ class EventRegistrationTests(APITestCase):
         self.assertEqual(response.data["registration"]["event"]["id"], self.event.id)
         self.assertIn("starts_at", response.data["registration"]["event"])
         self.assertNotIn("date", response.data["registration"]["event"])
+        self.assertEqual(
+            set(response.data["registration"]["event"]),
+            {
+                "id",
+                "title",
+                "description",
+                "starts_at",
+                "ends_at",
+                "host",
+                "location",
+                "category",
+                "price",
+                "total_seats",
+                "available_seats",
+                "image",
+                "organizer_id",
+                "is_active",
+                "created_at",
+                "updated_at",
+            },
+        )
         self.assertEqual(response.data["message"], "Registration successful.")
 
     def test_event_registration_is_rate_limited(self):
