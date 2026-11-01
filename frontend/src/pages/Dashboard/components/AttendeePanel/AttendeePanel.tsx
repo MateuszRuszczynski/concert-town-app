@@ -1,30 +1,30 @@
 //#region imports
 import { useNavigate } from 'react-router';
-import { useRegistrations } from '../../../../contexts/RegistrationsContext';
-import { AttendeeStatsGrid } from '../AttendeeStatsGrid/AttendeeStatsGrid';
+import { AttendeeStatsGrid } from '../AttendeeStatsGrid';
 import { UpcomingEventsBlock } from '../UpcomingEventsBlock';
 import { Ticket } from 'lucide-react';
-import { useEvents } from '../../../../contexts/EventContext';
 import { PanelSkeleton } from '../PanelSkeleton';
+import { useAllRegistrations } from '../../../../api/queries/registrations';
+import { QueryError } from '../../../../components/ui/QueryError';
 //#endregion
 
 export const AttendeePanel = () => {
-  const { isLoading: eventsLoading } = useEvents();
-  const { attendingEvents, isLoading: registrationsLoading } = useRegistrations();
-  const navigate = useNavigate();
+  const { data , isLoading, isError, error } = useAllRegistrations();
 
-  const isLoading = eventsLoading || registrationsLoading;
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <PanelSkeleton />
   }
+
+  if (isError) return <QueryError error={error} />;
 
   return (
     <>
       <AttendeeStatsGrid />
 
       <UpcomingEventsBlock
-        events={attendingEvents}
+        events={data?.events ?? []}
         title="Events you're attending"
         viewAllTo='/events/my-registrations'
         emptyMessage='Browse events to find something to attend!'

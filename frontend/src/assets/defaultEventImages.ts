@@ -9,4 +9,5 @@ export const DEFAULT_EVENT_IMAGES: Record<string, string> = {
   'networking': './networking.png',
   'webinar': './workshop.png',
   'social': './networking.png',
+  'default': './conference.png',
 };

@@ -1,5 +1,5 @@
-import { EventsListSkeleton } from '../../../../components/events/EventsList/EventsListSkeleton';
-import { StatsGridSkeleton } from '../StatsGridLayout/StatsGridSkeleton';
+import { EventsListSkeleton } from '../../../../components/events/EventsList';
+import { StatsGridSkeleton } from '../StatsGridLayout';
 
 export const PanelSkeleton = () => (
   <>

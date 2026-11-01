@@ -1,1 +1,1 @@
-export * from "./NotificationContainer.module.scss";
+export * from "./NotificationContainer";

@@ -7,7 +7,6 @@ import {
   EventsPageLayout,
   EventsPageSkeleton
 } from '../../components/EventsPageLayout';
-import { useEvents } from '../../contexts/EventContext';
 import { EventsSearchSort } from './components/EventsSearchSort';
 //#endregion
 
@@ -15,7 +14,6 @@ export const Events = () => {
   usePageTitle('Events');
 
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const { isLoading: eventsLoading } = useEvents();
 
   const {
     page,
@@ -30,10 +28,11 @@ export const Events = () => {
     events,
     hasActiveFilters,
     clearFilters,
-    isLoading
+    isLoading,
+    error
   } = useEventFilters();
 
-  if (authLoading || eventsLoading) {
+  if (authLoading) {
     return <EventsPageSkeleton />;
   }
 
@@ -64,6 +63,7 @@ export const Events = () => {
       onPageChange={setPage}
       events={events}
       isLoading={isLoading}
+      error={error}
     />
   );
 };

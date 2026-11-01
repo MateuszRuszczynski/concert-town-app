@@ -1,8 +1,8 @@
 import { StatsGridLayout } from '../StatsGridLayout';
-import { useAtendeeStats } from '../../hooks/useAtendeeStats';
+import { useAttendeeStats } from '../../hooks/useAttendeeStats';
 
 export const AttendeeStatsGrid = () => {
-  const atendeeStats = useAtendeeStats();
+  const atendeeStats = useAttendeeStats();
 
   return <StatsGridLayout stats={atendeeStats} />;
 };

@@ -1,5 +1,4 @@
 //#region imports
-import { useEvents } from '../../contexts/EventContext';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCalendarMonth } from './hooks/useCalendarMonth';
 import { MonthNavigator } from './components/MonthNavigator';
@@ -9,15 +8,17 @@ import { groupEventsByDate } from './utils/groupEventsByDate';
 import { CalendarGrid } from './components/CalendarGrid';
 import { CalendarLegend } from './components/CalendarLegend';
 import { useAuth } from '../../contexts/AuthContext';
-import styles from './Calendar.module.scss';
 import { PageHeader } from '../../components/ui/PageHeader';
+import { useAllEvents } from '../../api/queries/events/useEventsQueries';
+import { FormError } from '../../components/ui/FormError';
+import styles from './Calendar.module.scss';
 //#endregion
 
 export const Calendar = () => {
   usePageTitle('Calendar');
 
   const { user } = useAuth();
-  const { events } = useEvents();
+  const { data: events = [], isError } = useAllEvents();
   const { monthLabel, goToNextMonth, goToPreviousMonth, days } =
     useCalendarMonth();
 
@@ -37,6 +38,8 @@ export const Calendar = () => {
           onPrevious={goToPreviousMonth}
         />
       </div>
+
+      {isError && <FormError errorMessage='Could not load events.' />}
 
       {user && <CalendarLegend />}
 

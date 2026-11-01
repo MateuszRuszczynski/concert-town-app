@@ -6,21 +6,24 @@ import { useParticipants } from './hooks/useParticipants';
 import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
 import { EventNotFound } from '../EventNotFound';
-import { useEvent } from '../EventPage/hooks/useEvent';
 import {
   DataPageLayout,
   DataPageSkeleton
 } from '../../components/layout/DataPageLayout';
+import { useEvent } from '../../api/queries/events/useEventsQueries';
 //#endregion
 
 export const EventParticipants = () => {
+  //#region consts
   const { id } = useParams<{ id: string }>();
-  const { event, isLoading: eventLoading } = useEvent(id);
+  const { data: event, isLoading: eventLoading } = useEvent(id);
   const { participants, isLoading: participantsLoading } = useParticipants(
     Number(id)
   );
   const { user, isLoading: authLoading } = useAuth();
+
   const isLoading = eventLoading || authLoading;
+  //#endregion
 
   usePageTitle(event ? `Participants — ${event.title}` : 'Participants');
 
@@ -38,7 +41,7 @@ export const EventParticipants = () => {
     return <EventNotFound />;
   }
 
-  if (event?.organizerId !== user?.id) {
+  if (event.organizerId !== user?.id && user?.role !== 'admin') {
     return (
       <ErrorPage
         type='access-denied'

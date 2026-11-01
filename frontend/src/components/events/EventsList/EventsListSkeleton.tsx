@@ -1,4 +1,4 @@
-import { EventItemSkeleton } from '../EventItem/EventItemSkeleton';
+import { EventItemSkeleton } from '../EventItem';
 import styles from './base.module.scss';
 
 export const EventsListSkeleton = () => (

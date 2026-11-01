@@ -9,7 +9,7 @@ import type {
 } from './authTypes';
 //#endregion
 
-export const authService = {
+const authService = {
   register: (data: RegisterPayload) =>
     post<RegisterResponse>('/api/auth/register/', data),
   logIn: (data: LoginPayload) => post<TokenResponse>('/api/auth/login/', data),

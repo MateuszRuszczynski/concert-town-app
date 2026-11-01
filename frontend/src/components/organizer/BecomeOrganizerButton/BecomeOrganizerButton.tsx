@@ -1,36 +1,33 @@
 //#region imports
-import { useState, type FC } from 'react';
-import { useOrganizerRequests } from '../../../contexts/OrganizerContext/useOrganizerRequests';
+import { type FC } from 'react';
 import { useNotification } from '../../../contexts/NotificationContext';
 import { getErrorMessage } from '../../../utils/getErrorMessage';
 import { Button } from '../../ui/Button';
 import styles from './BecomeOrganizerButton.module.scss';
+import {
+  useMyLatestRequestStatus,
+  useSubmitOrganizerRequest
+} from '../../../api/queries/organizerRequests';
 //#endregion
 
-type Props = {
+interface Props {
   fitContent?: boolean;
-};
+}
 
 export const BecomeOrganizerButton: FC<Props> = ({ fitContent = false }) => {
-  const { submitRequest, myLatestStatus, isLoadingMine } =
-    useOrganizerRequests();
+  const submitRequest = useSubmitOrganizerRequest();
+  const myLatestStatus = useMyLatestRequestStatus();
+
   const { showToast } = useNotification();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleClick = async () => {
-    setIsSubmitting(true);
-
     try {
-      await submitRequest();
+      await submitRequest.mutateAsync();
       showToast('Your request has been submitted!', 'success');
     } catch (err) {
       showToast(getErrorMessage(err, 'Failed to submit request'), 'error');
-    } finally {
-      setIsSubmitting(false);
     }
   };
-
-  if (isLoadingMine) return null;
 
   if (myLatestStatus === 'pending') {
     return <span className={styles.pendingBadge}>Request pending review</span>;
@@ -40,7 +37,7 @@ export const BecomeOrganizerButton: FC<Props> = ({ fitContent = false }) => {
     return (
       <Button
         onClick={handleClick}
-        isLoading={isSubmitting}
+        isLoading={submitRequest.isPending}
         fitContent={fitContent}
       >
         Request again
@@ -51,7 +48,7 @@ export const BecomeOrganizerButton: FC<Props> = ({ fitContent = false }) => {
   return (
     <Button
       onClick={handleClick}
-      isLoading={isSubmitting}
+      isLoading={submitRequest.isPending}
       fitContent={fitContent}
     >
       Become an organizer

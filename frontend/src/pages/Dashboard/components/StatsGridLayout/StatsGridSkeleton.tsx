@@ -1,4 +1,4 @@
-import { StatCardSkeleton } from '../StatCard/StatCardSkeleton';
+import { StatCardSkeleton } from '../StatCard';
 import styles from './base.module.scss';
 
 export const StatsGridSkeleton = () => (

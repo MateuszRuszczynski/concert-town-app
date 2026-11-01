@@ -1,13 +1,12 @@
 //#region imports
 import { useNavigate } from 'react-router';
 import { ClipboardList } from 'lucide-react';
-import { useOrganizerRequests } from '../../../contexts/OrganizerContext/useOrganizerRequests';
 import { Button } from '../../ui/Button';
-import styles from './OrganizerRequestsBadge.module.scss';
+import { usePendingRequestsCount } from '../../../api/queries/organizerRequests';
 //#endregion
 
 export const OrganizerRequestsBadge = () => {
-  const { pendingCount } = useOrganizerRequests();
+  const pendingCount = usePendingRequestsCount();
   const navigate = useNavigate();
 
   return (
@@ -20,7 +19,7 @@ export const OrganizerRequestsBadge = () => {
       <ClipboardList size={18} aria-hidden='true' />
       Review requests
       {pendingCount > 0 && (
-        <span className={styles.count}>{`(${pendingCount})`}</span>
+        <span>{`(${pendingCount})`}</span>
       )}
     </Button>
   );

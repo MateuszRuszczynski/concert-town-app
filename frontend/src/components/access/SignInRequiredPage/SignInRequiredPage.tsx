@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { ErrorPage } from '../../../pages/ErrorPage';
 //#endregion
 
-type Props = {
+interface Props {
   subtitle: string;
 };
 

@@ -7,7 +7,7 @@ import {
   validateName,
   validatePassword,
   validatePasswordMatch
-} from '../../../utils/validation';
+} from '../../../utils/validation/validation';
 import { useNotification } from '../../../contexts/NotificationContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getErrorMessage } from '../../../utils/getErrorMessage';

@@ -1,8 +1,8 @@
 //#region imports
 import type { FC } from 'react';
-import { EventsListSkeleton } from '../events/EventsList/EventsListSkeleton';
+import { EventsListSkeleton } from '../events/EventsList';
 import { EventsNavSkeleton } from './components/EventsNav';
-import { PageHeaderSkeleton } from '../ui/PageHeader/PageHeaderSkeleton';
+import { PageHeaderSkeleton } from '../ui/PageHeader';
 import baseStyles from './base.module.scss';
 //#endregion
 

@@ -9,7 +9,7 @@ describe('mapEventFormDataToPatch', () => {
     });
   });
   it('maps status to is_active', () => {
-    expect(mapEventFormDataToPatch({ status: 'draft' })).toEqual({
+    expect(mapEventFormDataToPatch({ status: 'canceled' })).toEqual({
       is_active: false
     });
   });

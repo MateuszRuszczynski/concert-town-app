@@ -1,18 +1,23 @@
 //#region imports
 import { useNavigate } from 'react-router';
-import { useEvents } from '../../../../contexts/EventContext';
 import { OrganizerStatsGrid } from '../OrganizerStatsGrid';
 import { UpcomingEventsBlock } from '../UpcomingEventsBlock';
 import { Plus } from 'lucide-react';
 import { PanelSkeleton } from '../PanelSkeleton';
+import { useAllMyEvents } from '../../../../api/queries/events/useEventsQueries';
 //#endregion
 
 export const OrganizerPanel = () => {
-  const { activeMyEvents, drafts, isMyEventsLoading } = useEvents();
+  const { data: activeMyEvents = [], isLoading: isActiveEventsLoading } =
+    useAllMyEvents('active');
+  const { data: canceledEvents = [], isLoading: isCanceledEventsLoading } =
+    useAllMyEvents('inactive');
+  const isMyEventsLoading = isActiveEventsLoading || isCanceledEventsLoading;
+
   const navigate = useNavigate();
 
   if (isMyEventsLoading) {
-    return <PanelSkeleton />
+    return <PanelSkeleton />;
   }
 
   return (
@@ -33,16 +38,16 @@ export const OrganizerPanel = () => {
           ),
           onClick: () => navigate('/events/new')
         }}
-        limit={3}
+        limit={4}
         isLoading={isMyEventsLoading}
       />
 
-      {drafts.length > 0 && (
+      {canceledEvents.length > 0 && (
         <UpcomingEventsBlock
-          events={drafts}
-          title='Drafts'
-          viewAllTo='/events/mine?status=draft'
-          limit={3}
+          events={canceledEvents}
+          title='Canceled events'
+          viewAllTo='/events/mine'
+          limit={4}
           isLoading={isMyEventsLoading}
         />
       )}

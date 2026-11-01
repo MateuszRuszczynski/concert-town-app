@@ -4,7 +4,7 @@ import type { FC, ReactNode } from 'react';
 import styles from './Table.module.scss';
 //#endregion
 
-type Props = {
+interface Props {
   children: ReactNode;
   rowHover?: boolean;
 };

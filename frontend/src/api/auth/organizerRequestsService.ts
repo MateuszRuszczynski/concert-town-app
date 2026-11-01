@@ -8,7 +8,7 @@ import type {
 } from './organizerRequestsTypes';
 //#endregion
 
-export const organizerRequestsService = {
+const organizerRequestsService = {
   getAll: (token: string, params: GetOrganizerRequestsParams = {}) =>
     get<OrganizerRequestResponse[]>(
       `/api/auth/organizer-requests/${buildQueryString(params)}`,
@@ -26,3 +26,10 @@ export const organizerRequestsService = {
       { token }
     ),
 };
+
+export const {
+  getAll: getAllOrganizerRequests,
+  create: createOrganizerRequest,
+  decide,
+  getMine: getMineRequests,
+} = organizerRequestsService;

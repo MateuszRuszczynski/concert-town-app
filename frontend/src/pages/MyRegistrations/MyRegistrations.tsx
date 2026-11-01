@@ -1,37 +1,17 @@
 //#region imports
 import { EmptyBlock } from '../../components/ui/EmptyBlock';
 import {
-  EventsPageLayout,
-  EventsPageSkeleton
+  EventsPageLayout
 } from '../../components/EventsPageLayout';
-import { useAuth } from '../../contexts/AuthContext';
-import { ErrorPage } from '../ErrorPage';
-import { useMyRegistationsFilters } from './hooks/useMyRegistrationsFilters';
+import { useMyRegistrationsPage } from './hooks/useMyRegistrationsPage';
 import { useNavigate } from 'react-router';
 //#endregion
 
 export const MyRegistrations = () => {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const { events, isLoading, page, setPage, totalPages } =
-    useMyRegistationsFilters();
+  const { events, isLoading, page, setPage, totalPages, error } =
+    useMyRegistrationsPage();
 
   const navigate = useNavigate();
-
-  if (authLoading) {
-    return <EventsPageSkeleton />;
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <ErrorPage
-        type='access-denied'
-        title='Sign in required'
-        subtitle="Sign in to see the events you're registered to attend."
-        buttonText='Go to sign in'
-        backTo='/sign-in'
-      />
-    );
-  }
 
   return (
     <EventsPageLayout
@@ -54,6 +34,7 @@ export const MyRegistrations = () => {
           }}
         />
       }
+      error={error}
     />
   );
 };

@@ -1,18 +1,19 @@
 //#region imports
-import { useEvents } from '../../../contexts/EventContext';
+import { useAllMyEvents } from '../../../api/queries/events/useEventsQueries';
 import type { StatItem } from '../types/statItem';
 import { CalendarClock, Ticket, TrendingUp, Users } from 'lucide-react';
 //#endregion
 
 export function useOrganizerStats () {
-  const { myEvents } = useEvents();
+  const { data: myAllEvents = []} = useAllMyEvents();
+  const { data: myPublishedEvents = []} = useAllMyEvents('active');
 
-  const totalEvents = myEvents.length;
-  const publishedCount = myEvents.filter(event => event.isActive).length;
-  const upcomingEvents = myEvents.filter(
+  const totalEvents = myAllEvents.length;
+  const publishedCount = myPublishedEvents.length;
+  const upcomingEvents = myPublishedEvents.filter(
     event => new Date(event.startsAt) > new Date()
   ).length;
-  const totalAttendees = myEvents.reduce(
+  const totalAttendees = myAllEvents.reduce(
     (acc, event) => acc + event.registeredCount,
     0
   );

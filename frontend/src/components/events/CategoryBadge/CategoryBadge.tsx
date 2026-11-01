@@ -6,9 +6,11 @@ import styles from './CategoryBadge.module.scss';
 //#endregion
 
 interface Props {
-  category: string;
+  category: string | null;
 }
 
 export const CategoryBadge: FC<Props> = ({ category }) => (
-  <p className={cn(baseStyles.category, styles.category)}>{category}</p>
+  <p className={cn(baseStyles.category, styles.category)}>
+    {category || 'No category'}
+  </p>
 );

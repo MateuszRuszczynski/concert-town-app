@@ -1,17 +1,16 @@
 //#region imports
 import { get, post, patch, remove } from '../httpClient';
 import { buildQueryString } from '../shared/buildQueryString';
-import type { PaginatedResponse } from '../shared/pagination';
+import type { PaginatedResponse, PaginationParams } from '../shared/pagination';
 import type {
   EventResponse,
   EventRequest,
   ParticipantResponse,
   GetEventsParams,
-  GetMyEventsParams
 } from './eventsTypes';
 //#endregion
 
-export const eventsService = {
+const eventsService = {
   getEvents: (params: GetEventsParams = {}) =>
     get<PaginatedResponse<EventResponse>>(
       `/api/events/${buildQueryString(params)}`
@@ -28,15 +27,15 @@ export const eventsService = {
       `/api/events/event/${eventId}/participants/`,
       { token }
     ),
-  getMyEvents: (params: GetMyEventsParams, token: string) =>
+  getMyEvents: (params: PaginationParams, token: string) =>
     get<PaginatedResponse<EventResponse>>(
       `/api/events/my/${buildQueryString(params)}`,
       { token }
     ),
-  getDrafts: (token: string) =>
-    get<PaginatedResponse<EventResponse>>('/api/events/my/inactive/', { token }),
-  getActiveMyEvents: (token: string) =>
-  get<PaginatedResponse<EventResponse>>('/api/events/my/active/', { token }),
+  getInactiveMyEvents: (params: PaginationParams, token: string) =>
+    get<PaginatedResponse<EventResponse>>(`/api/events/my/inactive/${buildQueryString(params)}`, { token }),
+  getActiveMyEvents: (params: PaginationParams, token: string) =>
+  get<PaginatedResponse<EventResponse>>(`/api/events/my/active/${buildQueryString(params)}`, { token }),
 };
 
 export const {
@@ -44,7 +43,7 @@ export const {
   getEvent,
   getMyEvents,
   getActiveMyEvents,
-  getDrafts,
+  getInactiveMyEvents,
   createEvent,
   updateEvent,
   deleteEvent,

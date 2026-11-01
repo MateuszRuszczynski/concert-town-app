@@ -1,13 +1,11 @@
 //#region imports
 import type {
   EventDetails,
-  EventFormData,
-  Participant
+  EventFormData
 } from '../../types/events';
 import type {
   EventRequest,
-  EventResponse,
-  ParticipantDTO
+  EventResponse
 } from './eventsTypes';
 //#endregion
 
@@ -30,7 +28,7 @@ export function mapEventResponseToEventDetails (
     price: response.price,
     status: response.is_active ? 'published' : 'canceled',
     registeredCount,
-    isActive: response.is_active,
+    image: response.image,
   };
 }
 
@@ -47,7 +45,7 @@ export function mapEventFormDataToEventRequest (
     category_id: data.categoryId,
     price: data.price,
     total_seats: data.capacity,
-    is_active: data.status === 'published',
+    is_active: true,
   };
 };
 
@@ -66,14 +64,4 @@ export function mapEventFormDataToPatch(data: Partial<EventFormData>): Partial<E
   if (data.status !== undefined) p.is_active = data.status === 'published';
 
   return p;
-}
-
-export function mapParticipantResponseToParticipant (
-  response: ParticipantDTO
-): Participant {
-  return {
-    userId: response.id,
-    name: `${response.first_name} ${response.last_name}`,
-    email: response.email
-  };
 }

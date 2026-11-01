@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './SkeletonItem.module.scss';
 
-type Props = {
+interface Props {
   additionalClass?: string;
 };
 

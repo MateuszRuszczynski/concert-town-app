@@ -3,7 +3,7 @@ import type { FC, ReactNode } from 'react';
 import { Outlet } from 'react-router';
 import { useAuth } from '../../../contexts/AuthContext/useAuth';
 import type { UserRole } from '../../../types/user';
-import { SignInRequiredPage } from '../SignInRequiredPage/SignInRequiredPage';
+import { SignInRequiredPage } from '../SignInRequiredPage';
 //#endregion
 
 interface RoleRule {

@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import styles from './CustomSelect.module.scss';
 //#endregion
 
-export interface SelectOption<T> {
+interface SelectOption<T> {
   value: T;
   label: string;
 }

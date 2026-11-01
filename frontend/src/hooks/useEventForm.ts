@@ -2,13 +2,14 @@
 import { useState, type SubmitEventHandler } from 'react';
 import { useNavigate } from 'react-router';
 import {
+  validateCapacity,
   validateDateRange,
   validateEventDescription,
   validateEventHost,
   validateEventTitle,
+  validatePrice,
   validateStartDate
 } from '../utils/validation/eventValidation';
-import { useEvents } from '../contexts/EventContext/useEvents';
 import type { EventFormData, EventStatus } from '../types/events';
 import { useNotification } from '../contexts/NotificationContext';
 import { normalizeNumericInput } from '../utils/normalizeNumericInput';
@@ -19,6 +20,10 @@ import {
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { getChangedEventFields } from '../utils/getChangedEventFields';
 import { areDateTimesEqual } from '../utils/date/areDateTimesEqual';
+import {
+  useCreateEvent,
+  useUpdateEvent
+} from '../api/queries/events/useEventMutations';
 //#endregion
 
 export function useEventForm (
@@ -88,7 +93,7 @@ export function useEventForm (
     setVenue,
     onCapacityChange,
     onPriceChange,
-    setStatus
+    setStatus,
   };
   //#endregion
 
@@ -117,15 +122,11 @@ export function useEventForm (
     capacity:
       capacity === ''
         ? 'Capacity is required'
-        : Number(capacity) <= 0
-        ? 'Capacity must be greater than 0'
-        : undefined,
+        : validateCapacity(Number(capacity)),
     price:
       price === ''
         ? 'Price is required'
-        : Number(price) < 0
-        ? 'Price cannot be negative'
-        : undefined
+        : validatePrice(Number(price)),
   };
 
   const isFormValid = Object.values(rawFieldErrors).every(
@@ -144,19 +145,21 @@ export function useEventForm (
         city: undefined,
         venue: undefined,
         capacity: undefined,
-        price: undefined,
-        image: undefined
+        price: undefined
       };
 
   const validation = { isFormValid, fieldErrors };
   //#endregion
 
   //#region submission
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const { addEvent, updateEvent } = useEvents();
+
+  const addEvent = useCreateEvent();
+  const updateEvent = useUpdateEvent();
   const { showToast } = useNotification();
   const navigate = useNavigate();
+
+  const isSubmitting = addEvent.isPending || updateEvent.isPending;
 
   const resetToInitial = () => {
     setTitle(initialValues?.title ?? '');
@@ -196,10 +199,9 @@ export function useEventForm (
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async e => {
     e.preventDefault();
     setHasAttemptedSubmit(true);
+    setSubmitError(null);
 
     if (!isFormValid) return;
-
-    setIsSubmitting(true);
 
     const eventData: EventFormData = {
       title,
@@ -211,7 +213,7 @@ export function useEventForm (
       location: isOnline ? 'online' : { city, venue },
       capacity: Number(capacity),
       price: price,
-      status
+      status: isEditMode ? status : 'published',
     };
 
     try {
@@ -221,11 +223,11 @@ export function useEventForm (
         if (Object.keys(updatedData).length === 0) {
           showToast('No changes were made.', 'info');
         } else {
-          await updateEvent(eventId, updatedData);
+          await updateEvent.mutateAsync({ id: eventId, changes: updatedData });
           showToast('Event updated successfully!', 'success');
         }
       } else {
-        await addEvent(eventData);
+        await addEvent.mutateAsync(eventData);
         showToast('Event created successfully!', 'success');
       }
 
@@ -234,8 +236,6 @@ export function useEventForm (
       const message = getErrorMessage(err, 'Something went wrong. Try again.');
       setSubmitError(message);
       showToast(message, 'error');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

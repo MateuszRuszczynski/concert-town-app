@@ -4,15 +4,15 @@ import type { EventFormData } from '../../types/events';
 import { useAuth } from '../../contexts/AuthContext';
 import { ErrorPage } from '../ErrorPage';
 import { EventNotFound } from '../EventNotFound';
-import { useEvent } from '../EventPage/hooks/useEvent';
 import { EventForm } from '../../components/events/EventForm';
 import { EventFormLayoutSkeleton } from '../../components/layout/EventFormLayout/EventFormLayoutSkeleton';
 import { EventFormLayout } from '../../components/layout/EventFormLayout';
+import { useEvent } from '../../api/queries/events/useEventsQueries';
 //#endregion
 
 export const EditEvent = () => {
   const { id } = useParams<{ id: string }>();
-  const { event, isLoading: eventLoading } = useEvent(id);
+  const { data: event, isLoading: eventLoading } = useEvent(id);
   const { user, isLoading: authLoading } = useAuth();
 
   const isLoading = eventLoading || authLoading;
@@ -30,7 +30,7 @@ export const EditEvent = () => {
     return <EventNotFound />;
   }
 
-  if (event.organizerId !== user?.id) {
+  if (event.organizerId !== user?.id && user?.role !== 'admin') {
     return (
       <ErrorPage
         type='access-denied'
@@ -45,13 +45,12 @@ export const EditEvent = () => {
   const formInitials: EventFormData = {
     title: event.title,
     description: event.description,
-    categoryId: event.category.id,
+    categoryId: event.category?.id ?? 0,
     host: event.host,
     startsAt: event.startsAt,
     endsAt: event.endsAt,
     location: event.location,
     capacity: event.capacity,
-    registeredCount: event.registeredCount,
     price: event.price,
     status: event.status
   };

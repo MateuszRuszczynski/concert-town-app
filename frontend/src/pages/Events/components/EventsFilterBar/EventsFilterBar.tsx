@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { Filter } from 'lucide-react';
 import { CustomSelect } from '../../../../components/ui/CustomSelect';
 import { FilterChip } from '../FilterChip';
-import { useCategories } from '../../../../contexts/CategoriesContext/useCategories';
+import { useCategories } from '../../../../api/queries/categories';
 import styles from './EventsFilterBar.module.scss';
 //#endregion
 
@@ -20,7 +20,7 @@ export const EventsFilterBar: FC<Props> = ({
   hasActiveFilters,
   onClearFilters
 }) => {
-  const { categories } = useCategories();
+  const { data: categories = [] } = useCategories();
   const selectedCategory = categories.find(c => c.slug === categorySlug);
 
   return (

@@ -1,13 +1,12 @@
+//#region imports
 import { useState, type SubmitEventHandler } from 'react';
-import {
-  validateEmail,
-  validatePasswordCharacters
-} from '../../../utils/validation';
+import { validatePasswordCharacters, validateEmail } from '../../../utils/validation/validation';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useLocation, useNavigate } from 'react-router';
 import { useNotification } from '../../../contexts/NotificationContext';
 import { capitalizeFirstWord } from '../../../utils/capitalizeFirstWord';
 import { getAuthErrorMessage } from '../../../api/auth/getAuthErrorMessage';
+//#endregion
 
 export function useSignInForm () {
   //#region input controls

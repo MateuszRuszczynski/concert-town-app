@@ -12,6 +12,7 @@ export interface EventResponse {
   price: string;
   total_seats: number;
   available_seats: number;
+  image: string | null;
   is_active: boolean;
   organizer_id: number;
 }
@@ -27,6 +28,7 @@ export interface EventRequest {
   price: string;
   total_seats: number;
   is_active: boolean;
+  image?: File | null;
 }
 
 export interface ParticipantDTO {
@@ -47,11 +49,5 @@ export interface GetEventsParams {
   ordering?: string;
   search?: string;
   is_active?: boolean;
-  page?: number;
-}
-
-export interface GetMyEventsParams {
-  ordering?: string;
-  search?: string;
   page?: number;
 }

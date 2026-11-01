@@ -1,28 +1,24 @@
 //#region imports
-import { client } from '../httpClient';
+import { get, post, remove } from '../httpClient';
 import { buildQueryString } from '../shared/buildQueryString';
-import type { PaginatedResponse } from '../shared/pagination';
-import type {
-  Bookings,
-  GetMyRegistrationsParams,
-  RegisterResponse
-} from './bookingsTypes';
+import type { PaginatedResponse, PaginationParams } from '../shared/pagination';
+import type { RegistrationResponse } from './bookingsTypes';
 //#endregion
 
-export const bookingsService = {
-  getRegistrations: (params: GetMyRegistrationsParams, token: string) =>
-    client.get<PaginatedResponse<Bookings>>(
+const bookingsService = {
+  getRegistrations: (params: PaginationParams, token: string) =>
+    get<PaginatedResponse<RegistrationResponse>>(
       `/api/bookings/my-registrations/${buildQueryString(params)}`,
       { token }
     ),
   register: (eventId: number, token: string) =>
-    client.post<RegisterResponse>(
+    post<RegistrationResponse>(
       '/api/bookings/register/',
       { event_id: eventId },
       { token }
     ),
   cancelRegistration: (id: number, token: string) =>
-    client.delete<void>(`/api/bookings/cancel/${id}/`, { token })
+    remove<void>(`/api/bookings/cancel/${id}/`, { token })
 };
 
 export const { getRegistrations, register, cancelRegistration } =

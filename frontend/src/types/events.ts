@@ -1,4 +1,4 @@
-export interface OfflineLocation {
+interface OfflineLocation {
   city: string;
   venue: string;
 }
@@ -35,17 +35,16 @@ export interface EventDetails {
   host: string;
   organizerId: number;
   status: EventStatus;
-  image?: File | null | undefined;
-  isActive: boolean;
-}
+  image: string | null;
+};
 
 export type EventFormData = Omit<
   EventDetails,
   | 'id'
   | 'organizerId'
   | 'category'
-  | 'isActive'
   | 'registeredCount'
+  | 'image'
 > & {
   categoryId: number;
 };

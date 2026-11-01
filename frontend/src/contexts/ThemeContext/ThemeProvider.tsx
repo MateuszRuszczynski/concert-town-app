@@ -10,7 +10,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ThemeContext } from './ThemeContext';
 //#endregion
 
-type Props = {
+interface Props {
   children: ReactNode;
 };
 

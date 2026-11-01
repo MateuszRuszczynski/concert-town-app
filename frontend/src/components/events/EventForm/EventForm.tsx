@@ -3,11 +3,11 @@ import { EventDetailsSection } from './components/EventDetailsSection';
 import { DateLocationSection } from './components/DateLocationSection';
 import { CapacityPricingSection } from './components/CapacityPricingSection';
 import type { FC } from 'react';
-import baseStyles from './base.module.scss';
 import type { EventFormData } from '../../../types/events';
 import { useEventForm } from '../../../hooks/useEventForm';
 import { FormError } from '../../ui/FormError';
 import { Button } from '../../ui/Button';
+import baseStyles from './base.module.scss';
 //#endregion
 
 interface Props {
@@ -16,6 +16,8 @@ interface Props {
 }
 
 export const EventForm: FC<Props> = ({ eventId, initialValues }) => {
+  const isEditMode = Boolean(initialValues);
+
   const { values, onChange, validation, submission } = useEventForm(
     eventId,
     initialValues
@@ -39,14 +41,14 @@ export const EventForm: FC<Props> = ({ eventId, initialValues }) => {
           description: values.description,
           host: values.host,
           categoryId: values.categoryId,
-          status: values.status
+          status: values.status,
         }}
         onChange={{
           onTitleChange: onChange.setTitle,
           onDescriptionChange: onChange.setDescription,
           onHostChange: onChange.setHost,
           onCategoryChange: (value: string) => onChange.setCategoryId(+value),
-          onStatusChange: onChange.setStatus
+          onStatusChange: onChange.setStatus,
         }}
         errors={{
           title: fieldErrors.title,
@@ -54,6 +56,7 @@ export const EventForm: FC<Props> = ({ eventId, initialValues }) => {
           category: fieldErrors.category,
           host: fieldErrors.host
         }}
+        isEditMode={isEditMode}
       />
 
       <DateLocationSection

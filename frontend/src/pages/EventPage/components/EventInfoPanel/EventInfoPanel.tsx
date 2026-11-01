@@ -13,7 +13,7 @@ import {
 import {
   formatEventDate,
   formatEventTime
-} from '../../../../utils/dateFormatters';
+} from '../../../../utils/date/dateFormatters';
 import baseStyles from './base.module.scss';
 import styles from './EventInfoPanel.module.scss';
 //#endregion
@@ -50,7 +50,7 @@ export const EventInfoPanel: FC<Props> = ({ event }) => {
   return (
     <div className={baseStyles.panel}>
       <div className={cn(baseStyles.price, styles.price)}>
-        {event.price > 0 ? `$${event.price}` : 'Free'}
+        {+event.price > 0 ? `$${event.price}` : 'Free'}
       </div>
 
       <ul className={baseStyles.mainInfo}>

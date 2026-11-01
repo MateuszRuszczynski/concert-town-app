@@ -7,18 +7,17 @@ import { CalendarCheck } from 'lucide-react';
 import { Button } from '../../../../../../components/ui/Button';
 import { useAuth } from '../../../../../../contexts/AuthContext';
 import { Link } from 'react-router';
-import { useRegistrations } from '../../../../../../contexts/RegistrationsContext';
+import { useRegister } from '../../../../../../api/queries/registrations';
 import styles from './VisitorActions.module.scss';
 //#endregion
 
 interface Props {
-  event: EventDetails;
-  refetchEvent: () => Promise<void>;
+  event: EventDetails
 }
 
-export const VisitorActions: FC<Props> = ({ event, refetchEvent }) => {
+export const VisitorActions: FC<Props> = ({ event }) => {
   const { isAuthenticated } = useAuth();
-  const { register } = useRegistrations();
+  const register = useRegister();
   const { showToast } = useNotification();
 
   const [isRegistering, setIsRegistering] = useState(false);
@@ -26,8 +25,8 @@ export const VisitorActions: FC<Props> = ({ event, refetchEvent }) => {
   const handleRegister = async () => {
     setIsRegistering(true);
     try {
-      await register(event.id);
-      await refetchEvent();
+      await register.mutateAsync(event.id);
+
       showToast('You have registered for this event!', 'success');
     } catch (err) {
       showToast(

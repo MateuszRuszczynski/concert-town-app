@@ -1,54 +1,15 @@
 //#region imports
-import { useMyEventFilters } from './hooks/useMyEventFilters';
-import { useAuth } from '../../contexts/AuthContext';
-import { ErrorPage } from '../ErrorPage';
+import { useMyEventsPage } from './hooks/useMyEventsPage';
 import {
-  EventsPageLayout,
-  EventsPageSkeleton
+  EventsPageLayout
 } from '../../components/EventsPageLayout';
 import { useNavigate } from 'react-router';
 import { EmptyBlock } from '../../components/ui/EmptyBlock';
-import { BecomeOrganizerButton } from '../../components/organizer/BecomeOrganizerButton';
 //#endregion
 
 export const MyEvents = () => {
-  const {
-    isAuthenticated,
-    isLoading: authLoading,
-    isOrganizerOrAdmin
-  } = useAuth();
-  const { events, isLoading, page, totalPages, setPage } = useMyEventFilters();
+  const { events, isLoading, page, totalPages, setPage, error } = useMyEventsPage();
   const navigate = useNavigate();
-
-  if (authLoading) {
-    return <EventsPageSkeleton />;
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <ErrorPage
-        type='access-denied'
-        title='Sign in required'
-        subtitle='Sign in to manage and track your events.'
-        buttonText='Go to sign in'
-        backTo='/sign-in'
-      />
-    );
-  }
-
-  if (!isOrganizerOrAdmin) {
-    return (
-      <ErrorPage
-        type='access-denied'
-        title='Organizer access required'
-        subtitle='Only organizers can manage events.'
-        buttonText='Back to events'
-        backTo='/events'
-      >
-        <BecomeOrganizerButton />
-      </ErrorPage>
-    );
-  }
 
   return (
     <EventsPageLayout
@@ -71,6 +32,7 @@ export const MyEvents = () => {
           }}
         />
       }
+      error={error}
     />
   );
 };
