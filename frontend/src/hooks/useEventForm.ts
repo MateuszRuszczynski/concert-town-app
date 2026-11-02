@@ -2,21 +2,28 @@
 import { useState, type SubmitEventHandler } from 'react';
 import { useNavigate } from 'react-router';
 import {
+  validateCapacity,
   validateDateRange,
   validateEventDescription,
   validateEventHost,
   validateEventTitle,
+  validatePrice,
   validateStartDate
-} from '../utils/eventValidation';
-import { useEvents } from '../contexts/EventContext/useEvents';
+} from '../utils/validation/eventValidation';
 import type { EventFormData, EventStatus } from '../types/events';
 import { useNotification } from '../contexts/NotificationContext';
 import { normalizeNumericInput } from '../utils/normalizeNumericInput';
 import {
   fromDateTimeInputValue,
   toDateTimeInputValue
-} from '../utils/dateTimeInputFormat';
+} from '../utils/date/dateTimeInputFormat';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { getChangedEventFields } from '../utils/getChangedEventFields';
+import { areDateTimesEqual } from '../utils/date/areDateTimesEqual';
+import {
+  useCreateEvent,
+  useUpdateEvent
+} from '../api/queries/events/useEventMutations';
 //#endregion
 
 export function useEventForm (
@@ -47,7 +54,7 @@ export function useEventForm (
   const [isOnline, setIsOnline] = useState(isInitialOnline);
   const [city, setCity] = useState(initialOfflineLocation?.city ?? '');
   const [venue, setVenue] = useState(initialOfflineLocation?.venue ?? '');
-  const [capacity, setCapacity] = useState(initialValues?.capacity || '100');
+  const [capacity, setCapacity] = useState(initialValues?.capacity || '0');
   const [price, setPrice] = useState(initialValues?.price || '0');
   const [status, setStatus] = useState<EventStatus>(
     initialValues?.status ?? 'published'
@@ -86,61 +93,40 @@ export function useEventForm (
     setVenue,
     onCapacityChange,
     onPriceChange,
-    setStatus
+    setStatus,
   };
   //#endregion
 
   //#region validation
+  const isEditMode = Boolean(eventId);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
-  const startUnchanged =
-    initialValues !== undefined &&
-    startsAt === toDateTimeInputValue(initialValues.startsAt);
-  const endUnchanged =
-    initialValues !== undefined &&
-    endsAt === toDateTimeInputValue(initialValues.endsAt);
-  const submittedStartsAt = initialValues && startUnchanged
-    ? initialValues.startsAt
-    : fromDateTimeInputValue(startsAt);
-  const submittedEndsAt = initialValues && endUnchanged
-    ? initialValues.endsAt
-    : fromDateTimeInputValue(endsAt);
-  const dateRangeError = validateDateRange(submittedStartsAt, submittedEndsAt);
+  const shouldValidateStart =
+    !isEditMode || !areDateTimesEqual(initialValues?.startsAt || '', startsAt);
+  const startDateError = shouldValidateStart
+    ? validateStartDate(startsAt)
+    : undefined;
+  const dateRangeError = validateDateRange(startsAt, endsAt);
 
   const rawFieldErrors = {
     title: validateEventTitle(title),
     description: validateEventDescription(description),
     host: validateEventHost(host),
     category: categoryId === 0 ? 'Category is required' : undefined,
-    startsAt:
-      startsAt === ''
-        ? 'Start date is required'
-        : startUnchanged ? undefined : validateStartDate(startsAt),
-    endsAt: dateRangeError,
+    startsAt: startsAt === '' ? 'Start date is required' : startDateError,
+    endsAt: endsAt === '' ? 'End date is required' : dateRangeError,
     city:
-      !isOnline && city.trim().length === 0
-        ? 'City is required'
-        : !isOnline && city.trim().length > 100
-        ? 'City must be at most 100 characters' : undefined,
+      !isOnline && city.trim().length === 0 ? 'City is required' : undefined,
     venue:
-      !isOnline && venue.trim().length === 0
-        ? 'Venue is required'
-        : !isOnline && venue.trim().length > 255
-        ? 'Venue must be at most 255 characters' : undefined,
+      !isOnline && venue.trim().length === 0 ? 'Venue is required' : undefined,
     capacity:
       capacity === ''
         ? 'Capacity is required'
-        : Number(capacity) <= 0
-        ? 'Capacity must be greater than 0'
-        : Number(capacity) < (initialValues?.registeredCount ?? 0)
-        ? 'Capacity cannot be less than the number of registrations'
-        : undefined,
+        : validateCapacity(Number(capacity)),
     price:
       price === ''
         ? 'Price is required'
-        : Number(price) < 0
-        ? 'Price cannot be negative'
-        : undefined
+        : validatePrice(Number(price)),
   };
 
   const isFormValid = Object.values(rawFieldErrors).every(
@@ -159,20 +145,21 @@ export function useEventForm (
         city: undefined,
         venue: undefined,
         capacity: undefined,
-        price: undefined,
-        image: undefined
+        price: undefined
       };
 
   const validation = { isFormValid, fieldErrors };
   //#endregion
 
   //#region submission
-  const isEditMode = Boolean(eventId);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const { addEvent, updateEvent } = useEvents();
+
+  const addEvent = useCreateEvent();
+  const updateEvent = useUpdateEvent();
   const { showToast } = useNotification();
   const navigate = useNavigate();
+
+  const isSubmitting = addEvent.isPending || updateEvent.isPending;
 
   const resetToInitial = () => {
     setTitle(initialValues?.title ?? '');
@@ -184,10 +171,10 @@ export function useEventForm (
     setIsOnline(isInitialOnline);
     setCity(initialOfflineLocation?.city ?? '');
     setVenue(initialOfflineLocation?.venue ?? '');
-    setCapacity(initialValues?.capacity?.toString() ?? '100');
-    setPrice(initialValues?.price?.toString() ?? '0');
+    setCapacity(initialValues?.capacity ?? '0');
+    setPrice(initialValues?.price ?? '0');
     setHasAttemptedSubmit(false);
-    setStatus(initialValues?.status ?? 'draft');
+    setStatus(initialValues?.status ?? 'published');
   };
 
   const clearForm = () => {
@@ -197,12 +184,13 @@ export function useEventForm (
     setCategoryId(0);
     setStartsAt('');
     setEndsAt('');
+    setIsOnline(false);
     setCity('');
     setVenue('');
-    setCapacity('100');
+    setCapacity('0');
     setPrice('0');
     setHasAttemptedSubmit(false);
-    setStatus('draft');
+    setStatus('published');
   };
 
   const secondaryAction = isEditMode ? resetToInitial : clearForm;
@@ -211,31 +199,35 @@ export function useEventForm (
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async e => {
     e.preventDefault();
     setHasAttemptedSubmit(true);
+    setSubmitError(null);
 
     if (!isFormValid) return;
-
-    setIsSubmitting(true);
 
     const eventData: EventFormData = {
       title,
       description,
       host,
       categoryId,
-      startsAt: submittedStartsAt,
-      endsAt: submittedEndsAt,
+      startsAt: fromDateTimeInputValue(startsAt),
+      endsAt: fromDateTimeInputValue(endsAt),
       location: isOnline ? 'online' : { city, venue },
       capacity: Number(capacity),
-      registeredCount: initialValues?.registeredCount || 0,
-      price: Number(price),
-      status
+      price: price,
+      status: isEditMode ? status : 'published',
     };
 
     try {
-      if (isEditMode && eventId) {
-        await updateEvent(eventId, eventData);
-        showToast('Event updated successfully!', 'success');
+      if (isEditMode && initialValues && eventId) {
+        const updatedData = getChangedEventFields(initialValues, eventData);
+
+        if (Object.keys(updatedData).length === 0) {
+          showToast('No changes were made.', 'info');
+        } else {
+          await updateEvent.mutateAsync({ id: eventId, changes: updatedData });
+          showToast('Event updated successfully!', 'success');
+        }
       } else {
-        await addEvent(eventData);
+        await addEvent.mutateAsync(eventData);
         showToast('Event created successfully!', 'success');
       }
 
@@ -244,8 +236,6 @@ export function useEventForm (
       const message = getErrorMessage(err, 'Something went wrong. Try again.');
       setSubmitError(message);
       showToast(message, 'error');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

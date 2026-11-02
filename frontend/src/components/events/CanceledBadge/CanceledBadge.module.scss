@@ -1,0 +1,22 @@
+.canceledBadge {
+  --badge-bg: #FFE4E6;
+
+  @include dark-theme {
+    --badge-bg: #3B2028;
+  }
+
+  width: fit-content;
+  padding: 3px 15px;
+
+  display: flex;
+  align-items: center;
+
+  color: var(--error-color);
+  background-color: var(--badge-bg);
+
+  border-radius: 99px;
+
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: capitalize;
+}

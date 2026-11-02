@@ -1,19 +1,14 @@
 //#region imports
 import { useSearchParams } from 'react-router';
 import { useUpdateSearchParam } from '../../../hooks/useUpdateSearchParam';
-import type { EventDetails } from '../../../types/events';
-import { useEffect, useState } from 'react';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import {
-  eventsService,
-  mapEventResponseToEventDetails
-} from '../../../api/events';
-import { getErrorMessage } from '../../../utils/getErrorMessage';
 import type { SortBy } from '../utils/sortOptions';
-import { getTotalPages } from '../../../utils/pagination';
+import { useEventsList } from '../../../api/queries/events/useEventsQueries';
 //#endregion
 
 export function useEventFilters () {
+  //#region searchParams
+
   const [searchParams] = useSearchParams();
   const updateSearchParam = useUpdateSearchParam();
 
@@ -23,40 +18,28 @@ export function useEventFilters () {
   const sortBy = (searchParams.get('sort') as SortBy) ?? 'date';
   const page = Number(searchParams.get('page')) || 1;
 
-  const [events, setEvents] = useState<EventDetails[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  //#endregion
 
-  useEffect(() => {
-    async function fetchEvents () {
-      setIsLoading(true);
-
-      try {
-        const response = await eventsService.getEvents({
-          search: debouncedSearchQuery || undefined,
-          category: categorySlug || undefined,
-          ordering: sortBy === 'date' ? 'starts_at' : sortBy,
-          page
-        });
-        setEvents(response.results.map(e => mapEventResponseToEventDetails(e)));
-        setTotalPages(getTotalPages(response.count, 10));
-      } catch (err) {
-        setError(getErrorMessage(err) || 'Something went wrong!');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchEvents();
-  }, [debouncedSearchQuery, categorySlug, sortBy, page]);
+  //#region updating searchParams
 
   const setSearchQuery = (value: string) =>
     updateSearchParam({ search: value || null, page: null });
   const setCategorySlug = (slug: string) =>
     updateSearchParam({ category: slug || null, page: null });
   const setSortBy = (sort: SortBy) => updateSearchParam({ sort, page: null });
-  const setPage = (newPage: number) => updateSearchParam({ page: newPage > 1 ? String(newPage) : null });
+  const setPage = (newPage: number) =>
+    updateSearchParam({ page: newPage > 1 ? String(newPage) : null });
 
+  //#endregion
+
+  const { data, isLoading, error } = useEventsList({
+    search: debouncedSearchQuery || undefined,
+    category: categorySlug || undefined,
+    ordering: sortBy,
+    page
+  });
+
+  
   const hasActiveFilters = categorySlug !== '';
 
   const clearFilters = () => updateSearchParam({ category: null });
@@ -70,11 +53,11 @@ export function useEventFilters () {
     setCategorySlug,
     sortBy,
     setSortBy,
-    events,
+    events: data?.events ?? [],
     isLoading,
     hasActiveFilters,
     clearFilters,
     error,
-    totalPages
+    totalPages: data?.totalPages ?? 1,
   };
 }

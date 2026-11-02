@@ -1,10 +1,9 @@
 //#region imports
 import type { FC } from 'react';
 import { EventFormSection } from '../EventFormSection';
-
-import baseStyles from './base.module.scss';
 import { FormField } from '../../../../ui/FormField';
 import { Checkbox } from '../../../../ui/Checkbox';
+import baseStyles from './base.module.scss';
 //#endregion
 
 interface Values {

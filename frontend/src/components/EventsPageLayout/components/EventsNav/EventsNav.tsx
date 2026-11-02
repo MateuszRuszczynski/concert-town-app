@@ -1,6 +1,6 @@
 //#region imports
 import type { FC } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import { NavLink } from 'react-router';
 import { useAuth } from '../../../../contexts/AuthContext';
 import baseStyles from './base.module.scss';

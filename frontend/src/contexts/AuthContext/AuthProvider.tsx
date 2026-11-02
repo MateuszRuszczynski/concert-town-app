@@ -20,15 +20,15 @@ import {
   logIn,
   logOut,
   refreshToken,
-  registerUser,
-  type ProfileResponse
+  registerUser
 } from '../../api/auth';
 import { setRefreshHandler } from '../../api/httpClient';
+import { isAuthFailure } from '../../api/isAuthFailure';
 //#endregion
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const AuthProvider: FC<Props> = ({ children }) => {
   //#region states
@@ -36,95 +36,80 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const [refreshTokenValue, setRefreshTokenValue] = useLocalStorage<
     string | null
   >(null, 'refreshToken');
-  const [user, setUser] = useLocalStorage<User | null>(null, 'currentUser');
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   //#endregion
 
   //#region session helpers
-  const loadAndSetUser = useCallback(
-    async (access: string) => {
-      if (isLoading) return;
-    
-      const profile = await getProfile(access);
-      setUser(mapProfileToUser(profile));
-    },
-    [setUser, isLoading]
-  );
+  const loadAndSetUser = useCallback(async (access: string) => {
+    const profile = await getProfile(access);
+    setUser(mapProfileToUser(profile));
+  }, []);
 
   const clearSession = useCallback(() => {
     setUser(null);
     setToken(null);
     setRefreshTokenValue(null);
   }, [setUser, setToken, setRefreshTokenValue]);
-
-  const tryRefreshAndLoadUser = useCallback(
-    async (refreshValue: string) => {
-      try {
-        const { access, refresh } = await refreshToken(refreshValue);
-        setToken(access);
-        setRefreshTokenValue(refresh);
-
-        await loadAndSetUser(access);
-      } catch {
-        clearSession();
-      }
-    },
-    [setToken, setRefreshTokenValue, loadAndSetUser, clearSession]
-  );
   //#endregion
 
-  ///#region session restoration
-  useEffect(() => {
-    restoreSession();
-
-    async function restoreSession () {
-      if (!token) {
-        if (refreshTokenValue) {
-          await tryRefreshAndLoadUser(refreshTokenValue);
-        } else {
-          clearSession();
-        }
-
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        await loadAndSetUser(token);
-      } catch {
-        if (refreshTokenValue) {
-          await tryRefreshAndLoadUser(refreshTokenValue);
-        } else {
-          clearSession();
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  //#region session restoration
   const refreshTokenRef = useRef(refreshTokenValue);
 
   useEffect(() => {
     refreshTokenRef.current = refreshTokenValue;
   }, [refreshTokenValue]);
 
-  useEffect(() => {
-    setRefreshHandler(async () => {
-      const currentRefresh = refreshTokenRef.current;
-      if (!currentRefresh) return null;
+  const refreshInFlight = useRef<Promise<string | null> | null>(null);
 
+  const refreshSession = useCallback(async () => {
+    if (refreshInFlight.current) return refreshInFlight.current;
+
+    const current = refreshTokenRef.current;
+    if (!current) return null;
+
+    refreshInFlight.current = (async () => {
       try {
-        const { access, refresh } = await refreshToken(currentRefresh);
+        const { access, refresh } = await refreshToken(current);
+
+        refreshTokenRef.current = refresh;
         setToken(access);
         setRefreshTokenValue(refresh);
         return access;
-      } catch {
-        clearSession();
+      } catch (err) {
+        if (isAuthFailure(err) && refreshTokenRef.current === current) {
+          clearSession();
+        }
         return null;
+      } finally {
+        refreshInFlight.current = null;
       }
-    });
+    })();
+
+    return refreshInFlight.current;
+  }, [setToken, setRefreshTokenValue, clearSession]);
+
+  useEffect(() => {
+    setRefreshHandler(refreshSession);
+  }, [refreshSession]);
+
+  useEffect(() => {
+    restoreSession();
+
+    async function restoreSession () {
+      try {
+        if (token) {
+          await loadAndSetUser(token);
+        } else if (refreshTokenRef.current) {
+          const access = await refreshSession();
+          if (access) await loadAndSetUser(access);
+        }
+      } catch (err) {
+        if (isAuthFailure(err)) clearSession();
+      } finally {
+        setIsLoading(false);
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   //#endregion
@@ -140,31 +125,37 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       setToken(response.access);
       setRefreshTokenValue(response.refresh);
 
-      const profile: ProfileResponse = await getProfile(response.access);
-      setUser(mapProfileToUser(profile));
+      try {
+        await loadAndSetUser(response.access);
+      } catch (err) {
+        clearSession();
+        throw err;
+      }
     },
-    [setToken, setRefreshTokenValue, setUser]
+    [setToken, setRefreshTokenValue, clearSession, loadAndSetUser]
   );
 
   const signOut = useCallback(async () => {
-    let currentToken = token;
-    let currentRefreshToken = refreshTokenValue;
-
-    if (!currentToken && currentRefreshToken) {
-      const refreshed = await refreshToken(currentRefreshToken);
-
-      currentToken = refreshed.access;
-      currentRefreshToken = refreshed.refresh ?? currentRefreshToken;
-    }
-
     try {
-      if (currentToken && currentRefreshToken) {
-        await logOut(currentRefreshToken, currentToken);
+      const refresh = refreshTokenRef.current;
+      if (!refresh) return;
+
+      try {
+        if (!token) throw new Error('no access token');
+        await logOut(refresh, token);
+      } catch {
+        const access = await refreshSession();
+
+        if (access && refreshTokenRef.current) {
+          await logOut(refreshTokenRef.current, access);
+        }
       }
+    } catch {
+      // local sign out
     } finally {
       clearSession();
     }
-  }, [clearSession, refreshTokenValue, token]);
+  }, [token, refreshSession, clearSession]);
   //#endregion
 
   return (

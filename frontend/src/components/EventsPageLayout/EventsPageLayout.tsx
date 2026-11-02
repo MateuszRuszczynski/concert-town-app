@@ -1,6 +1,6 @@
 //#region imports
 import type { FC, ReactNode } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import type { EventDetails } from '../../types/events';
 import { EventsNav } from './components/EventsNav';
 import { EventsList } from '../events/EventsList';
@@ -21,6 +21,7 @@ interface Props {
   totalPages: number;
   onPageChange: (page: number) => void;
   emptyState?: ReactNode,
+  error?: unknown;
 }
 
 export const EventsPageLayout: FC<Props> = ({
@@ -34,6 +35,7 @@ export const EventsPageLayout: FC<Props> = ({
   totalPages,
   onPageChange,
   emptyState,
+  error
 }) => (
   <section className={cn(baseStyles.events, styles.events)}>
     {showNav && <EventsNav />}
@@ -46,6 +48,7 @@ export const EventsPageLayout: FC<Props> = ({
       events={events}
       isLoading={isLoading}
       emptyState={emptyState}
+      error={error}
     />
 
     {!isLoading && totalPages > 1 && (

@@ -1,1 +1,2 @@
-export * from "./EventPage";
+export * from './EventPage';
+export * from './EventPageSkeleton';

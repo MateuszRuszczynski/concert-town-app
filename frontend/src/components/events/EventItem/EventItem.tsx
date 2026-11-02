@@ -1,17 +1,17 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import type { FC } from 'react';
 import { Link } from 'react-router';
 import { CalendarDays, MapPin, Users } from 'lucide-react';
 import type { EventDetails } from '../../../types/events';
 import { RelationBadge } from '../RelationBadge';
 import { CategoryBadge } from '../CategoryBadge';
-import { formatEventDate } from '../../../utils/dateFormatters';
+import { formatEventDate } from '../../../utils/date/dateFormatters';
 import { useEventRelation } from '../../../hooks/useEventRelation';
-import { DraftBadge } from '../DraftBadge';
+import { DEFAULT_EVENT_IMAGES } from '../../../assets/defaultEventImages';
+import { CanceledBadge } from '../CanceledBadge';
 import baseStyles from './base.module.scss';
 import styles from './EventItem.module.scss';
-import { DEFAULT_EVENT_IMAGES } from '../../../assets/defaultEventImages';
 //#endregion
 
 interface Props {
@@ -29,7 +29,11 @@ export const EventItem: FC<Props> = ({ event }) => {
     >
       <div className={baseStyles.imgWrapper}>
         <img
-          src={DEFAULT_EVENT_IMAGES[event.category.slug]}
+          src={
+            event.image ??
+            DEFAULT_EVENT_IMAGES[event.category?.slug ?? ''] ??
+            DEFAULT_EVENT_IMAGES.default
+          }
           alt=''
           className={cn(baseStyles.eventImage, styles.eventImage)}
         />
@@ -41,18 +45,18 @@ export const EventItem: FC<Props> = ({ event }) => {
         </div>
       )}
 
-      {event.status === 'draft' && (
-        <div className={styles.draftBadge}>
-          <DraftBadge />
+      {event.status === 'canceled' && (
+        <div className={styles.canceledBadge}>
+          <CanceledBadge />
         </div>
       )}
 
       <div className={baseStyles.eventSummary}>
         <div className={baseStyles.eventMeta}>
-          <CategoryBadge category={event.category.name} />
+          <CategoryBadge category={event.category?.name || null} />
 
           <p className={styles.price}>
-            {event.price > 0 ? `$${event.price}` : 'Free'}
+            {+event.price > 0 ? `$${event.price}` : 'Free'}
           </p>
         </div>
 

@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { SkeletonItem } from '../../../../components/ui/SkeletonItem';
 import baseStyles from './base.module.scss';
 import styles from './RegistrationProgressSkeleton.module.scss';

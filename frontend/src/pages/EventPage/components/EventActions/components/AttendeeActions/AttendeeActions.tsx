@@ -6,17 +6,19 @@ import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
 import { ConfirmDialog } from '../../../ConfirmDialog';
 import { CalendarX } from 'lucide-react';
 import { Button } from '../../../../../../components/ui/Button';
-import { useRegistrations } from '../../../../../../contexts/RegistrationsContext';
+import { useAllRegistrations, useCancelRegistration } from '../../../../../../api/queries/registrations';
 import styles from "./AttendeeActions.module.scss";
 //#endregion
 
 interface Props {
   event: EventDetails;
-  refetchEvent: () => Promise<void>;
 }
 
-export const AttendeeActions: FC<Props> = ({ event, refetchEvent }) => {
-  const { cancelRegistration } = useRegistrations();
+export const AttendeeActions: FC<Props> = ({ event }) => {
+  const { data } = useAllRegistrations();
+
+  const cancelRegistration = useCancelRegistration();
+
   const { showToast } = useNotification();
 
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
@@ -25,8 +27,13 @@ export const AttendeeActions: FC<Props> = ({ event, refetchEvent }) => {
   const handleCancelRegistration = async () => {
     setIsCancelling(true);
     try {
-      await cancelRegistration(event.id);
-      await refetchEvent();
+      const currentRegistration = data?.registrations.find(r => r.event.id === event.id);
+
+      if (!currentRegistration) {
+        throw new Error('You were not registered for this event');
+      }
+
+      await cancelRegistration.mutateAsync(currentRegistration.id);
       showToast('Registration cancelled', 'cancel');
       setIsCancelDialogOpen(false);
     } catch (err) {

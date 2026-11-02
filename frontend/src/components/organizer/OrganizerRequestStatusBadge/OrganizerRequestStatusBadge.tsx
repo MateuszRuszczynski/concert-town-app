@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { CheckCircle, Clock, XCircle, type LucideIcon } from 'lucide-react';
 import type { FC } from 'react';
 import type { OrganizerRequestStatus } from '../../../types/organizerRequest';

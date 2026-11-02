@@ -1,18 +1,15 @@
 //#region imports
 import type { FC } from 'react';
-import { CalendarDayCell } from '../CalendarDayCell/CalendarDayCell';
+import { CalendarDayCell } from '../CalendarDayCell';
 import type { CalendarDay } from '../../utils/calendarDays';
 import type { EventDetails } from '../../../../types/events';
+import { toDateKey } from '../../utils/groupEventsByDate';
 import styles from './CalendarGrid.module.scss';
 //#endregion
 
 interface Props {
   days: (CalendarDay | null)[];
   eventsByDate: Map<string, EventDetails[]>;
-}
-
-function toDateKey (date: Date): string {
-  return date.toISOString().slice(0, 10);
 }
 
 export const CalendarGrid: FC<Props> = ({ days, eventsByDate }) => (

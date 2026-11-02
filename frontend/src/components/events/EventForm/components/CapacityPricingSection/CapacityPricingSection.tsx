@@ -34,7 +34,7 @@ export const CapacityPricingSection: FC<Props> = ({
         label='Capacity'
         id='capacity'
         type='number'
-        min={1}
+        min={0}
         value={values.capacity}
         onChange={e => onChange.onCapacityChange(e.target.value)}
         errorMessage={errors.capacity}
@@ -46,7 +46,7 @@ export const CapacityPricingSection: FC<Props> = ({
         id='price'
         type='number'
         min={0}
-        step={0.01}
+        step={1}
         value={values.price}
         onChange={e => onChange.onPriceChange(e.target.value)}
         errorMessage={errors.price}

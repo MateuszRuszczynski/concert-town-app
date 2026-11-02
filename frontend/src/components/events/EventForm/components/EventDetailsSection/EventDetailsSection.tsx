@@ -4,8 +4,8 @@ import { EventFormSection } from '../EventFormSection';
 import { TextareaField } from '../TextareaField';
 import type { EventStatus } from '../../../../../types/events';
 import { FormField } from '../../../../ui/FormField';
-import { useCategories } from '../../../../../contexts/CategoriesContext/useCategories';
 import { CustomSelect } from '../../../../ui/CustomSelect';
+import { useCategories } from '../../../../../api/queries/categories';
 import baseStyles from './base.module.scss';
 //#endregion
 
@@ -35,14 +35,17 @@ interface Props {
     host?: string;
     image?: string;
   };
+  isEditMode?: boolean;
 }
 
 export const EventDetailsSection: FC<Props> = ({
   values,
   onChange,
-  errors
+  errors,
+  isEditMode = false
 }) => {
-  const { categories, isLoading: categoriesLoading } = useCategories();
+  const { data: categories = [], isLoading: categoriesLoading, isError: categoriesError } =
+    useCategories();
 
   return (
     <EventFormSection title='Event details'>
@@ -93,21 +96,23 @@ export const EventDetailsSection: FC<Props> = ({
             value: c.id.toString(),
             label: c.name
           }))}
-          errorMessage={errors.category}
+          errorMessage={errors.category ?? (categoriesError ? 'Could not load categories' : undefined)}
           disabled={categoriesLoading}
           placeholder='Select category'
         />
 
-        <CustomSelect<EventStatus>
-          id='status'
-          label='Status'
-          value={values.status}
-          onValueChange={onChange.onStatusChange}
-          options={[
-            { value: 'draft', label: 'Draft' },
-            { value: 'published', label: 'Published' }
-          ]}
-        />
+        {isEditMode && (
+          <CustomSelect<EventStatus>
+            id='status'
+            label='Status'
+            value={values.status}
+            onValueChange={onChange.onStatusChange}
+            options={[
+              { value: 'canceled', label: 'Canceled' },
+              { value: 'published', label: 'Published' }
+            ]}
+          />
+        )}
       </>
     </EventFormSection>
   );

@@ -1,7 +1,7 @@
 //#region imports
 import type { LucideIcon } from 'lucide-react';
 import type { FC } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import baseStyles from './base.module.scss';
 import styles from './StatCard.module.scss';
 //#endregion

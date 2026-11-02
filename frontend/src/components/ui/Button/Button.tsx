@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import type { ButtonHTMLAttributes, ReactNode, FC } from 'react';
 import baseStyles from './base.module.scss';
 import styles from './Button.module.scss';

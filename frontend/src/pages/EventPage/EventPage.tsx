@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { useParams } from 'react-router';
 import { EventHero } from './components/EventHero';
 import { EventHeader } from './components/EventHeader';
@@ -11,17 +11,18 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { BackLink } from '../../components/ui/BackLink';
 import { useEventRelation } from '../../hooks/useEventRelation';
 import { EventNotFound } from '../EventNotFound';
-import { useEvent } from './hooks/useEvent';
+import { useEvent } from '../../api/queries/events/useEventsQueries';
 import { EventPageSkeleton } from './EventPageSkeleton';
+import { useAuth } from '../../contexts/AuthContext';
 import baseStyles from './base.module.scss';
 import styles from './EventPage.module.scss';
-import { useAuth } from '../../contexts/AuthContext';
 //#endregion
 
 export const EventPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { event, isLoading: eventLoading, refetch } = useEvent(id);
+  const { data: event, isLoading: eventLoading } = useEvent(id);
   const { isLoading: authLoading } = useAuth();
+
   const isLoading = eventLoading || authLoading;
 
   usePageTitle(event?.title || 'Event Not Found');
@@ -58,7 +59,6 @@ export const EventPage = () => {
           <EventActions
             event={event}
             relation={relation}
-            refetchEvent={refetch}
           />
         </div>
       </div>

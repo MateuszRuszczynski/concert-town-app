@@ -1,3 +1,4 @@
+import { ApiError } from './ApiError';
 import { BASE_URL } from './config';
 
 const DEFAULT_HEADERS = {
@@ -9,13 +10,16 @@ interface RequestOptions {
   token?: string;
 }
 
-const getHeaders = ({ headers, token }: RequestOptions = {}): HeadersInit => ({
-  ...DEFAULT_HEADERS,
+const getHeaders = ({ headers, token }: RequestOptions = {}, isFormData = false): HeadersInit => ({
+  ...(isFormData ? {} : DEFAULT_HEADERS),
   ...headers,
   ...(token && {
     Authorization: `Bearer ${token}`
   })
 });
+
+const serializeBody = (data: unknown) =>
+  data instanceof FormData ? data : JSON.stringify(data);
 
 const handleResponse = async <T>(response: Response): Promise<T> => {
   if (
@@ -29,13 +33,13 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   const data = text ? JSON.parse(text) : undefined;
 
   if (!response.ok) {
-    throw data;
+    throw new ApiError(response.status, data);
   }
 
   return data as T;
 };
 
-export let refreshHandler: (() => Promise<string | null>) | null = null;
+let refreshHandler: (() => Promise<string | null>) | null = null;
 
 export function setRefreshHandler(handler: () => Promise<string | null>) {
   refreshHandler = handler;
@@ -61,6 +65,7 @@ async function requestWithRefresh<T>(
   let response = await performFetch(url, init);
 
   if (response.status === 401 && refreshHandler) {
+    
     if (!refreshPromise) {
       refreshPromise = refreshHandler().finally(() => {
         refreshPromise = null;
@@ -94,8 +99,8 @@ export const client = {
       `${BASE_URL}${url}`,
       {
         method: 'POST',
-        headers: getHeaders(options),
-        body: JSON.stringify(data)
+        headers: getHeaders(options, data instanceof FormData),
+        body: serializeBody(data)
       },
       options
     );

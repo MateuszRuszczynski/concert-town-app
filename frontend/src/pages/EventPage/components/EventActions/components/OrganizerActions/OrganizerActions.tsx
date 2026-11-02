@@ -1,13 +1,13 @@
 //#region imports
 import { useState, type FC } from 'react';
 import type { EventDetails } from '../../../../../../types/events';
-import { useEvents } from '../../../../../../contexts/EventContext';
 import { useNavigate } from 'react-router';
 import { useNotification } from '../../../../../../contexts/NotificationContext';
 import { Button } from '../../../../../../components/ui/Button';
 import { Pencil, Trash2, Users } from 'lucide-react';
 import { ConfirmDialog } from '../../../ConfirmDialog';
 import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
+import { useDeleteEvent } from '../../../../../../api/queries/events/useEventMutations';
 import styles from './OrganizerActions.module.scss';
 //#endregion
 
@@ -16,23 +16,19 @@ interface Props {
 }
 
 export const OrganizerActions: FC<Props> = ({ event }) => {
-  const { deleteEvent } = useEvents();
+  const deleteEvent = useDeleteEvent();
   const navigate = useNavigate();
   const { showToast } = useNotification();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    setIsDeleting(true);
     try {
-      await deleteEvent(event.id, event.organizerId);
-      showToast('Event deactivated', 'cancel');
+      await deleteEvent.mutateAsync(event.id);
+      showToast('Event deleted', 'cancel');
       navigate('/events');
     } catch (err) {
-      showToast(getErrorMessage(err, 'Failed to deactivate event'), 'error');
-    } finally {
-      setIsDeleting(false);
+      showToast(getErrorMessage(err, 'Failed to delete event'), 'error');
     }
   };
 
@@ -55,14 +51,14 @@ export const OrganizerActions: FC<Props> = ({ event }) => {
         trigger={
           <Button variant='danger'>
             <Trash2 size={16} aria-hidden='true' />
-            Deactivate event
+            Cancel event
           </Button>
         }
-        title='Deactivate this event?'
-        description='The event will be hidden from public listings. Existing registrations will be preserved.'
-        confirmLabel={isDeleting ? 'Deactivating...' : 'Deactivate'}
+        title='Delete this event?'
+        description='This action cannot be undone. All registrations will be cancelled.'
+        confirmLabel={deleteEvent.isPending ? 'Deleting...' : 'Delete'}
         onConfirm={handleDelete}
-        isLoading={isDeleting}
+        isLoading={deleteEvent.isPending}
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
       />

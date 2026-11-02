@@ -1,6 +1,6 @@
 //#region imports
 import type { FC, ReactNode } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import { BackLink } from '../../ui/BackLink';
 import { PageHeader } from '../../ui/PageHeader';
 import baseStyles from './base.module.scss';

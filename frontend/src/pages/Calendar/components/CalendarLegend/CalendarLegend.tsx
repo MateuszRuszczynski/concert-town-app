@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import type { FC } from 'react';
 import styles from './CalendarLegend.module.scss';
 import { useAuth } from '../../../../contexts/AuthContext';

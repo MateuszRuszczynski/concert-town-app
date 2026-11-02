@@ -1,12 +1,11 @@
-import type { EventDetails } from "../../../types/events";
-import type { RelationFilter } from "../../Events/types/eventFilters";
+import type { EventDetails, RelationFilter } from "../../../types/events";
 
 export function getEventRelation(
   event: EventDetails,
   myEvents: EventDetails[],
-  registeredEventIds: Set<number>
+  attendedEvents: EventDetails[],
 ): RelationFilter | undefined {
   if (myEvents.some((e) => e.id === event.id)) return 'organizing';
-  if (registeredEventIds.has(event.id)) return 'attending';
+  if (attendedEvents.some((e) => e.id === event.id)) return 'attending';
   return undefined;
 }

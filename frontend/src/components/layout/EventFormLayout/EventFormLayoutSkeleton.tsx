@@ -2,7 +2,7 @@
 import type { FC } from 'react';
 import { BackLink } from '../../ui/BackLink';
 import { EventFormSkeleton } from '../../events/EventForm';
-import { PageHeaderSkeleton } from '../../ui/PageHeader/PageHeaderSkeleton';
+import { PageHeaderSkeleton } from '../../ui/PageHeader';
 import baseStyles from './base.module.scss';
 //#endregion
 

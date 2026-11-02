@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { CategoryBadgeSkeleton } from '../CategoryBadge';
 import { SkeletonItem } from '../../ui/SkeletonItem';
 import baseStyles from './base.module.scss';

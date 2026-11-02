@@ -14,4 +14,9 @@
   background-color: var(--button-bg);
 
   @include hover(background-color, var(--background-hover));
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }

@@ -1,7 +1,7 @@
 //#region imports
 import type { FC, ReactNode } from 'react';
 import { BackLink } from '../../ui/BackLink';
-import { PageHeaderSkeleton } from '../../ui/PageHeader/PageHeaderSkeleton';
+import { PageHeaderSkeleton } from '../../ui/PageHeader';
 import baseStyles from './base.module.scss';
 //#endregion
 

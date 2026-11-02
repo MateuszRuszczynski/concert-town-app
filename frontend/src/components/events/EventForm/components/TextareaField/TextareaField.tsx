@@ -1,5 +1,5 @@
 //#region imports
-import cn from "classNames";
+import cn from "classnames";
 import type { FC, TextareaHTMLAttributes } from "react";
 import styles from "./TextareaField.module.scss";
 //#endregion

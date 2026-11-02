@@ -1,11 +1,12 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { useState } from 'react';
 import { LogOut, User2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useOutsideClick } from '../../../../hooks/useOutsideClick';
 import type { UserRole } from '../../../../types/user';
 import { useAuth } from '../../../../contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
 import styles from './UserMenu.module.scss';
 //#endregion
 
@@ -16,11 +17,15 @@ const ROLE_LABELS: Record<UserRole, string> = {
 };
 
 export const UserMenu = () => {
+  //#region hooks
   const { user, signOut } = useAuth();
   const [isUserMenuShowed, setIsUserMenuShowed] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const navigate = useNavigate();
   const menuRef = useOutsideClick(() => setIsUserMenuShowed(false));
+
+  const qc = useQueryClient();
+  //#endregion
 
   if (!user) {
     return (
@@ -42,6 +47,7 @@ export const UserMenu = () => {
     setIsSigningOut(true);
     try {
       await signOut();
+      qc.clear();
       navigate('/sign-in');
     } finally {
       setIsSigningOut(false);
