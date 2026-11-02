@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -12,6 +13,7 @@ User = get_user_model()
 
 class EventRegistrationTests(APITestCase):
     def setUp(self):
+        cache.clear()
         self.user = User.objects.create_user(
             email="attendee@example.com",
             password="Password123!",
@@ -24,7 +26,7 @@ class EventRegistrationTests(APITestCase):
         self.event = Event.objects.create(
             title="Concert A",
             description="Description A",
-            date=timezone.now() + timezone.timedelta(days=10),
+            starts_at=timezone.now() + timezone.timedelta(days=10),
             location="Kyiv",
             price="50.00",
             total_seats=2,
@@ -44,8 +46,50 @@ class EventRegistrationTests(APITestCase):
         self.assertEqual(EventRegistration.objects.count(), 1)
         self.event.refresh_from_db()
         self.assertEqual(self.event.available_seats, 1)
-        self.assertEqual(response.data["registration"]["event"], self.event.id)
+        self.assertEqual(response.data["registration"]["event"]["id"], self.event.id)
+        self.assertIn("starts_at", response.data["registration"]["event"])
+        self.assertNotIn("date", response.data["registration"]["event"])
+        self.assertEqual(
+            set(response.data["registration"]["event"]),
+            {
+                "id",
+                "title",
+                "description",
+                "starts_at",
+                "ends_at",
+                "host",
+                "location",
+                "category",
+                "price",
+                "total_seats",
+                "available_seats",
+                "image",
+                "organizer_id",
+                "is_active",
+                "created_at",
+                "updated_at",
+            },
+        )
         self.assertEqual(response.data["message"], "Registration successful.")
+
+    def test_event_registration_is_rate_limited(self):
+        self.client.force_authenticate(user=self.user)
+
+        responses = [
+            self.client.post(self.url, {"event_id": self.event.id})
+            for _ in range(11)
+        ]
+
+        self.assertEqual(responses[0].status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            responses[1].status_code, status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(
+            responses[9].status_code, status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(
+            responses[10].status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
 
     def test_organizer_can_view_participant_list(self):
         self.client.force_authenticate(user=self.user)
@@ -53,6 +97,22 @@ class EventRegistrationTests(APITestCase):
 
         self.client.force_authenticate(user=self.organizer)
         response = self.client.get(self.participant_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["user"]["email"], self.user.email)
+
+    def test_admin_can_view_participant_list(self):
+        self.client.force_authenticate(user=self.user)
+        self.client.post(self.url, {"event_id": self.event.id})
+
+        admin = User.objects.create_user(
+            email="admin@example.com",
+            role=User.Role.ADMIN,
+        )
+        self.client.force_authenticate(user=admin)
+
+        response = self.client.get(self.participant_url)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["user"]["email"], self.user.email)
@@ -109,6 +169,34 @@ class EventRegistrationTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Event is fully booked", str(response.data))
+
+    def test_cannot_register_for_inactive_event(self):
+        self.event.is_active = False
+        self.event.save(update_fields=["is_active"])
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(self.url, {"event_id": self.event.id})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Event is not active", str(response.data))
+
+    def test_cannot_register_after_event_has_started(self):
+        self.event.starts_at = timezone.now() - timezone.timedelta(minutes=1)
+        self.event.save(update_fields=["starts_at"])
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(self.url, {"event_id": self.event.id})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Event registration is closed", str(response.data))
+
+    def test_organizer_cannot_register_for_own_event(self):
+        self.client.force_authenticate(user=self.organizer)
+
+        response = self.client.post(self.url, {"event_id": self.event.id})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("event you organize", str(response.data))
 
     def test_cancel_registration_success(self):
         self.client.force_authenticate(user=self.user)

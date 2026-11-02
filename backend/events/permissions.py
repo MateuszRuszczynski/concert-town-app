@@ -1,5 +1,21 @@
 from rest_framework import permissions
 
+from accounts.permissions import get_normalized_role, is_admin
+
+
+def can_manage_event(user, event):
+    return bool(
+        user
+        and user.is_authenticated
+        and (is_admin(user) or event.organizer == user)
+    )
+
+
+def can_manage_events(user):
+    if not (user and user.is_authenticated):
+        return False
+    return get_normalized_role(user) == "organizer" or is_admin(user)
+
 
 class IsOrganizerOrAdminOrReadOnly(permissions.BasePermission):
 
@@ -7,32 +23,21 @@ class IsOrganizerOrAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        if not (request.user and request.user.is_authenticated):
-            return False
-
-        user_role = getattr(request.user, "role", None)
-
-        if hasattr(user_role, "value"):
-            user_role = user_role.value
-
-        is_staff_or_superuser = getattr(
-            request.user, "is_staff", False
-        ) or getattr(request.user, "is_superuser", False)
-
-        return user_role in ["organizer", "admin"] or is_staff_or_superuser
+        return can_manage_events(request.user)
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
-            return True
+            if obj.is_active:
+                return True
 
-        if not (request.user and request.user.is_authenticated):
-            return False
+            return can_manage_event(request.user, obj) or bool(
+                request.user.is_authenticated
+                and obj.registrations.filter(user=request.user).exists()
+            )
 
-        is_staff_or_superuser = getattr(
-            request.user, "is_staff", False
-        ) or getattr(request.user, "is_superuser", False)
+        return can_manage_event(request.user, obj)
 
-        if is_staff_or_superuser:
-            return True
 
-        return obj.organizer == request.user
+class IsOrganizerOrAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return can_manage_events(request.user)

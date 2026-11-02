@@ -5,7 +5,7 @@ from django.db import models
 class EventRegistration(models.Model):
     event = models.ForeignKey(
         "events.Event",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="registrations",
     )
     user = models.ForeignKey(

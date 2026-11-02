@@ -1,7 +1,31 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
-from .models import User
+from .models import OrganizerRoleRequest, User
+
+
+@admin.register(OrganizerRoleRequest)
+class OrganizerRoleRequestAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "status", "created_at", "reviewed_by")
+    list_filter = ("status", "created_at")
+    search_fields = ("user__email", "message")
+    readonly_fields = (
+        "user",
+        "message",
+        "status",
+        "created_at",
+        "reviewed_at",
+        "reviewed_by",
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(User)

@@ -5,11 +5,22 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from .models import OrganizerRoleRequest
 
 User = get_user_model()
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     email = serializers.EmailField(required=True)
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token["role"] = str(user.role).strip().lower()
+        return token
 
     def validate(self, attrs):
         email_val = attrs.get("email") or attrs.get(self.username_field)
@@ -25,6 +36,26 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         attrs[self.username_field] = email_val
 
         return super().validate(attrs)
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(write_only=True)
+
+    def validate_refresh(self, value):
+        try:
+            token = RefreshToken(value)
+        except TokenError as error:
+            raise serializers.ValidationError("Token is invalid or expired.") from error
+
+        request = self.context["request"]
+        user_id = getattr(request.user, api_settings.USER_ID_FIELD)
+
+        if str(token.get(api_settings.USER_ID_CLAIM)) != str(user_id):
+            raise serializers.ValidationError(
+                "Token does not belong to the authenticated user."
+            )
+
+        return token
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -78,3 +109,30 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"email": "A user with this email already exists."}
             )
+
+
+class OrganizerRoleRequestCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizerRoleRequest
+        fields = ("message",)
+        extra_kwargs = {"message": {"required": False, "allow_blank": True}}
+
+
+class OrganizerRoleRequestSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(read_only=True)
+    user_email = serializers.EmailField(source="user.email", read_only=True)
+    reviewed_by_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = OrganizerRoleRequest
+        fields = (
+            "id",
+            "user_id",
+            "user_email",
+            "message",
+            "status",
+            "created_at",
+            "reviewed_at",
+            "reviewed_by_id",
+        )
+        read_only_fields = fields

@@ -2,14 +2,25 @@ from django.urls import path
 from bookings.views import EventParticipantListView
 from events.views import (
     CategoryListCreateView,
+    EventDetailView,
     EventListCreateView,
-    MyEventsListView, EventDetailView,
+    MyEventsListView,
 )
 
 urlpatterns = [
     path("categories/", CategoryListCreateView.as_view(), name="category-list"),
     path("", EventListCreateView.as_view(), name="event-list"),
     path("my/", MyEventsListView.as_view(), name="my-events-list"),
+    path(
+        "my/active/",
+        MyEventsListView.as_view(activity="active"),
+        name="my-active-events-list",
+    ),
+    path(
+        "my/inactive/",
+        MyEventsListView.as_view(activity="inactive"),
+        name="my-inactive-events-list",
+    ),
     path("<int:pk>/", EventDetailView.as_view(), name="event-detail"),
     path(
         "event/<int:event_id>/participants/",
