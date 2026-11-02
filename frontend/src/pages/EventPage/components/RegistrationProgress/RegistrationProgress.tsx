@@ -1,6 +1,6 @@
 //#region imports
 import type { FC } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import baseStyles from './base.module.scss';
 import styles from './RegistrationProgress.module.scss';
 //#endregion

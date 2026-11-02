@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { useParams } from 'react-router';
 import { EventHero } from './components/EventHero';
 import { EventHeader } from './components/EventHeader';

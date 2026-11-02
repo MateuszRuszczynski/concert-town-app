@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { useState } from 'react';
 import { LogOut, User2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router';

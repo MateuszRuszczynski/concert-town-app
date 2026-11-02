@@ -1,6 +1,6 @@
 //#region imports
 import type { InputHTMLAttributes, ReactNode, FC } from "react";
-import cn from "classNames";
+import cn from "classnames";
 import { Check } from "lucide-react";
 import baseStyles from './base.module.scss';
 import styles from "./FormField.module.scss";

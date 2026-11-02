@@ -1,6 +1,6 @@
 //#region imports
 import type { FC } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { IconButton } from '../../../ui/IconButton';
 import styles from './Pagination.module.scss';

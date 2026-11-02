@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import type { FC } from 'react';
 import { Link } from 'react-router';
 import { CalendarDays, MapPin, Users } from 'lucide-react';

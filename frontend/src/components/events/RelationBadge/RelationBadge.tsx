@@ -1,6 +1,6 @@
 //#region imports
 import type { FC } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import styles from './RelationBadge.module.scss';
 //#endregion
 

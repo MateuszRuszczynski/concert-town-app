@@ -1,6 +1,6 @@
 //#region imports
 import type { FC, ReactNode } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import type { EventDetails } from '../../types/events';
 import { EventsNav } from './components/EventsNav';
 import { EventsList } from '../events/EventsList';

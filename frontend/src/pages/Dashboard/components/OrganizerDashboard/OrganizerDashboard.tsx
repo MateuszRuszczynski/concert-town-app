@@ -1,6 +1,6 @@
 //#region imports
 import { useState } from 'react';
-import cn from 'classNames';
+import cn from 'classnames';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { OrganizerPanel } from '../OrganizerPanel';
 import { AttendeePanel } from '../AttendeePanel';

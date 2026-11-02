@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import { useState, type FC } from 'react';
 import { FormField } from '../../../../components/ui/FormField';
 import { Check } from 'lucide-react';

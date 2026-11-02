@@ -1,5 +1,5 @@
 //#region imports
-import cn from 'classNames';
+import cn from 'classnames';
 import baseStyles from './base.module.scss';
 import { SkeletonItem } from "../SkeletonItem";
 import type { FC } from 'react';
