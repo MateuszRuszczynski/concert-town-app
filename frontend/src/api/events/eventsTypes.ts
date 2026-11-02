@@ -5,7 +5,7 @@ export interface EventResponse {
   title: string;
   description: string;
   starts_at: string;
-  ends_at: string | null;
+  ends_at: string;
   host: string;
   location: EventLocation;
   category: Category;
